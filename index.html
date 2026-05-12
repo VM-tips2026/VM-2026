@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VM-Tipset 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen">
+
+  <!-- STARTSIDA -->
+  <div id="start-page" class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+
+      <div class="text-center mb-8">
+        <h1 class="text-6xl font-bold mb-4">⚽</h1>
+        <h2 class="text-4xl font-bold mb-3">VM-Tipset 2026</h2>
+        <p class="text-zinc-400 text-lg">
+          Logga in eller skapa konto för att delta.
+        </p>
+      </div>
+
+      <div class="flex gap-3 mb-8">
+        <button id="login-tab" class="flex-1 bg-white text-black py-3 rounded-2xl font-bold transition-colors">
+          Logga in
+        </button>
+
+        <button id="register-tab" class="flex-1 bg-zinc-800 text-white py-3 rounded-2xl font-bold transition-colors">
+          Skapa konto
+        </button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block mb-2 text-zinc-300">E-post</label>
+          <input type="email" required placeholder="namn@email.se" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Lösenord</label>
+          <input type="password" required placeholder="Ditt lösenord" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="remember-me" class="w-5 h-5 rounded border-zinc-600 bg-zinc-800" />
+
+            <label for="remember-me" class="text-zinc-300 cursor-pointer select-none">
+              Kom ihåg mig
+            </label>
+          </div>
+
+          <button type="button" id="forgot-password-btn" class="text-sm text-zinc-400 hover:text-white transition-colors">
+            Glömt ditt lösenord?
+          </button>
+        </div>
+
+        <button type="submit" class="w-full bg-white text-black py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform">
+          🔓 Logga in
+        </button>
+      </form>
+
+      <!-- RESET PASSWORD -->
+      <div id="forgot-password-box" class="hidden mt-6 bg-zinc-800 border border-zinc-700 rounded-2xl p-5">
+        <h3 class="text-xl font-bold mb-3">🔑 Återställ lösenord</h3>
+
+        <p class="text-zinc-400 mb-4 text-sm leading-relaxed">
+          Ange din e-postadress så skickar vi instruktioner för att återställa ditt lösenord.
+        </p>
+
+        <input type="email" placeholder="namn@email.se" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-4 mb-4" />
+
+        <button type="button" id="reset-password-btn" class="w-full bg-white text-black py-3 rounded-2xl font-bold">
+          📩 Skicka återställningslänk
+        </button>
+
+        <div id="reset-message" class="hidden mt-4 text-green-400 text-sm text-center">
+          Återställningslänk skickad till din e-post.
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <form id="register-form" class="space-y-5 hidden">
+        <div>
+          <label class="block mb-2 text-zinc-300">Namn</label>
+          <input type="text" id="name" required placeholder="Skriv ditt namn" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">E-post</label>
+          <input type="email" required placeholder="namn@email.se" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Lösenord</label>
+          <input type="password" required placeholder="Välj lösenord" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <button type="submit" class="w-full bg-white text-black py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform">
+          🚀 Skapa konto
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TIPS SIDA -->
+  <div id="tips-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
+
+    <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+      <div>
+        <h1 class="text-5xl font-bold mb-2">⚽ Registrera ditt tips</h1>
+        <p class="text-zinc-400">Fyll i dina matchtips för VM 2026.</p>
+      </div>
+
+      <button id="logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
+        🚪 Logga ut
+      </button>
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-10 overflow-x-auto">
+      <table class="w-full text-left min-w-[900px]">
+        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
+          <tr>
+            <th class="p-4">Datum</th>
+            <th class="p-4">Tid</th>
+            <th class="p-4">Match</th>
+            <th class="p-4">Resultat</th>
+            <th class="p-4">Vinnare</th>
+          </tr>
+        </thead>
+
+        <tbody id="matches-body"></tbody>
+      </table>
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+      <h2 class="text-3xl font-bold mb-6">📝 Extra frågor</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div>
+          <label class="block mb-2 text-zinc-300">VM-vinnare</label>
+          <input type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Skyttekung</label>
+          <input type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Totalt antal mål</label>
+          <input type="number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center pb-20">
+      <button id="save-tip-btn" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-bold hover:scale-105 transition-transform">
+        💾 Registrera mitt tips
+      </button>
+    </div>
+
+  </div>
+
+  <!-- TABELL -->
+  <div id="table-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
+
+    <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+      <div>
+        <h1 class="text-5xl font-bold mb-2">🏆 Tabell & Kommande matcher</h1>
+        <p class="text-zinc-400">Se alla kommande matcher och dina registrerade tips.</p>
+      </div>
+
+      <button id="table-logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
+        🚪 Logga ut
+      </button>
+    </div>
+
+    <!-- TABELL -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-10 overflow-x-auto">
+      <table class="w-full text-left min-w-[700px]">
+        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
+          <tr>
+            <th class="p-4">Placering</th>
+            <th class="p-4">Namn</th>
+            <th class="p-4">Poäng</th>
+            <th class="p-4">Rätt resultat</th>
+            <th class="p-4">Rätt vinnare</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="border-t border-zinc-800">
+            <td class="p-4 font-bold">1</td>
+            <td class="p-4">Anders</td>
+            <td class="p-4 text-green-400 font-bold">19</td>
+            <td class="p-4">4</td>
+            <td class="p-4">7</td>
+          </tr>
+
+          <tr class="border-t border-zinc-800">
+            <td class="p-4 font-bold">2</td>
+            <td class="p-4">Maria</td>
+            <td class="p-4 text-green-400 font-bold">15</td>
+            <td class="p-4">3</td>
+            <td class="p-4">6</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- KOMMANDE MATCHER -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
+
+      <div class="p-6 border-b border-zinc-800">
+        <h2 class="text-3xl font-bold">📅 Kommande matcher</h2>
+      </div>
+
+      <table class="w-full text-left min-w-[900px]">
+        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
+          <tr>
+            <th class="p-4">Datum</th>
+            <th class="p-4">Tid</th>
+            <th class="p-4">Match</th>
+            <th class="p-4">Ditt tips</th>
+            <th class="p-4">Vinnare</th>
+          </tr>
+        </thead>
+
+        <tbody id="upcoming-matches-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- BETALNING -->
+  <div id="payment-page" class="hidden min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-lg w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-10 text-center shadow-2xl">
+
+      <h1 class="text-5xl font-bold mb-6">💳 Betalning</h1>
+
+      <p class="text-zinc-300 text-xl mb-4">
+        Swisha anmälningsavgiften för att slutföra registreringen.
+      </p>
+
+      <div class="text-6xl font-bold text-green-400 mb-8">100 kr</div>
+
+      <div class="bg-white rounded-3xl p-6 inline-block mb-8">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=VM-TIPSET-100KR" alt="QR Kod" class="w-64 h-64" />
+      </div>
+
+      <div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
+        <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
+        <div class="text-3xl font-bold tracking-widest">123 456 78 90</div>
+      </div>
+
+      <button id="payment-done-btn" class="w-full bg-green-500 hover:bg-green-600 transition-colors py-4 rounded-2xl text-xl font-bold">
+        ✅ Jag har betalat
+      </button>
+
+    </div>
+  </div>
+
+  <!-- TACKSIDA -->
+  <div id="thank-you-page" class="hidden min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-2xl w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-12 text-center shadow-2xl">
+
+      <div class="text-7xl mb-6">✅</div>
+
+      <h1 class="text-5xl font-bold mb-6">Tack för din anmälan!</h1>
+
+      <p class="text-2xl text-zinc-300 leading-relaxed mb-10">
+        När din anmälan har behandlats kommer du att få access till tabellen.
+        <br /><br />
+        Bekräftelse skickas till din e-postadress.
+      </p>
+
+      <button id="back-home-btn" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-bold hover:scale-105 transition-transform">
+        🏠 Till startsidan
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    const matches = [
+      {
+        date: '2026-06-11',
+        time: '21.00',
+        home: 'Mexico',
+        away: 'Sydafrika',
+        homeScore: 2,
+        awayScore: 1
+      },
+      {
+        date: '2026-06-12',
+        time: '04.00',
+        home: 'Sydkorea',
+        away: 'Tjeckien',
+        homeScore: 1,
+        awayScore: 1
+      },
+      {
+        date: '2026-06-12',
+        time: '21.00',
+        home: 'Kanada',
+        away: 'Bosnien',
+        homeScore: 0,
+        awayScore: 2
+      },
+      {
+        date: '2026-06-13',
+        time: '03.00',
+        home: 'USA',
+        away: 'Paraguay',
+        homeScore: 3,
+        awayScore: 1
+      }
+    ]
+
+    const matchesBody = document.getElementById('matches-body')
+    const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
+
+    function getWinner(match) {
+      if (match.homeScore > match.awayScore) return match.home
+      if (match.awayScore > match.homeScore) return match.away
+      return 'Oavgjort'
+    }
+
+    function renderMatches() {
+      matchesBody.innerHTML = ''
+      upcomingMatchesBody.innerHTML = ''
+
+      matches.forEach((match, index) => {
+        const winner = getWinner(match)
+
+        matchesBody.innerHTML += `
+          <tr class="border-t border-zinc-800">
+            <td class="p-4">${match.date}</td>
+            <td class="p-4">${match.time}</td>
+            <td class="p-4 match-name">${match.home} - ${match.away}</td>
+            <td class="p-4">
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  value="${match.homeScore}"
+                  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+                  onchange="updateScore(${index}, 'home', this.value)"
+                />
+                <span>-</span>
+                <input
+                  type="number"
+                  value="${match.awayScore}"
+                  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+                  onchange="updateScore(${index}, 'away', this.value)"
+                />
+              </div>
+            </td>
+            <td class="p-4 winner">${winner}</td>
+          </tr>
+        `
+
+        upcomingMatchesBody.innerHTML += `
+          <tr class="border-t border-zinc-800">
+            <td class="p-4">${match.date}</td>
+            <td class="p-4">${match.time}</td>
+            <td class="p-4">${match.home} - ${match.away}</td>
+            <td class="p-4 font-bold text-green-400">${match.homeScore} - ${match.awayScore}</td>
+            <td class="p-4">${winner}</td>
+          </tr>
+        `
+      })
+    }
+
+    function updateScore(index, team, value) {
+      matches[index][team + 'Score'] = Number(value)
+      renderMatches()
+    }
+
+    renderMatches()
+
+    const startPage = document.getElementById('start-page')
+    const tipsPage = document.getElementById('tips-page')
+    const paymentPage = document.getElementById('payment-page')
+    const thankYouPage = document.getElementById('thank-you-page')
+    const tablePage = document.getElementById('table-page')
+
+    const loginTab = document.getElementById('login-tab')
+    const registerTab = document.getElementById('register-tab')
+
+    const loginForm = document.getElementById('login-form')
+    const registerForm = document.getElementById('register-form')
+
+    const forgotPasswordBtn = document.getElementById('forgot-password-btn')
+    const forgotPasswordBox = document.getElementById('forgot-password-box')
+    const resetPasswordBtn = document.getElementById('reset-password-btn')
+    const resetMessage = document.getElementById('reset-message')
+
+    const saveTipBtn = document.getElementById('save-tip-btn')
+    const paymentDoneBtn = document.getElementById('payment-done-btn')
+    const backHomeBtn = document.getElementById('back-home-btn')
+
+    const logoutBtn = document.getElementById('logout-btn')
+    const tableLogoutBtn = document.getElementById('table-logout-btn')
+
+    function showLoginTab() {
+      loginForm.classList.remove('hidden')
+      registerForm.classList.add('hidden')
+      forgotPasswordBox.classList.add('hidden')
+
+      loginTab.classList.remove('bg-zinc-800', 'text-white')
+      loginTab.classList.add('bg-white', 'text-black')
+
+      registerTab.classList.remove('bg-white', 'text-black')
+      registerTab.classList.add('bg-zinc-800', 'text-white')
+    }
+
+    loginTab.addEventListener('click', showLoginTab)
+
+    registerTab.addEventListener('click', () => {
+      registerForm.classList.remove('hidden')
+      loginForm.classList.add('hidden')
+      forgotPasswordBox.classList.add('hidden')
+
+      registerTab.classList.remove('bg-zinc-800', 'text-white')
+      registerTab.classList.add('bg-white', 'text-black')
+
+      loginTab.classList.remove('bg-white', 'text-black')
+      loginTab.classList.add('bg-zinc-800', 'text-white')
+    })
+
+    forgotPasswordBtn.addEventListener('click', () => {
+      forgotPasswordBox.classList.toggle('hidden')
+    })
+
+    resetPasswordBtn.addEventListener('click', () => {
+      resetMessage.classList.remove('hidden')
+    })
+
+    // LOGIN -> TABELL
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      startPage.classList.add('hidden')
+      tablePage.classList.remove('hidden')
+    })
+
+    // REGISTER -> TIPS
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      startPage.classList.add('hidden')
+      tipsPage.classList.remove('hidden')
+    })
+
+    // SAVE TIPS -> BETALNING
+    saveTipBtn.addEventListener('click', () => {
+      tipsPage.classList.add('hidden')
+      paymentPage.classList.remove('hidden')
+    })
+
+    // BETALNING -> TACK
+    paymentDoneBtn.addEventListener('click', () => {
+      paymentPage.classList.add('hidden')
+      thankYouPage.classList.remove('hidden')
+    })
+
+    // TILL STARTSIDAN
+    backHomeBtn.addEventListener('click', () => {
+      thankYouPage.classList.add('hidden')
+      startPage.classList.remove('hidden')
+      showLoginTab()
+    })
+
+    function logout() {
+      tipsPage.classList.add('hidden')
+      paymentPage.classList.add('hidden')
+      thankYouPage.classList.add('hidden')
+      tablePage.classList.add('hidden')
+      startPage.classList.remove('hidden')
+      showLoginTab()
+    }
+
+    logoutBtn.addEventListener('click', logout)
+    tableLogoutBtn.addEventListener('click', logout)
+  </script>
+
+</body>
+</html>
