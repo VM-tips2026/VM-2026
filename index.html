@@ -446,11 +446,37 @@
     })
 
     // REGISTER -> TIPS
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      startPage.classList.add('hidden')
-      tipsPage.classList.remove('hidden')
-    })
+    registerForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const name = document.getElementById('name').value
+
+  const email =
+    registerForm.querySelector('input[type="email"]').value
+
+  const password =
+    registerForm.querySelector('input[type="password"]').value
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        name: name
+      }
+    }
+  })
+
+  if (error) {
+    alert(error.message)
+    return
+  }
+
+  alert('Konto skapat!')
+
+  startPage.classList.add('hidden')
+  tipsPage.classList.remove('hidden')
+})
 
     // SAVE TIPS -> BETALNING
     saveTipBtn.addEventListener('click', () => {
