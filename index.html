@@ -331,9 +331,10 @@ console.log('Supabase connected!')
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
 
     function getWinner(match) {
-      if (match.homeScore > match.awayScore) return match.home
-      if (match.awayScore > match.homeScore) return match.away
-      return 'Oavgjort'
+  if (match.resultHomeScore > match.resultAwayScore) return match.home
+  if (match.resultAwayScore > match.resultHomeScore) return match.away
+  return 'Oavgjort'
+}
     }
 
     function renderMatches() {
@@ -375,12 +376,12 @@ console.log('Supabase connected!')
 
     <!-- RESULTAT -->
     <td class="p-4">
-      ${match.homeScore} - ${match.awayScore}
+      ${match.resultHomeScore} - ${match.resultAwayScore}
     </td>
 
     <!-- DITT TIPS -->
     <td class="p-4 font-bold text-green-400">
-      ${match.homeScore} - ${match.awayScore}
+      ${match.tipHomeScore} - ${match.tipAwayScore}
     </td>
   </tr>
 `
