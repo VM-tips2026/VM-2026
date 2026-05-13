@@ -531,14 +531,18 @@ loginForm.addEventListener('submit', async (e) => {
       showLoginTab()
     })
 
-    function logout() {
-      tipsPage.classList.add('hidden')
-      paymentPage.classList.add('hidden')
-      thankYouPage.classList.add('hidden')
-      tablePage.classList.add('hidden')
-      startPage.classList.remove('hidden')
-      showLoginTab()
-    }
+    async function logout() {
+  await sb.auth.signOut()
+
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.add('hidden')
+  thankYouPage.classList.add('hidden')
+  tablePage.classList.add('hidden')
+
+  startPage.classList.remove('hidden')
+
+  showLoginTab()
+}
 
     logoutBtn.addEventListener('click', logout)
     tableLogoutBtn.addEventListener('click', logout)
