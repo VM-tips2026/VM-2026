@@ -298,39 +298,34 @@ console.log('Supabase connected!')
 </script>
   <script>
     const matches = [
-      {
-        date: '2026-06-11',
-        time: '21.00',
-        home: 'Mexico',
-        away: 'Sydafrika',
-        homeScore: 2,
-        awayScore: 1
-      },
-      {
-        date: '2026-06-12',
-        time: '04.00',
-        home: 'Sydkorea',
-        away: 'Tjeckien',
-        homeScore: 1,
-        awayScore: 1
-      },
-      {
-        date: '2026-06-12',
-        time: '21.00',
-        home: 'Kanada',
-        away: 'Bosnien',
-        homeScore: 0,
-        awayScore: 2
-      },
-      {
-        date: '2026-06-13',
-        time: '03.00',
-        home: 'USA',
-        away: 'Paraguay',
-        homeScore: 3,
-        awayScore: 1
-      }
-    ]
+  {
+    date: '2026-06-11',
+    time: '21.00',
+    home: 'Mexico',
+    away: 'Sydafrika',
+
+    // DITT TIPS
+    tipHomeScore: 2,
+    tipAwayScore: 1,
+
+    // RIKTIGT RESULTAT
+    resultHomeScore: 3,
+    resultAwayScore: 2
+  },
+
+  {
+    date: '2026-06-12',
+    time: '04.00',
+    home: 'Sydkorea',
+    away: 'Tjeckien',
+
+    tipHomeScore: 1,
+    tipAwayScore: 1,
+
+    resultHomeScore: 2,
+    resultAwayScore: 0
+  }
+]
 
     const matchesBody = document.getElementById('matches-body')
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
@@ -357,15 +352,13 @@ console.log('Supabase connected!')
               <div class="flex items-center gap-2">
                 <input
                   type="number"
-                  value="${match.homeScore}"
-                  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+                  value="${match.tipHomeScore}"                  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
                   onchange="updateScore(${index}, 'home', this.value)"
                 />
                 <span>-</span>
                 <input
                   type="number"
-                  value="${match.awayScore}"
-                  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+                  value="${match.tipAwayScore}"                  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
                   onchange="updateScore(${index}, 'away', this.value)"
                 />
               </div>
@@ -395,11 +388,10 @@ console.log('Supabase connected!')
     }
 
     function updateScore(index, team, value) {
-      matches[index][team + 'Score'] = Number(value)
-      renderMatches()
-    }
+  matches[index]['tip' + team.charAt(0).toUpperCase() + team.slice(1) + 'Score'] = Number(value)
 
-    renderMatches()
+  renderMatches()
+}
 
     const startPage = document.getElementById('start-page')
     const tipsPage = document.getElementById('tips-page')
