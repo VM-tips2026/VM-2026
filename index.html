@@ -295,6 +295,13 @@ const sb = window.supabase.createClient(
 )
 
 console.log('Supabase connected!')
+
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    document.getElementById('start-page').classList.add('hidden')
+    document.getElementById('table-page').classList.remove('hidden')
+  }
+})
 </script>
   <script>
     const matches = [
@@ -465,6 +472,16 @@ loginForm.addEventListener('submit', async (e) => {
   const password =
     loginForm.querySelector('input[type="password"]').value
 
+  const rememberMe =
+    document.getElementById('remember-me').checked
+
+  // Spara om användaren vill bli ihågkommen
+  if (rememberMe) {
+    localStorage.setItem('rememberMe', 'true')
+  } else {
+    localStorage.removeItem('rememberMe')
+  }
+
   const { data, error } =
     await sb.auth.signInWithPassword({
       email,
@@ -475,7 +492,6 @@ loginForm.addEventListener('submit', async (e) => {
     alert(error.message)
     return
   }
-
 
   startPage.classList.add('hidden')
   tablePage.classList.remove('hidden')
