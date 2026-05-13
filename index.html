@@ -289,7 +289,7 @@ const supabaseUrl = 'https://hqefwuwnqasfpambuvss.supabase.co'
 
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxZWZ3dXducWFzZnBhbWJ1dnNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTQxMDQsImV4cCI6MjA5NDE5MDEwNH0.0WNx7jjEIN1nxgKd7ebmkZSapcIpVeOwlTbdZzgsKxY'
 
-const supabase = window.supabase.createClient(
+const sb = window.supabase.createClient(
   supabaseUrl,
   supabaseKey
 )
@@ -470,7 +470,7 @@ console.log('Supabase connected!')
   const password =
     registerForm.querySelector('input[type="password"]').value
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await sb.auth.signUp({
     email,
     password,
     options: {
