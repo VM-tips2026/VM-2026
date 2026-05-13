@@ -223,8 +223,8 @@
             <th class="p-4">Datum</th>
             <th class="p-4">Tid</th>
             <th class="p-4">Match</th>
-            <th class="p-4">Ditt tips</th>
             <th class="p-4">Resultat</th>
+            <th class="p-4">Ditt tips</th>
           </tr>
         </thead>
 
@@ -375,14 +375,22 @@ console.log('Supabase connected!')
         `
 
         upcomingMatchesBody.innerHTML += `
-          <tr class="border-t border-zinc-800">
-            <td class="p-4">${match.date}</td>
-            <td class="p-4">${match.time}</td>
-            <td class="p-4">${match.home} - ${match.away}</td>
-            <td class="p-4 font-bold text-green-400">${match.homeScore} - ${match.awayScore}</td>
-            <td class="p-4">${winner}</td>
-          </tr>
-        `
+  <tr class="border-t border-zinc-800">
+    <td class="p-4">${match.date}</td>
+    <td class="p-4">${match.time}</td>
+    <td class="p-4">${match.home} - ${match.away}</td>
+
+    <!-- RESULTAT -->
+    <td class="p-4">
+      ${match.homeScore} - ${match.awayScore}
+    </td>
+
+    <!-- DITT TIPS -->
+    <td class="p-4 font-bold text-green-400">
+      ${winner}
+    </td>
+  </tr>
+`
       })
     }
 
