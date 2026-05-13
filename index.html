@@ -335,7 +335,7 @@ console.log('Supabase connected!')
   if (match.resultAwayScore > match.resultHomeScore) return match.away
   return 'Oavgjort'
 }
-    }
+    
 
     function renderMatches() {
       matchesBody.innerHTML = ''
@@ -393,6 +393,8 @@ console.log('Supabase connected!')
 
   renderMatches()
 }
+
+renderMatches()
 
     const startPage = document.getElementById('start-page')
     const tipsPage = document.getElementById('tips-page')
