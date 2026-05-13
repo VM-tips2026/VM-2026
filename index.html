@@ -452,11 +452,32 @@ console.log('Supabase connected!')
     })
 
     // LOGIN -> TABELL
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      startPage.classList.add('hidden')
-      tablePage.classList.remove('hidden')
+    // LOGIN -> TABELL
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const email =
+    loginForm.querySelector('input[type="email"]').value
+
+  const password =
+    loginForm.querySelector('input[type="password"]').value
+
+  const { data, error } =
+    await sb.auth.signInWithPassword({
+      email,
+      password
     })
+
+  if (error) {
+    alert(error.message)
+    return
+  }
+
+  alert('Inloggad!')
+
+  startPage.classList.add('hidden')
+  tablePage.classList.remove('hidden')
+})
 
     // REGISTER -> TIPS
     registerForm.addEventListener('submit', async (e) => {
