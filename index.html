@@ -323,22 +323,19 @@ async function loadMatches() {
 
   console.log(data)
 
-  matches = data.response.slice(0, 10).map(match => ({
-  date: new Date(match.event_date).toLocaleDateString('sv-SE'),
+  matches = data.data.slice(0, 10).map(match => ({
+  date: match.date,
 
-  time: new Date(match.event_date).toLocaleTimeString('sv-SE', {
-    hour: '2-digit',
-    minute: '2-digit'
-  }),
+  time: match.time,
 
-  home: match.home_name,
-  away: match.away_name,
+  home: match.homeTeam?.name || match.homeTeam,
+  away: match.awayTeam?.name || match.awayTeam,
 
   tipHomeScore: 0,
   tipAwayScore: 0,
 
-  resultHomeScore: match.homeGoalCount ?? '-',
-  resultAwayScore: match.awayGoalCount ?? '-'
+  resultHomeScore: match.homeScore ?? '-',
+  resultAwayScore: match.awayScore ?? '-'
 }))
 
 renderMatches()
