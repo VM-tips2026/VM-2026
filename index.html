@@ -385,11 +385,12 @@ data.forEach(tip => {
 
   if (!users[tip.user_id]) {
 
-    users[tip.user_id] = {
-      points: 0,
-      exact: 0,
-      winners: 0
-    }
+users[tip.user_id] = {
+  name: tip.player_name,
+  points: 0,
+  exact: 0,
+  winners: 0
+}
   }
 
   const realMatch = matches.find(
@@ -464,7 +465,7 @@ data.forEach(tip => {
         </td>
 
         <td class="p-4">
-          Spelare ${index + 1}
+          ${user[1].name}
         </td>
 
         <td class="p-4 text-green-400 font-bold">
@@ -695,6 +696,7 @@ loadLeaderboard()
     const { error } = await sb.from('tips').insert({
 
       user_id: user.id,
+player_name: user.user_metadata.name,
 
       match_name:
         `${match.home} - ${match.away}`,
