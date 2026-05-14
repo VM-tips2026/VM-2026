@@ -539,10 +539,32 @@ loginForm.addEventListener('submit', async (e) => {
 })
 
     // SAVE TIPS -> BETALNING
-    saveTipBtn.addEventListener('click', () => {
-      tipsPage.classList.add('hidden')
-      paymentPage.classList.remove('hidden')
+   saveTipBtn.addEventListener('click', async () => {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  for (const match of matches) {
+
+    await sb.from('tips').insert({
+
+      user_id: user.id,
+
+      match_name:
+        `${match.home} - ${match.away}`,
+
+      home_team: match.home,
+      away_team: match.away,
+
+      home_score: match.tipHomeScore,
+      away_score: match.tipAwayScore
     })
+  }
+
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.remove('hidden')
+})
 
     // BETALNING -> TACK
     paymentDoneBtn.addEventListener('click', () => {
