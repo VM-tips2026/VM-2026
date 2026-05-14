@@ -370,9 +370,12 @@ async function loadMatches() {
 }
 async function loadLeaderboard() {
 
-  const { data, error } = await sb
-    .from('tips')
-    .select('*')
+const { data, error } = await sb
+  .from('tips')
+  .select('*')
+
+console.log('TOTAL TIPS:', data.length)
+console.log(data)
 
   if (error) {
     console.error(error)
@@ -381,70 +384,78 @@ async function loadLeaderboard() {
 
   const users = {}
 
-data.forEach(tip => {
+  console.log(data)
 
-  if (!users[tip.user_id]) {
+  data.forEach(tip => {
 
-users[tip.user_id] = {
-  name: tip.player_name,
-  points: 0,
-  exact: 0,
-  winners: 0
-}
-  }
+    console.log(
+      'USER ID:',
+      tip.user_id,
+      'NAME:',
+      tip.player_name
+    )
 
-  const realMatch = matches.find(
-    m =>
-      m.home === tip.home_team &&
-      m.away === tip.away_team
-  )
+    // Skapa användare
+    if (!users[tip.user_id]) {
 
-  if (!realMatch) return
-
-  const realHome = Number(realMatch.resultHomeScore)
-  const realAway = Number(realMatch.resultAwayScore)
-
-  // Match ej spelad ännu
-  if (isNaN(realHome) || isNaN(realAway)) {
-    return
-  }
-
-  // EXAKT RESULTAT = 3 POÄNG
-
-  if (
-    tip.home_score === realHome &&
-    tip.away_score === realAway
-  ) {
-
-    users[tip.user_id].points += 3
-    users[tip.user_id].exact += 1
-  }
-
-  // RÄTT VINNARE = 1 POÄNG
-
-  else {
-
-    const tippedWinner =
-      tip.home_score > tip.away_score
-        ? 'home'
-        : tip.away_score > tip.home_score
-        ? 'away'
-        : 'draw'
-
-    const realWinner =
-      realHome > realAway
-        ? 'home'
-        : realAway > realHome
-        ? 'away'
-        : 'draw'
-
-    if (tippedWinner === realWinner) {
-
-      users[tip.user_id].points += 1
-      users[tip.user_id].winners += 1
+      users[tip.user_id] = {
+        name: tip.player_name,
+        points: 0,
+        exact: 0,
+        winners: 0
+      }
     }
-  }
-})
+
+    const realMatch = matches.find(
+      m =>
+        m.home === tip.home_team &&
+        m.away === tip.away_team
+    )
+
+    if (!realMatch) return
+
+    const realHome = Number(realMatch.resultHomeScore)
+    const realAway = Number(realMatch.resultAwayScore)
+
+    // Match ej spelad ännu
+    if (isNaN(realHome) || isNaN(realAway)) {
+      return
+    }
+
+    // EXAKT RESULTAT
+    if (
+      tip.home_score === realHome &&
+      tip.away_score === realAway
+    ) {
+
+      users[tip.user_id].points += 3
+      users[tip.user_id].exact += 1
+    }
+
+    // RÄTT VINNARE
+    else {
+
+      const tippedWinner =
+        tip.home_score > tip.away_score
+          ? 'home'
+          : tip.away_score > tip.home_score
+          ? 'away'
+          : 'draw'
+
+      const realWinner =
+        realHome > realAway
+          ? 'home'
+          : realAway > realHome
+          ? 'away'
+          : 'draw'
+
+      if (tippedWinner === realWinner) {
+
+        users[tip.user_id].points += 1
+        users[tip.user_id].winners += 1
+      }
+    }
+  })
 
   const sortedUsers =
     Object.entries(users)
@@ -457,7 +468,6 @@ users[tip.user_id] = {
   sortedUsers.forEach((user, index) => {
 
     leaderboardBody.innerHTML += `
-
       <tr class="border-t border-zinc-800">
 
         <td class="p-4 font-bold">
