@@ -511,16 +511,22 @@ users[tip.user_id] = {
             <td class="p-4 match-name">${match.home} - ${match.away}</td>
             <td class="p-4">
               <div class="flex items-center gap-2">
-                <input
-                  type="number"
-                  value="${match.tipHomeScore}"                  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-                  onchange="updateScore(${index}, 'home', this.value)"
-                />
-                <span>-</span>
-                <input
-                  type="number"
-                  value="${match.tipAwayScore}"                  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-                  onchange="updateScore(${index}, 'away', this.value)"
+<input
+  type="number"
+  min="0"
+  value="${match.tipHomeScore}"
+  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+  onchange="updateScore(${index}, 'home', this.value)"
+/>
+
+<span>-</span>
+
+<input
+  type="number"
+  min="0"
+  value="${match.tipAwayScore}"
+  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+  onchange="updateScore(${index}, 'away', this.value)"
                 />
               </div>
             </td>
@@ -549,7 +555,19 @@ users[tip.user_id] = {
     }
 
     function updateScore(index, team, value) {
-  matches[index]['tip' + team.charAt(0).toUpperCase() + team.slice(1) + 'Score'] = Number(value)
+
+  let score = Number(value)
+
+  if (score < 0 || isNaN(score)) {
+    score = 0
+  }
+
+  matches[index][
+    'tip' +
+    team.charAt(0).toUpperCase() +
+    team.slice(1) +
+    'Score'
+  ] = score
 
   renderMatches()
 }
