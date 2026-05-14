@@ -190,23 +190,8 @@
           </tr>
         </thead>
 
-        <tbody>
-          <tr class="border-t border-zinc-800">
-            <td class="p-4 font-bold">1</td>
-            <td class="p-4">Anders</td>
-            <td class="p-4 text-green-400 font-bold">19</td>
-            <td class="p-4">4</td>
-            <td class="p-4">7</td>
-          </tr>
+<tbody id="leaderboard-body"></tbody>
 
-          <tr class="border-t border-zinc-800">
-            <td class="p-4 font-bold">2</td>
-            <td class="p-4">Maria</td>
-            <td class="p-4 text-green-400 font-bold">15</td>
-            <td class="p-4">3</td>
-            <td class="p-4">6</td>
-          </tr>
-        </tbody>
       </table>
     </div>
 
@@ -383,11 +368,126 @@ async function loadMatches() {
 
   renderMatches()
 }
+async function loadLeaderboard() {
 
-loadMatches()
+  const { data, error } = await sb
+    .from('tips')
+    .select('*')
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const users = {}
+
+data.forEach(tip => {
+
+  if (!users[tip.user_id]) {
+
+    users[tip.user_id] = {
+      points: 0,
+      exact: 0,
+      winners: 0
+    }
+  }
+
+  const realMatch = matches.find(
+    m =>
+      m.home === tip.home_team &&
+      m.away === tip.away_team
+  )
+
+  if (!realMatch) return
+
+  const realHome = Number(realMatch.resultHomeScore)
+  const realAway = Number(realMatch.resultAwayScore)
+
+  // Match ej spelad ännu
+  if (isNaN(realHome) || isNaN(realAway)) {
+    return
+  }
+
+  // EXAKT RESULTAT = 3 POÄNG
+
+  if (
+    tip.home_score === realHome &&
+    tip.away_score === realAway
+  ) {
+
+    users[tip.user_id].points += 3
+    users[tip.user_id].exact += 1
+  }
+
+  // RÄTT VINNARE = 1 POÄNG
+
+  else {
+
+    const tippedWinner =
+      tip.home_score > tip.away_score
+        ? 'home'
+        : tip.away_score > tip.home_score
+        ? 'away'
+        : 'draw'
+
+    const realWinner =
+      realHome > realAway
+        ? 'home'
+        : realAway > realHome
+        ? 'away'
+        : 'draw'
+
+    if (tippedWinner === realWinner) {
+
+      users[tip.user_id].points += 1
+      users[tip.user_id].winners += 1
+    }
+  }
+})
+
+  const sortedUsers =
+    Object.entries(users)
+      .sort((a, b) =>
+        b[1].points - a[1].points
+      )
+
+  leaderboardBody.innerHTML = ''
+
+  sortedUsers.forEach((user, index) => {
+
+    leaderboardBody.innerHTML += `
+
+      <tr class="border-t border-zinc-800">
+
+        <td class="p-4 font-bold">
+          ${index + 1}
+        </td>
+
+        <td class="p-4">
+          Spelare ${index + 1}
+        </td>
+
+        <td class="p-4 text-green-400 font-bold">
+          ${user[1].points}
+        </td>
+
+        <td class="p-4">
+          ${user[1].exact}
+        </td>
+
+        <td class="p-4">
+          ${user[1].winners}
+        </td>
+
+      </tr>
+    `
+  })
+}
+
 
     const matchesBody = document.getElementById('matches-body')
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
+    const leaderboardBody = document.getElementById('leaderboard-body')
 
     function getWinner(match) {
   if (match.resultHomeScore > match.resultAwayScore) return match.home
@@ -544,8 +644,10 @@ loginForm.addEventListener('submit', async (e) => {
     return
   }
 
-  startPage.classList.add('hidden')
-  tablePage.classList.remove('hidden')
+startPage.classList.add('hidden')
+tablePage.classList.remove('hidden')
+
+loadLeaderboard()
 })
 
     // REGISTER -> TIPS
@@ -643,9 +745,23 @@ loginForm.addEventListener('submit', async (e) => {
   showLoginTab()
 }
 
-    logoutBtn.addEventListener('click', logout)
-    tableLogoutBtn.addEventListener('click', logout)
-  </script>
+logoutBtn.addEventListener('click', logout)
+tableLogoutBtn.addEventListener('click', logout)
+
+async function init() {
+
+  await loadMatches()
+
+  await loadLeaderboard()
+
+  setInterval(() => {
+    loadLeaderboard()
+  }, 5000)
+}
+
+init()
+
+</script>
 
 </body>
 </html>
