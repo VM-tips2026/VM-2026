@@ -539,7 +539,7 @@ loginForm.addEventListener('submit', async (e) => {
 })
 
     // SAVE TIPS -> BETALNING
-   saveTipBtn.addEventListener('click', async () => {
+  saveTipBtn.addEventListener('click', async () => {
 
   const {
     data: { user }
@@ -547,7 +547,7 @@ loginForm.addEventListener('submit', async (e) => {
 
   for (const match of matches) {
 
-    await sb.from('tips').insert({
+    const { error } = await sb.from('tips').insert({
 
       user_id: user.id,
 
@@ -560,7 +560,15 @@ loginForm.addEventListener('submit', async (e) => {
       home_score: match.tipHomeScore,
       away_score: match.tipAwayScore
     })
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+      return
+    }
   }
+
+  alert('Tips sparade!')
 
   tipsPage.classList.add('hidden')
   paymentPage.classList.remove('hidden')
