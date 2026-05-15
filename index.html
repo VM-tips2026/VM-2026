@@ -191,18 +191,34 @@
   <div id="table-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
 
     <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
-      <div>
-        <h1 class="text-5xl font-bold mb-2"> VM-TIPS 2026 </h1>
-        <p class="text-zinc-400">Se alla kommande matcher och dina registrerade tips.</p>
-      </div>
+<div>
+  <h1 class="text-5xl font-bold mb-2">
+    VM-TIPS 2026
+  </h1>
 
-<div class="flex items-center gap-4">
+  <p class="text-zinc-400">
+    Se alla kommande matcher och dina registrerade tips.
+  </p>
 
-  <div id="logged-in-user" class="text-zinc-300 font-bold whitespace-nowrap">
-    Inloggad som:
-  </div>
+  <div
+    id="logged-in-user"
+    class="text-sm text-zinc-400 mt-2"
+  ></div>
+</div>
 
-  <button id="table-logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
+<div class="flex items-center gap-4 flex-wrap">
+
+  <button
+    id="edit-tips-btn"
+    class="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-2xl font-bold transition-colors text-black"
+  >
+    ✏️ Redigera tips
+  </button>
+
+  <button
+    id="table-logout-btn"
+    class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors"
+  >
     🚪 Logga ut
   </button>
 
@@ -356,7 +372,8 @@ sb.auth.getSession().then(({ data: { session } }) => {
 })
 </script>
   <script>
-    let matches = []
+let matches = []
+let isEditing = false
 
 async function loadMatches() {
 
@@ -790,6 +807,7 @@ matchesBody.innerHTML += `
 
 const logoutBtn = document.getElementById('logout-btn')
 const tableLogoutBtn = document.getElementById('table-logout-btn')
+const editTipsBtn = document.getElementById('edit-tips-btn')
 
 const loggedInUser =
   document.getElementById('logged-in-user')
@@ -914,20 +932,30 @@ await loadExtraTips()
 
   for (const match of matches) {
 
-    const { error } = await sb.from('tips').insert({
+const { error } = await sb
+  .from('tips')
+  .upsert({
 
-      user_id: user.id,
-player_name: user.user_metadata.name,
+    user_id: user.id,
 
-      match_name:
-        `${match.home} - ${match.away}`,
+    player_name:
+      user.user_metadata.name,
 
-      home_team: match.home,
-      away_team: match.away,
+    match_name:
+      `${match.home} - ${match.away}`,
 
-      home_score: match.tipHomeScore,
-      away_score: match.tipAwayScore
-    })
+    home_team: match.home,
+    away_team: match.away,
+
+    home_score: match.tipHomeScore,
+    away_score: match.tipAwayScore
+
+  }, {
+
+    onConflict:
+      'user_id,home_team,away_team'
+
+  })
 
     if (error) {
       console.error(error)
@@ -956,10 +984,25 @@ await sb.from('extra_tips').upsert({
   total_goals: totalGoals
 
 })
-  alert('Tips sparade!')
+alert('Tips sparade!')
+
+// REDIGERING
+if (isEditing) {
+
+  isEditing = false
 
   tipsPage.classList.add('hidden')
-  paymentPage.classList.remove('hidden')
+  tablePage.classList.remove('hidden')
+
+  await loadLeaderboard()
+  await loadExtraTips()
+
+  return
+}
+
+// NY REGISTRERING
+tipsPage.classList.add('hidden')
+paymentPage.classList.remove('hidden')
 })
 
     // BETALNING -> TACK
@@ -1009,10 +1052,85 @@ async function init() {
 
   }, 5000)
 }
+// ======================================
+// REDIGERA TIPS
+// Låses 2026-06-11 20:00
+// ======================================
 
+// ======================================
+// REDIGERA TIPS
+// Låses 2026-06-11 20:00
+// ======================================
+
+editTipsBtn.addEventListener('click', async () => {
+
+  const lockDate =
+    new Date('2026-06-11T20:00:00')
+
+  const now = new Date()
+
+  // Låst
+  if (now >= lockDate) {
+
+    alert(
+      'Redigering av tips är stängd.'
+    )
+
+    return
+  }
+
+  // Markera redigeringsläge
+  isEditing = true
+
+  // Visa tipssidan
+  tablePage.classList.add('hidden')
+  tipsPage.classList.remove('hidden')
+
+  // Ladda användarens tips
+  await loadUserTips()
+
+  // Ladda extra tips igen
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  const { data } = await sb
+    .from('extra_tips')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (data) {
+
+    document.querySelector(
+      '#extra-world-winner'
+    ).value =
+      data.world_winner || ''
+
+    document.querySelector(
+      '#extra-top-scorer'
+    ).value =
+      data.top_scorer || ''
+
+    document.querySelector(
+      '#extra-total-goals'
+    ).value =
+      data.total_goals || ''
+  }
+
+})
 init()
+const lockDate =
+  new Date('2026-06-11T20:00:00')
 
+if (new Date() >= lockDate) {
+
+  editTipsBtn.classList.add('hidden')
+
+}
 </script>
 
 </body>
 </html>
+
+  
