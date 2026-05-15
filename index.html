@@ -1003,17 +1003,23 @@ const topScorer =
 const totalGoals =
   document.querySelector('#extra-total-goals').value
 
-await sb.from('extra_tips').upsert({
+await sb
+  .from('extra_tips')
+  .upsert({
 
-  user_id: user.id,
+    user_id: user.id,
 
-  world_winner: worldWinner,
+    world_winner: worldWinner,
 
-  top_scorer: topScorer,
+    top_scorer: topScorer,
 
-  total_goals: totalGoals
+    total_goals: totalGoals
 
-})
+  }, {
+
+    onConflict: 'user_id'
+
+  })
 alert('Tips sparade!')
 
 // REDIGERING
