@@ -384,11 +384,25 @@ const sb = window.supabase.createClient(
 
 console.log('Supabase connected!')
 
-sb.auth.getSession().then(({ data: { session } }) => {
+sb.auth.getSession().then(async ({ data: { session } }) => {
+
   if (session) {
+
     document.getElementById('start-page').classList.add('hidden')
+
     document.getElementById('table-page').classList.remove('hidden')
+
+    document.getElementById('logged-in-user').innerHTML =
+      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
+
+    // LADDA ALL DATA
+    await loadMatches()
+    await loadUserTips()
+    await loadLeaderboard()
+    await loadExtraTips()
+
   }
+
 })
 </script>
   <script>
@@ -905,6 +919,7 @@ tablePage.classList.remove('hidden')
 loggedInUser.innerHTML =
   `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
 
+await loadMatches()
 await loadUserTips()
 await loadLeaderboard()
 await loadExtraTips()
@@ -1153,7 +1168,6 @@ backToTableBtn.addEventListener('click', () => {
   backToTableBtn.classList.add('hidden')
 
 })
-init()
 const lockDate =
   new Date('2026-06-11T20:00:00')
 
@@ -1162,6 +1176,17 @@ if (new Date() >= lockDate) {
   editTipsBtn.classList.add('hidden')
 
 }
+
+// Starta ENDAST om ingen session finns
+sb.auth.getSession().then(({ data: { session } }) => {
+
+  if (!session) {
+
+    init()
+
+  }
+
+})
 </script>
 
 </body>
