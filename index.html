@@ -1195,25 +1195,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
 })
 
 // Starta ENDAST om ingen session finns
-sb.auth.getSession().then(async ({ data: { session } }) => {
-
-  if (session) {
-
-    startPage.classList.add('hidden')
-    tablePage.classList.remove('hidden')
-
-    await loadMatches()
-    await loadUserTips()
-    await loadLeaderboard()
-    await loadExtraTips()
-
-  } else {
-
-    init()
-
-  }
-
-})
+init()
 </script>
 
 </body>
