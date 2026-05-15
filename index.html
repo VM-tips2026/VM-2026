@@ -562,10 +562,31 @@ async function loadExtraTips() {
     .from('extra_tips')
     .select('*')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (error) {
     console.error(error)
+    return
+  }
+
+  // Om användaren inte har sparat extra tips ännu
+  if (!data) {
+
+    extraTipsBody.innerHTML = `
+
+      <tr class="border-t border-zinc-800">
+
+        <td colspan="3"
+            class="px-4 py-8 text-center text-zinc-500">
+
+          Inga extra tips registrerade ännu.
+
+        </td>
+
+      </tr>
+
+    `
+
     return
   }
 
@@ -579,6 +600,22 @@ async function loadExtraTips() {
     <tr class="border-t border-zinc-800">
 
       <td class="px-4 py-3 font-bold">
+        VM-vinnare
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        -
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        ${data.world_winner || '-'}
+      </td>
+
+    </tr>
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
         Skyttekung
       </td>
 
@@ -587,7 +624,7 @@ async function loadExtraTips() {
       </td>
 
       <td class="px-4 py-3 text-green-400 font-bold">
-        ${data.top_scorer}
+        ${data.top_scorer || '-'}
       </td>
 
     </tr>
@@ -603,10 +640,11 @@ async function loadExtraTips() {
       </td>
 
       <td class="px-4 py-3 text-green-400 font-bold">
-        ${data.total_goals} mål
+        ${data.total_goals || '-'} mål
       </td>
 
     </tr>
+
   `
 }
 
