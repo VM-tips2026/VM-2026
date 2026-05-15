@@ -178,28 +178,55 @@
       </button>
     </div>
 
- <!-- LEADERBOARD -->
-<div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-8 max-w-xl">
+<!-- TOP SECTION -->
+<div class="grid lg:grid-cols-2 gap-8 mb-8">
+
+  <!-- LEADERBOARD -->
+  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
+
+    <div class="px-4 py-3 border-b border-zinc-800">
+      <h2 class="text-2xl font-bold">🏆 Tabell</h2>
+    </div>
+
+    <table class="w-full text-left text-sm">
+
+      <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+        <tr>
+          <th class="px-3 py-2 w-16">#</th>
+          <th class="px-3 py-2">Namn</th>
+          <th class="px-3 py-2 w-20">Poäng</th>
+        </tr>
+      </thead>
+
+      <tbody id="leaderboard-body"></tbody>
+
+    </table>
+  </div>
+
+  <!-- EXTRA TIPS -->
+ <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
 
   <div class="px-4 py-3 border-b border-zinc-800">
-    <h2 class="text-2xl font-bold">🏆 Tabell</h2>
+    <h2 class="text-2xl font-bold">🎯 Dina extra tips</h2>
   </div>
 
   <table class="w-full text-left text-sm">
 
     <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
       <tr>
-        <th class="px-3 py-2 w-16">#</th>
-        <th class="px-3 py-2">Namn</th>
-        <th class="px-3 py-2 w-20">Poäng</th>
+        <th class="px-4 py-3">Fråga</th>
+        <th class="px-4 py-3">Just nu</th>
+        <th class="px-4 py-3">Ditt tips</th>
       </tr>
     </thead>
 
-    <tbody id="leaderboard-body"></tbody>
+    <tbody id="extra-tips-body"></tbody>
 
   </table>
+
 </div>
 
+</div>
 <!-- KOMMANDE MATCHER -->
 <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
 
@@ -455,11 +482,54 @@ sortedUsers.forEach((user, index) => {
   `
 })
 }
+async function loadExtraTips() {
+
+  const currentTopScorer =
+    'Mbappé (2 mål)'
+
+  const currentGoals = 28
+
+  extraTipsBody.innerHTML = `
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
+        Skyttekung
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        ${currentTopScorer}
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        Kane
+      </td>
+
+    </tr>
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
+        Totalt antal mål
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        ${currentGoals} mål
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        164
+      </td>
+
+    </tr>
+  `
+}
 
 
     const matchesBody = document.getElementById('matches-body')
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
     const leaderboardBody = document.getElementById('leaderboard-body')
+    const extraTipsBody = document.getElementById('extra-tips-body')
 
     function getWinner(match) {
   if (match.resultHomeScore > match.resultAwayScore) return match.home
@@ -667,6 +737,9 @@ loginForm.addEventListener('submit', async (e) => {
 startPage.classList.add('hidden')
 tablePage.classList.remove('hidden')
 
+await loadLeaderboard()
+await loadExtraTips()
+
 loadLeaderboard()
 })
 
@@ -775,8 +848,14 @@ async function init() {
 
   await loadLeaderboard()
 
+  await loadExtraTips()
+
   setInterval(() => {
+
     loadLeaderboard()
+
+    loadExtraTips()
+
   }, 5000)
 }
 
