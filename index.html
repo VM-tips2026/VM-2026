@@ -1047,37 +1047,7 @@ paymentPage.classList.remove('hidden')
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
 
-async function init() {
 
-  await loadMatches()
-
-  const {
-    data: { session }
-  } = await sb.auth.getSession()
-
-  if (session) {
-
-    await loadUserTips()
-    await loadExtraTips()
-
-  }
-
-  await loadLeaderboard()
-
-  if (!leaderboardInterval) {
-
-    leaderboardInterval = setInterval(() => {
-
-      loadLeaderboard()
-
-      if (session) {
-        loadExtraTips()
-      }
-
-    }, 5000)
-
-  }
-}
 // ======================================
 // REDIGERA TIPS
 // Låses 2026-06-11 20:00
@@ -1171,9 +1141,18 @@ if (new Date() >= lockDate) {
 
 sb.auth.onAuthStateChange(async (event, session) => {
 
+  console.log('AUTH EVENT:', event)
+
+  // Rensa allt först
+  startPage.classList.add('hidden')
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.add('hidden')
+  thankYouPage.classList.add('hidden')
+  tablePage.classList.add('hidden')
+
+  // INLOGGAD
   if (session) {
 
-    startPage.classList.add('hidden')
     tablePage.classList.remove('hidden')
 
     loggedInUser.innerHTML =
@@ -1184,36 +1163,31 @@ sb.auth.onAuthStateChange(async (event, session) => {
     await loadLeaderboard()
     await loadExtraTips()
 
-  } else {
+    // Starta leaderboard EN gång
+    if (!leaderboardInterval) {
 
-    tablePage.classList.add('hidden')
-    tipsPage.classList.add('hidden')
+      leaderboardInterval = setInterval(async () => {
 
-    startPage.classList.remove('hidden')
+        await loadLeaderboard()
+        await loadExtraTips()
+
+      }, 5000)
+    }
+
   }
 
-})
+  // UTLOGGAD
+  else {
 
-// Vänta på session innan appen startar
-sb.auth.getSession().then(async ({ data: { session } }) => {
+    startPage.classList.remove('hidden')
 
-  if (session) {
+    // Stoppa leaderboard
+    if (leaderboardInterval) {
 
-    startPage.classList.add('hidden')
-    tablePage.classList.remove('hidden')
+      clearInterval(leaderboardInterval)
 
-    loggedInUser.innerHTML =
-      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
-
-    await loadMatches()
-    await loadUserTips()
-    await loadLeaderboard()
-    await loadExtraTips()
-
-  } else {
-
-    await init()
-
+      leaderboardInterval = null
+    }
   }
 
 })
