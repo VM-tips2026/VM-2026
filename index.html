@@ -470,8 +470,7 @@ const { data, error } = await sb
   .from('tips')
   .select('*')
 
-console.log('TOTAL TIPS:', data.length)
-console.log(data)
+
 
   if (error) {
     console.error(error)
@@ -480,16 +479,11 @@ console.log(data)
 
   const users = {}
 
-  console.log(data)
+
 
   data.forEach(tip => {
 
-    console.log(
-      'USER ID:',
-      tip.user_id,
-      'NAME:',
-      tip.player_name
-    )
+   
 
     // Skapa användare
     if (!users[tip.user_id]) {
@@ -1136,14 +1130,16 @@ if (new Date() >= lockDate) {
 }
 
 // ======================================
-// AUTH STATE LISTENER
+// STARTA APPEN
 // ======================================
 
-sb.auth.onAuthStateChange(async (event, session) => {
+window.addEventListener('load', async () => {
 
-  console.log('AUTH EVENT:', event)
+  const {
+    data: { session }
+  } = await sb.auth.getSession()
 
-  // Rensa allt först
+  // Rensa alla sidor först
   startPage.classList.add('hidden')
   tipsPage.classList.add('hidden')
   paymentPage.classList.add('hidden')
@@ -1181,13 +1177,9 @@ sb.auth.onAuthStateChange(async (event, session) => {
 
     startPage.classList.remove('hidden')
 
-    // Stoppa leaderboard
-    if (leaderboardInterval) {
+    await loadMatches()
+    await loadLeaderboard()
 
-      clearInterval(leaderboardInterval)
-
-      leaderboardInterval = null
-    }
   }
 
 })
