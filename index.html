@@ -868,10 +868,14 @@ loginForm.addEventListener('submit', async (e) => {
   e.preventDefault()
 
   const email =
-    loginForm.querySelector('input[type="email"]').value
+    loginForm.querySelector(
+      'input[type="email"]'
+    ).value
 
   const password =
-    loginForm.querySelector('input[type="password"]').value
+    loginForm.querySelector(
+      'input[type="password"]'
+    ).value
 
   const rememberMe =
     document.getElementById('remember-me').checked
@@ -882,7 +886,7 @@ loginForm.addEventListener('submit', async (e) => {
     localStorage.removeItem('rememberMe')
   }
 
-  const { data, error } =
+  const { error } =
     await sb.auth.signInWithPassword({
       email,
       password
@@ -890,19 +894,7 @@ loginForm.addEventListener('submit', async (e) => {
 
   if (error) {
     alert(error.message)
-    return
   }
-
-  startPage.classList.add('hidden')
-  tablePage.classList.remove('hidden')
-
-  loggedInUser.innerHTML =
-    `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
-
-  await loadMatches()
-  await loadUserTips()
-  await loadLeaderboard()
-  await loadExtraTips()
 })
 registerForm.addEventListener('submit', async (e) => {
   e.preventDefault()
