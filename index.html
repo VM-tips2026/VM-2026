@@ -179,21 +179,29 @@
     </div>
 
     <!-- TABELL -->
-    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-10 overflow-x-auto">
-      <table class="w-full text-left min-w-[700px]">
-        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
-          <tr>
-            <th class="p-4">Placering</th>
-            <th class="p-4">Namn</th>
-            <th class="p-4">Poäng</th>
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
 
-          </tr>
-        </thead>
+  <div class="px-4 py-3 border-b border-zinc-800">
+    <h2 class="text-2xl font-bold">📅 Kommande matcher</h2>
+  </div>
 
-<tbody id="leaderboard-body"></tbody>
+  <table class="w-full text-left text-sm min-w-[900px]">
 
-      </table>
-    </div>
+    <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+      <tr>
+        <th class="px-3 py-2">Datum</th>
+        <th class="px-3 py-2">Tid</th>
+        <th class="px-3 py-2">Grupp</th>
+        <th class="px-3 py-2">Match</th>
+        <th class="px-3 py-2">Resultat</th>
+        <th class="px-3 py-2">Ditt tips</th>
+      </tr>
+    </thead>
+
+    <tbody id="upcoming-matches-body"></tbody>
+
+  </table>
+</div>
 
     <!-- KOMMANDE MATCHER -->
     <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
