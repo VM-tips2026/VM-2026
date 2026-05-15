@@ -124,7 +124,7 @@
           <tr>
             <th class="p-4">Datum</th>
             <th class="p-4">Tid</th>
-            <th class="p-4">Match</th>
+            <th class="p-4">Match / Grupp</th>
             <th class="p-4">Resultat</th>
             <th class="p-4">Vinnare</th>
           </tr>
@@ -207,7 +207,7 @@
           <tr>
             <th class="p-4">Datum</th>
             <th class="p-4">Tid</th>
-            <th class="p-4">Match</th>
+            <th class="p-4">Match / Grupp</th>
             <th class="p-4">Resultat</th>
             <th class="p-4">Ditt tips</th>
           </tr>
@@ -293,81 +293,41 @@ sb.auth.getSession().then(({ data: { session } }) => {
 
 async function loadMatches() {
 
-  try {
+  const { data, error } = await sb
+    .from('matcher')
+    .select('*')
+    .order('date', { ascending: true })
 
-    const response = await fetch(
-      'https://free-api-live-football-data.p.rapidapi.com/football-get-all-matches-by-league?leagueid=47',
-      {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': '7c61d17e93mshf4e8073eff28aedp1cbd99jsnf49187ef6d03',
-          'X-RapidAPI-Host': 'free-api-live-football-data.p.rapidapi.com'
-        }
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error('Football API failed')
-    }
-
-    const data = await response.json()
-
-    console.log(data)
-
-    if (!data.data) {
-      throw new Error('No matches found')
-    }
-
-    matches = data.data.slice(0, 10).map(match => ({
-
-      date: match.date || '-',
-
-      time: match.time || '-',
-
-      home: match.homeTeam?.name || 'Hemmalag',
-      away: match.awayTeam?.name || 'Bortalag',
-
-      tipHomeScore: 0,
-      tipAwayScore: 0,
-
-      resultHomeScore: match.homeScore ?? '-',
-      resultAwayScore: match.awayScore ?? '-'
-
-    }))
-
-  } catch (error) {
-
+  if (error) {
     console.error(error)
-
-    matches = [
-
-      {
-        date: '2026-06-11',
-        time: '20:00',
-        home: 'Brazil',
-        away: 'Argentina',
-        tipHomeScore: 0,
-        tipAwayScore: 0,
-        resultHomeScore: '-',
-        resultAwayScore: '-'
-      },
-
-      {
-        date: '2026-06-12',
-        time: '18:00',
-        home: 'France',
-        away: 'Germany',
-        tipHomeScore: 0,
-        tipAwayScore: 0,
-        resultHomeScore: '-',
-        resultAwayScore: '-'
-      }
-
-    ]
+    return
   }
+
+  matches = data.map(match => ({
+
+    id: match.id,
+
+    date: match.date,
+    time: match.time,
+
+    group: match.group_name,
+
+    home: match.home_team,
+    away: match.away_team,
+
+    tipHomeScore: 0,
+    tipAwayScore: 0,
+
+    resultHomeScore:
+      match.result_home_score ?? '-',
+
+    resultAwayScore:
+      match.result_away_score ?? '-'
+  }))
 
   renderMatches()
 }
+
 async function loadLeaderboard() {
 
 const { data, error } = await sb
@@ -518,7 +478,15 @@ console.log(data)
           <tr class="border-t border-zinc-800">
             <td class="p-4">${match.date}</td>
             <td class="p-4">${match.time}</td>
-            <td class="p-4 match-name">${match.home} - ${match.away}</td>
+            <td class="p-4">
+  <div class="font-bold text-white">
+    ${match.home} - ${match.away}
+  </div>
+
+  <div class="text-sm text-zinc-400 mt-1">
+    ${match.group}
+  </div>
+</td>
             <td class="p-4">
               <div class="flex items-center gap-2">
 <input
