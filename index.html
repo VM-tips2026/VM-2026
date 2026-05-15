@@ -1001,7 +1001,9 @@ const topScorer =
   document.querySelector('#extra-top-scorer').value
 
 const totalGoals =
-  document.querySelector('#extra-total-goals').value
+  Number(
+    document.querySelector('#extra-total-goals').value
+  ) || 0
 
 const { error: extraTipsError } = await sb
   .from('extra_tips')
