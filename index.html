@@ -1043,7 +1043,25 @@ paymentPage.classList.remove('hidden')
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
 
-async function init() {
+async function sb.auth.getSession().then(async ({ data: { session } }) => {
+
+  if (session) {
+
+    startPage.classList.add('hidden')
+    tablePage.classList.remove('hidden')
+
+    await loadMatches()
+    await loadUserTips()
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  } else {
+
+    init()
+
+  }
+
+}) {
 
   await loadMatches()
 
@@ -1191,7 +1209,25 @@ sb.auth.onAuthStateChange(async (event, session) => {
 })
 
 // Starta ENDAST om ingen session finns
-init()
+sb.auth.getSession().then(async ({ data: { session } }) => {
+
+  if (session) {
+
+    startPage.classList.add('hidden')
+    tablePage.classList.remove('hidden')
+
+    await loadMatches()
+    await loadUserTips()
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  } else {
+
+    init()
+
+  }
+
+})
 </script>
 
 </body>
