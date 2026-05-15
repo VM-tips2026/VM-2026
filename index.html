@@ -384,26 +384,6 @@ const sb = window.supabase.createClient(
 
 console.log('Supabase connected!')
 
-sb.auth.getSession().then(async ({ data: { session } }) => {
-
-  if (session) {
-
-    document.getElementById('start-page').classList.add('hidden')
-
-    document.getElementById('table-page').classList.remove('hidden')
-
-    document.getElementById('logged-in-user').innerHTML =
-      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
-
-    // LADDA ALL DATA
-    await loadMatches()
-    await loadUserTips()
-    await loadLeaderboard()
-    await loadExtraTips()
-
-  }
-
-})
 </script>
   <script>
 let matches = []
@@ -913,16 +893,6 @@ loginForm.addEventListener('submit', async (e) => {
     return
   }
 
-startPage.classList.add('hidden')
-tablePage.classList.remove('hidden')
-
-loggedInUser.innerHTML =
-  `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
-
-await loadMatches()
-await loadUserTips()
-await loadLeaderboard()
-await loadExtraTips()
 
 })
 
@@ -1176,6 +1146,35 @@ if (new Date() >= lockDate) {
   editTipsBtn.classList.add('hidden')
 
 }
+
+// ======================================
+// AUTH STATE LISTENER
+// ======================================
+
+sb.auth.onAuthStateChange(async (event, session) => {
+
+  if (session) {
+
+    startPage.classList.add('hidden')
+    tablePage.classList.remove('hidden')
+
+    loggedInUser.innerHTML =
+      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
+
+    await loadMatches()
+    await loadUserTips()
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  } else {
+
+    tablePage.classList.add('hidden')
+    tipsPage.classList.add('hidden')
+
+    startPage.classList.remove('hidden')
+  }
+
+})
 
 // Starta ENDAST om ingen session finns
 sb.auth.getSession().then(({ data: { session } }) => {
