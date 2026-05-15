@@ -122,12 +122,13 @@
       <table class="w-full text-left min-w-[900px]">
         <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
           <tr>
-            <th class="p-4">Datum</th>
-            <th class="p-4">Tid</th>
-            <th class="p-4">Match / Grupp</th>
-            <th class="p-4">Resultat</th>
-            <th class="p-4">Vinnare</th>
-          </tr>
+  <th class="p-4">Datum</th>
+  <th class="p-4">Tid</th>
+  <th class="p-4">Grupp</th>
+  <th class="p-4">Match</th>
+  <th class="p-4">Resultat</th>
+  <th class="p-4">Ditt tips</th>
+</tr>
         </thead>
 
         <tbody id="matches-body"></tbody>
@@ -185,8 +186,7 @@
             <th class="p-4">Placering</th>
             <th class="p-4">Namn</th>
             <th class="p-4">Poäng</th>
-            <th class="p-4">Rätt resultat</th>
-            <th class="p-4">Rätt vinnare</th>
+
           </tr>
         </thead>
 
@@ -205,12 +205,13 @@
       <table class="w-full text-left min-w-[900px]">
         <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
           <tr>
-            <th class="p-4">Datum</th>
-            <th class="p-4">Tid</th>
-            <th class="p-4">Match / Grupp</th>
-            <th class="p-4">Resultat</th>
-            <th class="p-4">Ditt tips</th>
-          </tr>
+  <th class="p-4">Datum</th>
+  <th class="p-4">Tid</th>
+  <th class="p-4">Grupp</th>
+  <th class="p-4">Match</th>
+  <th class="p-4">Resultat</th>
+  <th class="p-4">Ditt tips</th>
+</tr>
         </thead>
 
         <tbody id="upcoming-matches-body"></tbody>
@@ -442,14 +443,6 @@ console.log(data)
           ${user[1].points}
         </td>
 
-        <td class="p-4">
-          ${user[1].exact}
-        </td>
-
-        <td class="p-4">
-          ${user[1].winners}
-        </td>
-
       </tr>
     `
   })
@@ -474,21 +467,31 @@ console.log(data)
       matches.forEach((match, index) => {
         const winner = getWinner(match)
 
-        matchesBody.innerHTML += `
-          <tr class="border-t border-zinc-800">
-            <td class="p-4">${match.date}</td>
-            <td class="p-4">${match.time}</td>
-            <td class="p-4">
-  <div class="font-bold text-white">
-    ${match.home} - ${match.away}
-  </div>
+matchesBody.innerHTML += `
+  <tr class="border-t border-zinc-800">
 
-  <div class="text-sm text-zinc-400 mt-1">
-    ${match.group}
-  </div>
-</td>
-            <td class="p-4">
-              <div class="flex items-center gap-2">
+    <td class="p-4">
+      ${match.date}
+    </td>
+
+    <td class="p-4">
+      ${match.time}
+    </td>
+
+    <td class="p-4 text-zinc-400 font-bold">
+      ${match.group}
+    </td>
+
+    <td class="p-4 font-bold">
+      ${match.home} - ${match.away}
+    </td>
+
+    <td class="p-4">
+      ${match.resultHomeScore} - ${match.resultAwayScore}
+    </td>
+
+    <td class="p-4">
+      <div class="flex items-center gap-2">
 <input
   type="number"
   min="0"
@@ -508,15 +511,27 @@ console.log(data)
                 />
               </div>
             </td>
-            <td class="p-4 winner">${winner}</td>
           </tr>
         `
 
         upcomingMatchesBody.innerHTML += `
-  <tr class="border-t border-zinc-800">
-    <td class="p-4">${match.date}</td>
-    <td class="p-4">${match.time}</td>
-    <td class="p-4">${match.home} - ${match.away}</td>
+<tr class="border-t border-zinc-800">
+
+  <td class="p-4">
+    ${match.date}
+  </td>
+
+  <td class="p-4">
+    ${match.time}
+  </td>
+
+  <td class="p-4 text-zinc-400 font-bold">
+    ${match.group}
+  </td>
+
+  <td class="p-4 font-bold">
+    ${match.home} - ${match.away}
+  </td>
 
     <!-- RESULTAT -->
     <td class="p-4">
