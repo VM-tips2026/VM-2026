@@ -883,15 +883,37 @@ loginForm.addEventListener('submit', async (e) => {
     localStorage.removeItem('rememberMe')
   }
 
-  const { error } =
-    await sb.auth.signInWithPassword({
-      email,
-      password
-    })
+const { data, error } =
+  await sb.auth.signInWithPassword({
+    email,
+    password
+  })
 
-  if (error) {
-    alert(error.message)
-  }
+if (error) {
+  alert(error.message)
+  return
+}
+
+startPage.classList.add('hidden')
+tablePage.classList.remove('hidden')
+
+loggedInUser.innerHTML =
+  `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
+
+await loadMatches()
+await loadUserTips()
+await loadLeaderboard()
+await loadExtraTips()
+
+if (!leaderboardInterval) {
+
+  leaderboardInterval = setInterval(async () => {
+
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  }, 5000)
+}
 })
 registerForm.addEventListener('submit', async (e) => {
   e.preventDefault()
