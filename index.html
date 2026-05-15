@@ -1003,7 +1003,7 @@ const topScorer =
 const totalGoals =
   document.querySelector('#extra-total-goals').value
 
-const { error } = await sb
+const { error: extraTipsError } = await sb
   .from('extra_tips')
   .upsert({
 
@@ -1021,9 +1021,9 @@ const { error } = await sb
 
   })
 
-if (error) {
-  console.error(error)
-  alert(error.message)
+if (extraTipsError) {
+  console.error(extraTipsError)
+  alert(extraTipsError.message)
   return
 }
 
