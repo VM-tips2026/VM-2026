@@ -178,7 +178,29 @@
       </button>
     </div>
 
-    <!-- TABELL -->
+ <!-- LEADERBOARD -->
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-8 max-w-xl">
+
+  <div class="px-4 py-3 border-b border-zinc-800">
+    <h2 class="text-2xl font-bold">🏆 Leaderboard</h2>
+  </div>
+
+  <table class="w-full text-left text-sm">
+
+    <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+      <tr>
+        <th class="px-3 py-2 w-16">#</th>
+        <th class="px-3 py-2">Namn</th>
+        <th class="px-3 py-2 w-20">Poäng</th>
+      </tr>
+    </thead>
+
+    <tbody id="leaderboard-body"></tbody>
+
+  </table>
+</div>
+
+<!-- KOMMANDE MATCHER -->
 <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
 
   <div class="px-4 py-3 border-b border-zinc-800">
@@ -203,28 +225,6 @@
   </table>
 </div>
 
-    <!-- KOMMANDE MATCHER -->
-    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
-
-      <div class="p-6 border-b border-zinc-800">
-        <h2 class="text-3xl font-bold">📅 Kommande matcher</h2>
-      </div>
-
-      <table class="w-full text-left min-w-[900px]">
-        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
-          <tr>
-  <th class="p-4">Datum</th>
-  <th class="p-4">Tid</th>
-  <th class="p-4">Grupp</th>
-  <th class="p-4">Match</th>
-  <th class="p-4">Resultat</th>
-  <th class="p-4">Ditt tips</th>
-</tr>
-        </thead>
-
-        <tbody id="upcoming-matches-body"></tbody>
-      </table>
-    </div>
 
   </div>
 
@@ -434,26 +434,26 @@ console.log(data)
 
   leaderboardBody.innerHTML = ''
 
-  sortedUsers.forEach((user, index) => {
+sortedUsers.forEach((user, index) => {
 
-    leaderboardBody.innerHTML += `
-      <tr class="border-t border-zinc-800">
+  leaderboardBody.innerHTML += `
+    <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
 
-        <td class="p-4 font-bold">
-          ${index + 1}
-        </td>
+      <td class="px-3 py-2 font-bold">
+        ${index + 1}
+      </td>
 
-        <td class="p-4">
-          ${user[1].name}
-        </td>
+      <td class="px-3 py-2">
+        ${user[1].name}
+      </td>
 
-        <td class="p-4 text-green-400 font-bold">
-          ${user[1].points}
-        </td>
+      <td class="px-3 py-2 text-green-400 font-bold">
+        ${user[1].points}
+      </td>
 
-      </tr>
-    `
-  })
+    </tr>
+  `
+})
 }
 
 
