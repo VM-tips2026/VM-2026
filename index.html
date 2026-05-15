@@ -876,7 +876,6 @@ loginForm.addEventListener('submit', async (e) => {
   const rememberMe =
     document.getElementById('remember-me').checked
 
-  // Spara om användaren vill bli ihågkommen
   if (rememberMe) {
     localStorage.setItem('rememberMe', 'true')
   } else {
@@ -894,30 +893,43 @@ loginForm.addEventListener('submit', async (e) => {
     return
   }
 
+  startPage.classList.add('hidden')
+  tablePage.classList.remove('hidden')
 
+  loggedInUser.innerHTML =
+    `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
+
+  await loadMatches()
+  await loadUserTips()
+  await loadLeaderboard()
+  await loadExtraTips()
 })
-
-    // REGISTER -> TIPS
-    registerForm.addEventListener('submit', async (e) => {
+registerForm.addEventListener('submit', async (e) => {
   e.preventDefault()
 
-  const name = document.getElementById('name').value
+  const name =
+    document.getElementById('name').value
 
   const email =
-    registerForm.querySelector('input[type="email"]').value
+    registerForm.querySelector(
+      'input[type="email"]'
+    ).value
 
   const password =
-    registerForm.querySelector('input[type="password"]').value
+    registerForm.querySelector(
+      'input[type="password"]'
+    ).value
 
-  const { data, error } = await sb.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        name: name
+  const { data, error } =
+    await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name
+        }
       }
-    }
-  })
+    })
 
   if (error) {
     alert(error.message)
@@ -1044,36 +1056,6 @@ logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
 
 async function init() {
-
-  await loadMatches()
-
-  const {
-    data: { session }
-  } = await sb.auth.getSession()
-
-  if (session) {
-
-    await loadUserTips()
-    await loadExtraTips()
-
-  }
-
-  await loadLeaderboard()
-
-  if (!leaderboardInterval) {
-
-    leaderboardInterval = setInterval(() => {
-
-      loadLeaderboard()
-
-      if (session) {
-        loadExtraTips()
-      }
-
-    }, 5000)
-
-  }
-}
 
   await loadMatches()
 
