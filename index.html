@@ -113,10 +113,23 @@
         <p class="text-zinc-400">Fyll i dina matchtips för VM 2026.</p>
       </div>
 
-      <button id="logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
-        🚪 Logga ut
-      </button>
-    </div>
+      <div class="flex items-center gap-4 flex-wrap">
+
+  <button
+    id="back-to-table-btn"
+    class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-2xl font-bold transition-colors hidden"
+  >
+    ⬅️ Gå tillbaka
+  </button>
+
+  <button
+    id="logout-btn"
+    class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors"
+  >
+    🚪 Logga ut
+  </button>
+</div>
+</div>
 
     <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-10 overflow-x-auto">
       <table class="w-full text-left min-w-[900px]">
@@ -806,6 +819,7 @@ matchesBody.innerHTML += `
     const backHomeBtn = document.getElementById('back-home-btn')
 
 const logoutBtn = document.getElementById('logout-btn')
+const backToTableBtn = document.getElementById('back-to-table-btn')
 const tableLogoutBtn = document.getElementById('table-logout-btn')
 const editTipsBtn = document.getElementById('edit-tips-btn')
 
@@ -991,6 +1005,8 @@ if (isEditing) {
 
   isEditing = false
 
+  backToTableBtn.classList.add('hidden')
+
   tipsPage.classList.add('hidden')
   tablePage.classList.remove('hidden')
 
@@ -1081,7 +1097,7 @@ editTipsBtn.addEventListener('click', async () => {
 
   // Markera redigeringsläge
   isEditing = true
-
+backToTableBtn.classList.remove('hidden')
   // Visa tipssidan
   tablePage.classList.add('hidden')
   tipsPage.classList.remove('hidden')
@@ -1117,6 +1133,17 @@ editTipsBtn.addEventListener('click', async () => {
     ).value =
       data.total_goals || ''
   }
+
+})
+
+backToTableBtn.addEventListener('click', () => {
+
+  isEditing = false
+
+  tipsPage.classList.add('hidden')
+  tablePage.classList.remove('hidden')
+
+  backToTableBtn.classList.add('hidden')
 
 })
 init()
