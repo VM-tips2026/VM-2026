@@ -1043,25 +1043,37 @@ paymentPage.classList.remove('hidden')
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
 
-async function sb.auth.getSession().then(async ({ data: { session } }) => {
+async function init() {
+
+  await loadMatches()
+
+  const {
+    data: { session }
+  } = await sb.auth.getSession()
 
   if (session) {
 
-    startPage.classList.add('hidden')
-    tablePage.classList.remove('hidden')
-
-    await loadMatches()
     await loadUserTips()
-    await loadLeaderboard()
     await loadExtraTips()
-
-  } else {
-
-    init()
 
   }
 
-}) {
+  await loadLeaderboard()
+
+  if (!leaderboardInterval) {
+
+    leaderboardInterval = setInterval(() => {
+
+      loadLeaderboard()
+
+      if (session) {
+        loadExtraTips()
+      }
+
+    }, 5000)
+
+  }
+}
 
   await loadMatches()
 
