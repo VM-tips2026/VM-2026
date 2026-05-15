@@ -138,22 +138,45 @@
     <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
       <h2 class="text-3xl font-bold mb-6">📝 Extra frågor</h2>
 
-      <div class="grid md:grid-cols-3 gap-6">
-        <div>
-          <label class="block mb-2 text-zinc-300">VM-vinnare</label>
-          <input type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
-        </div>
+<div class="grid md:grid-cols-3 gap-6">
 
-        <div>
-          <label class="block mb-2 text-zinc-300">Skyttekung</label>
-          <input type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
-        </div>
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      VM-vinnare
+    </label>
 
-        <div>
-          <label class="block mb-2 text-zinc-300">Totalt antal mål</label>
-          <input type="number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
-        </div>
-      </div>
+    <input
+      id="extra-world-winner"
+      type="text"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      Skyttekung
+    </label>
+
+    <input
+      id="extra-top-scorer"
+      type="text"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      Totalt antal mål
+    </label>
+
+    <input
+      id="extra-total-goals"
+      type="number"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+</div>
     </div>
 
     <div class="text-center pb-20">
@@ -492,6 +515,23 @@ sortedUsers.forEach((user, index) => {
 }
 async function loadExtraTips() {
 
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const { data, error } = await sb
+    .from('extra_tips')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
   const currentTopScorer =
     'Mbappé (2 mål)'
 
@@ -510,7 +550,7 @@ async function loadExtraTips() {
       </td>
 
       <td class="px-4 py-3 text-green-400 font-bold">
-        Harry Kane (8 mål)
+        ${data.top_scorer}
       </td>
 
     </tr>
@@ -526,7 +566,7 @@ async function loadExtraTips() {
       </td>
 
       <td class="px-4 py-3 text-green-400 font-bold">
-        164 mål
+        ${data.total_goals} mål
       </td>
 
     </tr>
@@ -820,6 +860,26 @@ player_name: user.user_metadata.name,
     }
   }
 
+const worldWinner =
+  document.querySelector('#extra-world-winner').value
+
+const topScorer =
+  document.querySelector('#extra-top-scorer').value
+
+const totalGoals =
+  document.querySelector('#extra-total-goals').value
+
+await sb.from('extra_tips').upsert({
+
+  user_id: user.id,
+
+  world_winner: worldWinner,
+
+  top_scorer: topScorer,
+
+  total_goals: totalGoals
+
+})
   alert('Tips sparade!')
 
   tipsPage.classList.add('hidden')
