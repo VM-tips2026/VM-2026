@@ -1194,8 +1194,29 @@ sb.auth.onAuthStateChange(async (event, session) => {
 
 })
 
-// Starta ENDAST om ingen session finns
-init()
+// Vänta på session innan appen startar
+sb.auth.getSession().then(async ({ data: { session } }) => {
+
+  if (session) {
+
+    startPage.classList.add('hidden')
+    tablePage.classList.remove('hidden')
+
+    loggedInUser.innerHTML =
+      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
+
+    await loadMatches()
+    await loadUserTips()
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  } else {
+
+    await init()
+
+  }
+
+})
 </script>
 
 </body>
