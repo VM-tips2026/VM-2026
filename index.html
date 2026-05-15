@@ -1003,7 +1003,7 @@ const topScorer =
 const totalGoals =
   document.querySelector('#extra-total-goals').value
 
-await sb
+const { error } = await sb
   .from('extra_tips')
   .upsert({
 
@@ -1020,7 +1020,16 @@ await sb
     onConflict: 'user_id'
 
   })
+
+if (error) {
+  console.error(error)
+  alert(error.message)
+  return
+}
+
 alert('Tips sparade!')
+
+await loadExtraTips()
 
 // REDIGERING
 if (isEditing) {
