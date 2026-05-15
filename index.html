@@ -388,6 +388,7 @@ console.log('Supabase connected!')
   <script>
 let matches = []
 let isEditing = false
+let leaderboardInterval = null
 
 async function loadMatches() {
 
@@ -1046,19 +1047,32 @@ async function init() {
 
   await loadMatches()
 
-  await loadUserTips()
+  const {
+    data: { session }
+  } = await sb.auth.getSession()
+
+  if (session) {
+
+    await loadUserTips()
+    await loadExtraTips()
+
+  }
 
   await loadLeaderboard()
 
-  await loadExtraTips()
+  if (!leaderboardInterval) {
 
-  setInterval(() => {
+    leaderboardInterval = setInterval(() => {
 
-    loadLeaderboard()
+      loadLeaderboard()
 
-    loadExtraTips()
+      if (session) {
+        loadExtraTips()
+      }
 
-  }, 5000)
+    }, 5000)
+
+  }
 }
 // ======================================
 // REDIGERA TIPS
@@ -1177,15 +1191,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
 })
 
 // Starta ENDAST om ingen session finns
-sb.auth.getSession().then(({ data: { session } }) => {
-
-  if (!session) {
-
-    init()
-
-  }
-
-})
+init()
 </script>
 
 </body>
