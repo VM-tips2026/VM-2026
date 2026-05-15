@@ -395,6 +395,43 @@ async function loadMatches() {
   renderMatches()
 }
 
+
+
+async function loadUserTips() {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const { data, error } = await sb
+    .from('tips')
+    .select('*')
+    .eq('user_id', user.id)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  data.forEach(tip => {
+
+    const match = matches.find(
+      m =>
+        m.home === tip.home_team &&
+        m.away === tip.away_team
+    )
+
+    if (!match) return
+
+    match.tipHomeScore = tip.home_score
+    match.tipAwayScore = tip.away_score
+  })
+
+  renderMatches()
+}
+
 async function loadLeaderboard() {
 
 const { data, error } = await sb
@@ -791,6 +828,7 @@ tablePage.classList.remove('hidden')
 loggedInUser.innerHTML =
   `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
 
+await loadUserTips()
 await loadLeaderboard()
 await loadExtraTips()
 
@@ -918,6 +956,8 @@ tableLogoutBtn.addEventListener('click', logout)
 async function init() {
 
   await loadMatches()
+
+  await loadUserTips()
 
   await loadLeaderboard()
 
