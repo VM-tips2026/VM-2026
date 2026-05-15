@@ -173,9 +173,17 @@
         <p class="text-zinc-400">Se alla kommande matcher och dina registrerade tips.</p>
       </div>
 
-      <button id="table-logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
-        🚪 Logga ut
-      </button>
+<div class="flex items-center gap-4 flex-wrap">
+
+  <div id="logged-in-user" class="text-zinc-300 font-bold">
+    Inloggad som:
+  </div>
+
+  <button id="table-logout-btn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors">
+    🚪 Logga ut
+  </button>
+
+</div>
     </div>
 
 <!-- TOP SECTION -->
@@ -665,8 +673,11 @@ matchesBody.innerHTML += `
     const paymentDoneBtn = document.getElementById('payment-done-btn')
     const backHomeBtn = document.getElementById('back-home-btn')
 
-    const logoutBtn = document.getElementById('logout-btn')
-    const tableLogoutBtn = document.getElementById('table-logout-btn')
+const logoutBtn = document.getElementById('logout-btn')
+const tableLogoutBtn = document.getElementById('table-logout-btn')
+
+const loggedInUser =
+  document.getElementById('logged-in-user')
 
     function showLoginTab() {
       loginForm.classList.remove('hidden')
@@ -737,10 +748,12 @@ loginForm.addEventListener('submit', async (e) => {
 startPage.classList.add('hidden')
 tablePage.classList.remove('hidden')
 
+loggedInUser.innerHTML =
+  `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
+
 await loadLeaderboard()
 await loadExtraTips()
 
-loadLeaderboard()
 })
 
     // REGISTER -> TIPS
