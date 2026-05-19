@@ -1505,28 +1505,6 @@ window.addEventListener('load', async () => {
     }, 5000)
   }
 }
-
-    loggedInUser.innerHTML =
-      `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
-
-    await loadMatches()
-    await loadUserTips()
-    await loadLeaderboard()
-    await loadExtraTips()
-
-    // Starta leaderboard EN gång
-    if (!leaderboardInterval) {
-
-      leaderboardInterval = setInterval(async () => {
-
-        await loadLeaderboard()
-        await loadExtraTips()
-
-      }, 5000)
-    }
-
-  }
-
   // UTLOGGAD
   else {
 
