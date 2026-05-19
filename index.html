@@ -998,6 +998,8 @@ if (data.user.email === ADMIN_EMAIL) {
 
   adminPage.classList.remove('hidden')
 
+  await loadMatches()
+
   await loadAdminMatches()
 
   return
@@ -1433,6 +1435,10 @@ document
 
     alert('Match tillagd!')
 
+await loadMatches()
+
+await loadAdminMatches()
+
     await loadAdminMatches()
   })
   async function loadAdminMatches() {
@@ -1580,6 +1586,10 @@ document
     }
 
     alert('Match tillagd!')
+
+await loadMatches()
+
+await loadAdminMatches()
 
     await loadAdminMatches()
   })
