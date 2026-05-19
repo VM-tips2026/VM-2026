@@ -325,12 +325,23 @@
 
   </div>
 <!-- ADMIN PAGE -->
+<div
+  id="admin-page"
+  class="hidden min-h-screen p-6 max-w-7xl mx-auto"
+>
+
+  <div class="flex items-center justify-between mb-10">
+
+    <div>
+
+      <h1 class="text-5xl font-bold mb-2">
         🛠️ Adminpanel
       </h1>
 
       <p class="text-zinc-400">
         Hantera matcher och resultat.
       </p>
+
     </div>
 
     <button
@@ -1184,6 +1195,7 @@ paymentPage.classList.remove('hidden')
   paymentPage.classList.add('hidden')
   thankYouPage.classList.add('hidden')
   tablePage.classList.add('hidden')
+  adminPage.classList.add('hidden')
 
   startPage.classList.remove('hidden')
 
@@ -1193,9 +1205,6 @@ paymentPage.classList.remove('hidden')
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
 document
-document
-  .getElementById('admin-logout-btn')
-  .addEventListener('click', logout)
   .getElementById('admin-logout-btn')
   .addEventListener('click', logout)
 
@@ -1320,9 +1329,13 @@ async function loadAdminMatches() {
           ${match.time}
         </td>
 
-        <td class="p-4 font-bold">
-          ${match.home_team} - ${match.away_team}
-        </td>
+        <td class="p-4 text-zinc-400 font-bold">
+  ${match.group_name}
+</td>
+
+<td class="p-4 font-bold">
+  ${match.home_team} - ${match.away_team}
+</td>
 
         <td class="p-4">
 
@@ -1441,158 +1454,7 @@ await loadAdminMatches()
 
     await loadAdminMatches()
   })
-  async function loadAdminMatches() {
 
-  const { data, error } = await sb
-    .from('matcher')
-    .select('*')
-    .order('date', { ascending: true })
-
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  const body =
-    document.getElementById('admin-matches-body')
-
-  body.innerHTML = ''
-
-  data.forEach(match => {
-
-    body.innerHTML += `
-
-      <tr class="border-t border-zinc-800">
-
-        <td class="p-4">
-          ${match.date}
-        </td>
-
-        <td class="p-4">
-          ${match.time}
-        </td>
-
-        <td class="p-4 font-bold">
-          ${match.home_team} - ${match.away_team}
-        </td>
-
-        <td class="p-4">
-
-          <div class="flex items-center gap-2">
-
-            <input
-              id="home-${match.id}"
-              type="number"
-              min="0"
-              value="${match.result_home_score ?? ''}"
-              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-            />
-
-            <span>-</span>
-
-            <input
-              id="away-${match.id}"
-              type="number"
-              min="0"
-              value="${match.result_away_score ?? ''}"
-              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-            />
-
-          </div>
-
-        </td>
-
-        <td class="p-4">
-
-          <button
-            onclick="saveResult(${match.id})"
-            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl font-bold"
-          >
-            💾
-          </button>
-
-        </td>
-
-      </tr>
-
-    `
-  })
-}
-
-async function saveResult(matchId) {
-
-  const home =
-    document.getElementById(`home-${matchId}`).value
-
-  const away =
-    document.getElementById(`away-${matchId}`).value
-
-  const { error } = await sb
-    .from('matcher')
-    .update({
-
-      result_home_score: home,
-      result_away_score: away
-
-    })
-    .eq('id', matchId)
-
-  if (error) {
-    console.error(error)
-    alert(error.message)
-    return
-  }
-
-  alert('Resultat sparat!')
-}
-
-document
-  .getElementById('add-match-btn')
-  .addEventListener('click', async () => {
-
-    const date =
-      document.getElementById('admin-date').value
-
-    const time =
-      document.getElementById('admin-time').value
-
-    const group =
-      document.getElementById('admin-group').value
-
-    const home =
-      document.getElementById('admin-home').value
-
-    const away =
-      document.getElementById('admin-away').value
-
-    const { error } = await sb
-      .from('matcher')
-      .insert({
-
-        date: date,
-        time: time,
-
-        group_name: group,
-
-        home_team: home,
-        away_team: away
-
-      })
-
-    if (error) {
-      console.error(error)
-      alert(error.message)
-      return
-    }
-
-    alert('Match tillagd!')
-
-await loadMatches()
-
-await loadAdminMatches()
-
-    await loadAdminMatches()
-  })
 window.addEventListener('load', async () => {
 
   const {
@@ -1605,6 +1467,7 @@ window.addEventListener('load', async () => {
   paymentPage.classList.add('hidden')
   thankYouPage.classList.add('hidden')
   tablePage.classList.add('hidden')
+  adminPage.classList.add('hidden')
 
   // INLOGGAD
  if (session) {
