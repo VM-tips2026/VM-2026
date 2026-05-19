@@ -359,7 +359,38 @@
     <h2 class="text-3xl font-bold mb-6">
       ➕ Lägg till match
     </h2>
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
 
+  <h2 class="text-3xl font-bold mb-6">
+    🥇 Turneringstatus
+  </h2>
+
+  <div class="grid md:grid-cols-2 gap-6">
+
+    <input
+      id="admin-top-scorer"
+      type="text"
+      placeholder="Nuvarande skyttekung"
+      class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+
+    <input
+      id="admin-total-goals"
+      type="number"
+      placeholder="Totalt antal mål"
+      class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+
+  </div>
+
+  <button
+    id="save-tournament-stats-btn"
+    class="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black px-8 py-4 rounded-2xl font-bold"
+  >
+    💾 Spara statistik
+  </button>
+
+</div>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       <input
@@ -574,7 +605,27 @@ async function loadUserTips() {
 
   renderMatches()
 }
+async function loadTournamentStats() {
 
+  const { data, error } = await sb
+    .from('tournament_stats')
+    .select('*')
+    .limit(1)
+    .single()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  if (!data) return
+
+  adminTopScorer.value =
+    data.current_top_scorer || ''
+
+  adminTotalGoals.value =
+    data.current_goals || 0
+}
 async function loadLeaderboard() {
 
 const { data, error } = await sb
@@ -727,10 +778,17 @@ async function loadExtraTips() {
     return
   }
 
-  const currentTopScorer =
-    'Mbappé (2 mål)'
+ const { data: stats } = await sb
+  .from('tournament_stats')
+  .select('*')
+  .limit(1)
+  .single()
 
-  const currentGoals = 28
+const currentTopScorer =
+  stats?.current_top_scorer || '-'
+
+const currentGoals =
+  stats?.current_goals || 0
 
   extraTipsBody.innerHTML = `
 
@@ -933,7 +991,14 @@ const editTipsBtn = document.getElementById('edit-tips-btn')
 
 const loggedInUser =
   document.getElementById('logged-in-user')
+const adminTopScorer =
+  document.getElementById('admin-top-scorer')
 
+const adminTotalGoals =
+  document.getElementById('admin-total-goals')
+
+const saveTournamentStatsBtn =
+  document.getElementById('save-tournament-stats-btn')
     function showLoginTab() {
       loginForm.classList.remove('hidden')
       registerForm.classList.add('hidden')
@@ -1203,6 +1268,35 @@ paymentPage.classList.remove('hidden')
 }
 
 logoutBtn.addEventListener('click', logout)
+saveTournamentStatsBtn?.addEventListener(
+  'click',
+  async () => {
+
+    const { error } = await sb
+      .from('tournament_stats')
+      .update({
+
+        current_top_scorer:
+          adminTopScorer.value,
+
+        current_goals:
+          Number(adminTotalGoals.value)
+
+      })
+      .eq('id', 1)
+
+    if (error) {
+
+      console.error(error)
+
+      alert(error.message)
+
+      return
+    }
+
+    alert('Turneringsstatistik sparad!')
+  }
+)
 tableLogoutBtn.addEventListener('click', logout)
 document
   .getElementById('admin-logout-btn')
@@ -1480,6 +1574,7 @@ window.addEventListener('load', async () => {
     await loadMatches()
 
     await loadAdminMatches()
+    await loadTournamentStats()
 
     return
   }
