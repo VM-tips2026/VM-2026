@@ -1,23 +1,1524 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VM-Tipset 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body style="background:#111;color:white;font-family:sans-serif;padding:40px;">
+<body class="bg-zinc-950 text-white min-h-screen">
 
-<h1>⚽ VM-Tipset 2026</h1>
+  <!-- STARTSIDA -->
+  <div id="start-page" class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
 
-<p>Detta är en färdig HTML-fil för din nya version av VM-Tipset.</p>
+      <div class="text-center mb-8">
+        <h1 class="text-6xl font-bold mb-4">⚽</h1>
+        <h2 class="text-4xl font-bold mb-3">VM-Tipset 2026</h2>
+        <p class="text-zinc-400 text-lg">
+          Logga in eller skapa konto för att delta.
+        </p>
+      </div>
 
-<ul>
-  <li>✅ Adminpanel</li>
-  <li>✅ Tournament stats</li>
-  <li>✅ Skyttekung</li>
-  <li>✅ Antal mål</li>
-  <li>✅ Supabase-stöd</li>
-</ul>
+      <div class="flex gap-3 mb-8">
+        <button id="login-tab" class="flex-1 bg-white text-black py-3 rounded-2xl font-bold transition-colors">
+          Logga in
+        </button>
+
+        <button id="register-tab" class="flex-1 bg-zinc-800 text-white py-3 rounded-2xl font-bold transition-colors">
+          Skapa konto
+        </button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block mb-2 text-zinc-300">E-post</label>
+          <input type="email" required placeholder="namn@email.se" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Lösenord</label>
+          <input type="password" required placeholder="Ditt lösenord" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="remember-me" class="w-5 h-5 rounded border-zinc-600 bg-zinc-800" />
+
+            <label for="remember-me" class="text-zinc-300 cursor-pointer select-none">
+              Kom ihåg mig
+            </label>
+          </div>
+
+          <button type="button" id="forgot-password-btn" class="text-sm text-zinc-400 hover:text-white transition-colors">
+            Glömt ditt lösenord?
+          </button>
+        </div>
+
+        <button type="submit" class="w-full bg-white text-black py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform">
+          🔓 Logga in
+        </button>
+      </form>
+
+      <!-- RESET PASSWORD -->
+      <div id="forgot-password-box" class="hidden mt-6 bg-zinc-800 border border-zinc-700 rounded-2xl p-5">
+        <h3 class="text-xl font-bold mb-3">🔑 Återställ lösenord</h3>
+
+        <p class="text-zinc-400 mb-4 text-sm leading-relaxed">
+          Ange din e-postadress så skickar vi instruktioner för att återställa ditt lösenord.
+        </p>
+
+        <input type="email" placeholder="namn@email.se" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-4 mb-4" />
+
+        <button type="button" id="reset-password-btn" class="w-full bg-white text-black py-3 rounded-2xl font-bold">
+          📩 Skicka återställningslänk
+        </button>
+
+        <div id="reset-message" class="hidden mt-4 text-green-400 text-sm text-center">
+          Återställningslänk skickad till din e-post.
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <form id="register-form" class="space-y-5 hidden">
+        <div>
+          <label class="block mb-2 text-zinc-300">Namn</label>
+          <input type="text" id="name" required placeholder="Skriv ditt namn" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">E-post</label>
+          <input type="email" required placeholder="namn@email.se" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-zinc-300">Lösenord</label>
+          <input type="password" required placeholder="Välj lösenord" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4" />
+        </div>
+
+        <button type="submit" class="w-full bg-white text-black py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform">
+          🚀 Skapa konto
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TIPS SIDA -->
+<div id="tips-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
+
+  <div class="flex items-center justify-between flex-wrap gap-4 sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md py-4 mb-6 border-b border-zinc-800">
+
+    <div>
+      <h1 class="text-5xl font-bold mb-2">
+        ⚽ Registrera ditt tips
+      </h1>
+
+      <p class="text-zinc-400">
+        Fyll i dina matchtips för VM 2026.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-4 flex-wrap">
+
+      <button
+        id="back-to-table-btn"
+        class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-2xl font-bold transition-colors hidden"
+      >
+        ⬅️ Gå tillbaka
+      </button>
+
+      <button
+        id="logout-btn"
+        class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors"
+      >
+        🚪 Logga ut
+      </button>
+
+    </div>
+  </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-10 overflow-x-auto">
+      <table class="w-full text-left min-w-[900px]">
+        <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
+          <tr>
+  <th class="p-4">Datum</th>
+  <th class="p-4">Tid</th>
+  <th class="p-4">Grupp</th>
+  <th class="p-4">Match</th>
+  <th class="p-4">Resultat</th>
+  <th class="p-4">Ditt tips</th>
+</tr>
+        </thead>
+
+        <tbody id="matches-body"></tbody>
+      </table>
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+      <h2 class="text-3xl font-bold mb-6">📝 Extra frågor</h2>
+
+<div class="grid md:grid-cols-3 gap-6">
+
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      VM-vinnare
+    </label>
+
+    <input
+      id="extra-world-winner"
+      type="text"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      Skyttekung
+    </label>
+
+    <input
+      id="extra-top-scorer"
+      type="text"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+  <div>
+    <label class="block mb-2 text-zinc-300">
+      Totalt antal mål
+    </label>
+
+    <input
+      id="extra-total-goals"
+      type="number"
+      class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+    />
+  </div>
+
+</div>
+    </div>
+
+    <div class="text-center pb-20">
+      <button id="save-tip-btn" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-bold hover:scale-105 transition-transform">
+        💾 Registrera mitt tips
+      </button>
+    </div>
+
+  </div>
+
+  <!-- TABELL -->
+  <div id="table-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
+
+    <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+<div>
+  <h1 class="text-5xl font-bold mb-2">
+    VM-TIPS 2026
+  </h1>
+
+  <p class="text-zinc-400">
+    Se alla kommande matcher och dina registrerade tips.
+  </p>
+</div>
+
+<div class="flex flex-col items-end gap-3">
+
+  <div class="flex items-center gap-4 flex-wrap">
+
+    <button
+      id="edit-tips-btn"
+      class="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-2xl font-bold transition-colors text-black"
+    >
+      ✏️ Redigera tips
+    </button>
+
+    <button
+      id="table-logout-btn"
+      class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold transition-colors"
+    >
+      🚪 Logga ut
+    </button>
+
+  </div>
+
+  <div
+    id="logged-in-user"
+    class="text-sm text-zinc-400"
+  ></div>
+
+</div>
+</div>
+<!-- TOP SECTION -->
+<div class="grid lg:grid-cols-2 gap-8 mb-8">
+
+  <!-- LEADERBOARD -->
+  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
+
+    <div class="px-4 py-3 border-b border-zinc-800">
+      <h2 class="text-2xl font-bold">🏆 Tabell</h2>
+    </div>
+
+    <table class="w-full text-left text-sm">
+
+      <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+        <tr>
+          <th class="px-3 py-2 w-16">#</th>
+          <th class="px-3 py-2">Namn</th>
+          <th class="px-3 py-2 w-20">Poäng</th>
+        </tr>
+      </thead>
+
+      <tbody id="leaderboard-body"></tbody>
+
+    </table>
+  </div>
+
+  <!-- EXTRA TIPS -->
+ <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
+
+  <div class="px-4 py-3 border-b border-zinc-800">
+    <h2 class="text-2xl font-bold">🎯 Dina extra tips</h2>
+  </div>
+
+  <table class="w-full text-left text-sm">
+
+    <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+      <tr>
+        <th class="px-4 py-3">Fråga</th>
+        <th class="px-4 py-3">Just nu</th>
+        <th class="px-4 py-3">Ditt tips</th>
+      </tr>
+    </thead>
+
+    <tbody id="extra-tips-body"></tbody>
+
+  </table>
+
+</div>
+
+</div>
+<!-- KOMMANDE MATCHER -->
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
+
+  <div class="px-4 py-3 border-b border-zinc-800">
+    <h2 class="text-2xl font-bold">📅 Kommande matcher</h2>
+  </div>
+
+  <table class="w-full text-left text-sm min-w-[900px]">
+
+    <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+      <tr>
+        <th class="px-3 py-2">Datum</th>
+        <th class="px-3 py-2">Tid</th>
+        <th class="px-3 py-2">Grupp</th>
+        <th class="px-3 py-2">Match</th>
+        <th class="px-3 py-2">Resultat</th>
+        <th class="px-3 py-2">Ditt tips</th>
+      </tr>
+    </thead>
+
+    <tbody id="upcoming-matches-body"></tbody>
+
+  </table>
+</div>
+
+
+  </div>
+<!-- ADMIN PAGE -->
+<div
+  id="admin-page"
+  class="hidden min-h-screen p-6 max-w-7xl mx-auto"
+>
+
+  <div class="flex items-center justify-between mb-10">
+
+    <div>
+
+      <h1 class="text-5xl font-bold mb-2">
+        🛠️ Adminpanel
+      </h1>
+
+      <p class="text-zinc-400">
+        Hantera matcher och resultat.
+      </p>
+
+    </div>
+
+    <button
+      id="admin-logout-btn"
+      class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-bold"
+    >
+      🚪 Logga ut
+    </button>
+
+  </div>
+
+  <!-- LÄGG TILL MATCH -->
+  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+
+    <h2 class="text-3xl font-bold mb-6">
+      ➕ Lägg till match
+    </h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <input
+        id="admin-date"
+        type="date"
+        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+
+      <input
+        id="admin-time"
+        type="time"
+        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+
+      <input
+        id="admin-group"
+        type="text"
+        placeholder="Grupp"
+        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+
+      <input
+        id="admin-home"
+        type="text"
+        placeholder="Hemmalag"
+        list="teams-list"
+        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+
+      <input
+        id="admin-away"
+        type="text"
+        placeholder="Bortalag"
+        list="teams-list"
+        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+
+    </div>
+
+    <button
+      id="add-match-btn"
+      class="mt-6 bg-white text-black px-8 py-4 rounded-2xl font-bold"
+    >
+      ➕ Lägg till match
+    </button>
+
+  </div>
+
+  <!-- MATCHER -->
+  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
+
+    <table class="w-full text-left min-w-[1000px]">
+
+      <thead class="bg-zinc-800 text-zinc-300 uppercase text-sm tracking-wider">
+        <tr>
+          <th class="p-4">Datum</th>
+          <th class="p-4">Tid</th>
+          <th class="p-4">Grupp</th>
+          <th class="p-4">Match</th>
+          <th class="p-4">Resultat</th>
+          <th class="p-4">Spara</th>
+        </tr>
+      </thead>
+
+      <tbody id="admin-matches-body"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+  <!-- BETALNING -->
+  <div id="payment-page" class="hidden min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-lg w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-10 text-center shadow-2xl">
+
+      <h1 class="text-5xl font-bold mb-6">💳 Betalning</h1>
+
+      <p class="text-zinc-300 text-xl mb-4">
+        Swisha anmälningsavgiften för att slutföra registreringen.
+      </p>
+
+      <div class="text-6xl font-bold text-green-400 mb-8">100 kr</div>
+
+      <div class="bg-white rounded-3xl p-6 inline-block mb-8">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=VM-TIPSET-100KR" alt="QR Kod" class="w-64 h-64" />
+      </div>
+
+      <div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
+        <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
+        <div class="text-3xl font-bold tracking-widest">123 456 78 90</div>
+      </div>
+
+      <button id="payment-done-btn" class="w-full bg-green-500 hover:bg-green-600 transition-colors py-4 rounded-2xl text-xl font-bold">
+        ✅ Jag har betalat
+      </button>
+
+    </div>
+  </div>
+
+  <!-- TACKSIDA -->
+  <div id="thank-you-page" class="hidden min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-2xl w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-12 text-center shadow-2xl">
+
+      <div class="text-7xl mb-6">✅</div>
+
+      <h1 class="text-5xl font-bold mb-6">Tack för din anmälan!</h1>
+
+      <p class="text-2xl text-zinc-300 leading-relaxed mb-10">
+        När din anmälan har behandlats kommer du att få access till tabellen.
+        <br /><br />
+        Bekräftelse skickas till din e-postadress.
+      </p>
+
+      <button id="back-home-btn" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-bold hover:scale-105 transition-transform">
+        🏠 Till startsidan
+      </button>
+
+    </div>
+  </div>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = 'https://hqefwuwnqasfpambuvss.supabase.co'
+
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxZWZ3dXducWFzZnBhbWJ1dnNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTQxMDQsImV4cCI6MjA5NDE5MDEwNH0.0WNx7jjEIN1nxgKd7ebmkZSapcIpVeOwlTbdZzgsKxY'
+
+const sb = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+)
+
+console.log('Supabase connected!')
+
+</script>
+  <script>
+const ADMIN_EMAIL = 'pontusharthpil@live.se'
+
+let matches = []
+let isEditing = false
+let leaderboardInterval = null
+
+async function loadMatches() {
+
+  const { data, error } = await sb
+    .from('matcher')
+    .select('*')
+    .order('date', { ascending: true })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  matches = data.map(match => ({
+
+    id: match.id,
+
+    date: match.date,
+    time: match.time,
+
+    group: match.group_name,
+
+    home: match.home_team,
+    away: match.away_team,
+
+    tipHomeScore: 0,
+    tipAwayScore: 0,
+
+    resultHomeScore:
+      match.result_home_score ?? '-',
+
+    resultAwayScore:
+      match.result_away_score ?? '-'
+  }))
+
+  renderMatches()
+}
+
+
+
+async function loadUserTips() {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const { data, error } = await sb
+    .from('tips')
+    .select('*')
+    .eq('user_id', user.id)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  data.forEach(tip => {
+
+    const match = matches.find(
+      m =>
+        m.home === tip.home_team &&
+        m.away === tip.away_team
+    )
+
+    if (!match) return
+
+    match.tipHomeScore = tip.home_score
+    match.tipAwayScore = tip.away_score
+  })
+
+  renderMatches()
+}
+
+async function loadLeaderboard() {
+
+const { data, error } = await sb
+  .from('tips')
+  .select('*')
+
+
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const users = {}
+
+
+
+  data.forEach(tip => {
+
+   
+
+    // Skapa användare
+    if (!users[tip.user_id]) {
+
+      users[tip.user_id] = {
+        name: tip.player_name,
+        points: 0,
+        exact: 0,
+        winners: 0
+      }
+    }
+
+    const realMatch = matches.find(
+      m =>
+        m.home === tip.home_team &&
+        m.away === tip.away_team
+    )
+
+    if (!realMatch) return
+
+    const realHome = Number(realMatch.resultHomeScore)
+    const realAway = Number(realMatch.resultAwayScore)
+
+    // Match ej spelad ännu
+    if (isNaN(realHome) || isNaN(realAway)) {
+      return
+    }
+
+    // EXAKT RESULTAT
+    if (
+      tip.home_score === realHome &&
+      tip.away_score === realAway
+    ) {
+
+      users[tip.user_id].points += 3
+      users[tip.user_id].exact += 1
+    }
+
+    // RÄTT VINNARE
+    else {
+
+      const tippedWinner =
+        tip.home_score > tip.away_score
+          ? 'home'
+          : tip.away_score > tip.home_score
+          ? 'away'
+          : 'draw'
+
+      const realWinner =
+        realHome > realAway
+          ? 'home'
+          : realAway > realHome
+          ? 'away'
+          : 'draw'
+
+      if (tippedWinner === realWinner) {
+
+        users[tip.user_id].points += 1
+        users[tip.user_id].winners += 1
+      }
+    }
+  })
+
+  const sortedUsers =
+    Object.entries(users)
+      .sort((a, b) =>
+        b[1].points - a[1].points
+      )
+
+  leaderboardBody.innerHTML = ''
+
+sortedUsers.forEach((user, index) => {
+
+  leaderboardBody.innerHTML += `
+    <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
+
+      <td class="px-3 py-2 font-bold">
+        ${index + 1}
+      </td>
+
+      <td class="px-3 py-2">
+        ${user[1].name}
+      </td>
+
+      <td class="px-3 py-2 text-green-400 font-bold">
+        ${user[1].points}
+      </td>
+
+    </tr>
+  `
+})
+}
+async function loadExtraTips() {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const { data, error } = await sb
+    .from('extra_tips')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  // Om användaren inte har sparat extra tips ännu
+  if (!data) {
+
+    extraTipsBody.innerHTML = `
+
+      <tr class="border-t border-zinc-800">
+
+        <td colspan="3"
+            class="px-4 py-8 text-center text-zinc-500">
+
+          Inga extra tips registrerade ännu.
+
+        </td>
+
+      </tr>
+
+    `
+
+    return
+  }
+
+  const currentTopScorer =
+    'Mbappé (2 mål)'
+
+  const currentGoals = 28
+
+  extraTipsBody.innerHTML = `
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
+        VM-vinnare
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        -
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        ${data.world_winner || '-'}
+      </td>
+
+    </tr>
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
+        Skyttekung
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        ${currentTopScorer}
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        ${data.top_scorer || '-'}
+      </td>
+
+    </tr>
+
+    <tr class="border-t border-zinc-800">
+
+      <td class="px-4 py-3 font-bold">
+        Totalt antal mål
+      </td>
+
+      <td class="px-4 py-3 text-zinc-300">
+        ${currentGoals} mål
+      </td>
+
+      <td class="px-4 py-3 text-green-400 font-bold">
+        ${data.total_goals || '-'} mål
+      </td>
+
+    </tr>
+
+  `
+}
+
+
+    const matchesBody = document.getElementById('matches-body')
+    const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
+    const leaderboardBody = document.getElementById('leaderboard-body')
+    const extraTipsBody = document.getElementById('extra-tips-body')
+
+    function getWinner(match) {
+  if (match.resultHomeScore > match.resultAwayScore) return match.home
+  if (match.resultAwayScore > match.resultHomeScore) return match.away
+  return 'Oavgjort'
+}
+    
+
+    function renderMatches() {
+      matchesBody.innerHTML = ''
+      upcomingMatchesBody.innerHTML = ''
+
+      matches.forEach((match, index) => {
+        const winner = getWinner(match)
+
+matchesBody.innerHTML += `
+  <tr class="border-t border-zinc-800">
+
+    <td class="p-4">
+      ${match.date}
+    </td>
+
+    <td class="p-4">
+      ${match.time}
+    </td>
+
+    <td class="p-4 text-zinc-400 font-bold">
+      ${match.group}
+    </td>
+
+    <td class="p-4 font-bold">
+      ${match.home} - ${match.away}
+    </td>
+
+    <td class="p-4">
+      ${match.resultHomeScore} - ${match.resultAwayScore}
+    </td>
+
+    <td class="p-4">
+      <div class="flex items-center gap-2">
+<input
+  type="number"
+  min="0"
+  value="${match.tipHomeScore}"
+  class="home-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+  onchange="updateScore(${index}, 'home', this.value)"
+/>
+
+<span>-</span>
+
+<input
+  type="number"
+  min="0"
+  value="${match.tipAwayScore}"
+  class="away-score w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+  onchange="updateScore(${index}, 'away', this.value)"
+                />
+              </div>
+            </td>
+          </tr>
+        `
+
+        upcomingMatchesBody.innerHTML += `
+<tr class="border-t border-zinc-800">
+
+  <td class="p-4">
+    ${match.date}
+  </td>
+
+  <td class="p-4">
+    ${match.time}
+  </td>
+
+  <td class="p-4 text-zinc-400 font-bold">
+    ${match.group}
+  </td>
+
+  <td class="p-4 font-bold">
+    ${match.home} - ${match.away}
+  </td>
+
+    <!-- RESULTAT -->
+    <td class="p-4">
+      ${match.resultHomeScore} - ${match.resultAwayScore}
+    </td>
+
+    <!-- DITT TIPS -->
+    <td class="p-4 font-bold text-green-400">
+      ${match.tipHomeScore} - ${match.tipAwayScore}
+    </td>
+  </tr>
+`
+      })
+    }
+
+    function updateScore(index, team, value) {
+
+  let score = Number(value)
+
+  if (score < 0 || isNaN(score)) {
+    score = 0
+  }
+
+  matches[index][
+    'tip' +
+    team.charAt(0).toUpperCase() +
+    team.slice(1) +
+    'Score'
+  ] = score
+
+  renderMatches()
+}
+
+
+    const startPage = document.getElementById('start-page')
+    const tipsPage = document.getElementById('tips-page')
+    const paymentPage = document.getElementById('payment-page')
+    const thankYouPage = document.getElementById('thank-you-page')
+    const tablePage = document.getElementById('table-page')
+    const adminPage = document.getElementById('admin-page')
+
+    const loginTab = document.getElementById('login-tab')
+    const registerTab = document.getElementById('register-tab')
+
+    const loginForm = document.getElementById('login-form')
+    const registerForm = document.getElementById('register-form')
+
+    const forgotPasswordBtn = document.getElementById('forgot-password-btn')
+    const forgotPasswordBox = document.getElementById('forgot-password-box')
+    const resetPasswordBtn = document.getElementById('reset-password-btn')
+    const resetMessage = document.getElementById('reset-message')
+
+    const saveTipBtn = document.getElementById('save-tip-btn')
+    const paymentDoneBtn = document.getElementById('payment-done-btn')
+    const backHomeBtn = document.getElementById('back-home-btn')
+
+const logoutBtn = document.getElementById('logout-btn')
+const backToTableBtn = document.getElementById('back-to-table-btn')
+const tableLogoutBtn = document.getElementById('table-logout-btn')
+const editTipsBtn = document.getElementById('edit-tips-btn')
+
+const loggedInUser =
+  document.getElementById('logged-in-user')
+
+    function showLoginTab() {
+      loginForm.classList.remove('hidden')
+      registerForm.classList.add('hidden')
+      forgotPasswordBox.classList.add('hidden')
+
+      loginTab.classList.remove('bg-zinc-800', 'text-white')
+      loginTab.classList.add('bg-white', 'text-black')
+
+      registerTab.classList.remove('bg-white', 'text-black')
+      registerTab.classList.add('bg-zinc-800', 'text-white')
+    }
+
+    loginTab.addEventListener('click', showLoginTab)
+
+    registerTab.addEventListener('click', () => {
+      registerForm.classList.remove('hidden')
+      loginForm.classList.add('hidden')
+      forgotPasswordBox.classList.add('hidden')
+
+      registerTab.classList.remove('bg-zinc-800', 'text-white')
+      registerTab.classList.add('bg-white', 'text-black')
+
+      loginTab.classList.remove('bg-white', 'text-black')
+      loginTab.classList.add('bg-zinc-800', 'text-white')
+    })
+
+    forgotPasswordBtn.addEventListener('click', () => {
+      forgotPasswordBox.classList.toggle('hidden')
+    })
+
+    resetPasswordBtn.addEventListener('click', () => {
+      resetMessage.classList.remove('hidden')
+    })
+
+    // LOGIN -> TABELL
+    // LOGIN -> TABELL
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const email =
+    loginForm.querySelector(
+      'input[type="email"]'
+    ).value
+
+  const password =
+    loginForm.querySelector(
+      'input[type="password"]'
+    ).value
+
+  const rememberMe =
+    document.getElementById('remember-me').checked
+
+  if (rememberMe) {
+    localStorage.setItem('rememberMe', 'true')
+  } else {
+    localStorage.removeItem('rememberMe')
+  }
+
+const { data, error } =
+  await sb.auth.signInWithPassword({
+    email,
+    password
+  })
+
+if (error) {
+  alert(error.message)
+  return
+}
+
+startPage.classList.add('hidden')
+
+if (data.user.email === ADMIN_EMAIL) {
+
+  adminPage.classList.remove('hidden')
+
+  await loadMatches()
+
+  await loadAdminMatches()
+
+  return
+}
+
+tablePage.classList.remove('hidden')
+
+loggedInUser.innerHTML =
+  `Inloggad som: <span class="text-white">${data.user.user_metadata.name}</span>`
+
+await loadMatches()
+await loadUserTips()
+await loadLeaderboard()
+await loadExtraTips()
+
+if (!leaderboardInterval) {
+
+  leaderboardInterval = setInterval(async () => {
+
+    await loadLeaderboard()
+    await loadExtraTips()
+
+  }, 5000)
+}
+})
+registerForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const name =
+    document.getElementById('name').value
+
+  const email =
+    registerForm.querySelector(
+      'input[type="email"]'
+    ).value
+
+  const password =
+    registerForm.querySelector(
+      'input[type="password"]'
+    ).value
+
+  const { data, error } =
+    await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name
+        }
+      }
+    })
+
+  if (error) {
+    alert(error.message)
+    return
+  }
+
+  alert('Konto skapat!')
+
+  startPage.classList.add('hidden')
+  tipsPage.classList.remove('hidden')
+})
+
+    // SAVE TIPS -> BETALNING
+  saveTipBtn.addEventListener('click', async () => {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  for (const match of matches) {
+
+const { error } = await sb
+  .from('tips')
+  .upsert({
+
+    user_id: user.id,
+
+    player_name:
+      user.user_metadata.name,
+
+    match_name:
+      `${match.home} - ${match.away}`,
+
+    home_team: match.home,
+    away_team: match.away,
+
+    home_score: match.tipHomeScore,
+    away_score: match.tipAwayScore
+
+  }, {
+
+    onConflict:
+      'user_id,home_team,away_team'
+
+  })
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+      return
+    }
+  }
+
+const worldWinner =
+  document.querySelector('#extra-world-winner').value
+
+const topScorer =
+  document.querySelector('#extra-top-scorer').value
+
+const totalGoals =
+  Number(
+    document.querySelector('#extra-total-goals').value
+  ) || 0
+
+const { error: extraTipsError } = await sb
+  .from('extra_tips')
+  .upsert({
+
+    user_id: user.id,
+
+    world_winner: worldWinner,
+
+    top_scorer: topScorer,
+
+    total_goals: totalGoals
+
+  }, {
+
+    onConflict: 'user_id'
+
+  })
+
+if (extraTipsError) {
+  console.error(extraTipsError)
+  alert(extraTipsError.message)
+  return
+}
+
+alert('Tips sparade!')
+
+await loadExtraTips()
+
+// REDIGERING
+if (isEditing) {
+
+  isEditing = false
+
+  backToTableBtn.classList.add('hidden')
+
+  tipsPage.classList.add('hidden')
+  tablePage.classList.remove('hidden')
+
+  await loadLeaderboard()
+  await loadExtraTips()
+
+  return
+}
+
+// NY REGISTRERING
+tipsPage.classList.add('hidden')
+paymentPage.classList.remove('hidden')
+})
+
+    // BETALNING -> TACK
+    paymentDoneBtn.addEventListener('click', () => {
+      paymentPage.classList.add('hidden')
+      thankYouPage.classList.remove('hidden')
+    })
+
+    // TILL STARTSIDAN
+    backHomeBtn.addEventListener('click', () => {
+      thankYouPage.classList.add('hidden')
+      startPage.classList.remove('hidden')
+      showLoginTab()
+    })
+
+    async function logout() {
+  await sb.auth.signOut()
+
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.add('hidden')
+  thankYouPage.classList.add('hidden')
+  tablePage.classList.add('hidden')
+  adminPage.classList.add('hidden')
+
+  startPage.classList.remove('hidden')
+
+  showLoginTab()
+}
+
+logoutBtn.addEventListener('click', logout)
+tableLogoutBtn.addEventListener('click', logout)
+document
+  .getElementById('admin-logout-btn')
+  .addEventListener('click', logout)
+
+// ======================================
+// REDIGERA TIPS
+// Låses 2026-06-11 20:00
+// ======================================
+
+// ======================================
+// REDIGERA TIPS
+// Låses 2026-06-11 20:00
+// ======================================
+
+editTipsBtn.addEventListener('click', async () => {
+
+  const lockDate =
+    new Date('2026-06-11T20:00:00')
+
+  const now = new Date()
+
+  // Låst
+  if (now >= lockDate) {
+
+    alert(
+      'Redigering av tips är stängd.'
+    )
+
+    return
+  }
+
+  // Markera redigeringsläge
+  isEditing = true
+backToTableBtn.classList.remove('hidden')
+  // Visa tipssidan
+  tablePage.classList.add('hidden')
+  tipsPage.classList.remove('hidden')
+
+  // Ladda användarens tips
+  await loadUserTips()
+
+  // Ladda extra tips igen
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  const { data } = await sb
+    .from('extra_tips')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (data) {
+
+    document.querySelector(
+      '#extra-world-winner'
+    ).value =
+      data.world_winner || ''
+
+    document.querySelector(
+      '#extra-top-scorer'
+    ).value =
+      data.top_scorer || ''
+
+    document.querySelector(
+      '#extra-total-goals'
+    ).value =
+      data.total_goals || ''
+  }
+
+})
+
+backToTableBtn.addEventListener('click', () => {
+
+  isEditing = false
+
+  tipsPage.classList.add('hidden')
+  tablePage.classList.remove('hidden')
+
+  backToTableBtn.classList.add('hidden')
+
+})
+const lockDate =
+  new Date('2026-06-11T20:00:00')
+
+if (new Date() >= lockDate) {
+
+  editTipsBtn.classList.add('hidden')
+
+}
+
+// ======================================
+// STARTA APPEN
+// ======================================
+async function loadAdminMatches() {
+
+  const { data, error } = await sb
+    .from('matcher')
+    .select('*')
+    .order('date', { ascending: true })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const body =
+    document.getElementById('admin-matches-body')
+
+  body.innerHTML = ''
+
+  data.forEach(match => {
+
+    body.innerHTML += `
+
+      <tr class="border-t border-zinc-800">
+
+        <td class="p-4">
+          ${match.date}
+        </td>
+
+        <td class="p-4">
+          ${match.time}
+        </td>
+
+        <td class="p-4 text-zinc-400 font-bold">
+  ${match.group_name}
+</td>
+
+<td class="p-4 font-bold">
+  ${match.home_team} - ${match.away_team}
+</td>
+
+        <td class="p-4">
+
+          <div class="flex items-center gap-2">
+
+            <input
+              id="home-${match.id}"
+              type="number"
+              min="0"
+              value="${match.result_home_score ?? ''}"
+              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+            />
+
+            <span>-</span>
+
+            <input
+              id="away-${match.id}"
+              type="number"
+              min="0"
+              value="${match.result_away_score ?? ''}"
+              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+            />
+
+          </div>
+
+        </td>
+
+        <td class="p-4">
+
+          <button
+            onclick="saveResult(${match.id})"
+            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl font-bold"
+          >
+            💾
+          </button>
+
+        </td>
+
+      </tr>
+
+    `
+  })
+}
+
+async function saveResult(matchId) {
+
+  const home =
+    document.getElementById(`home-${matchId}`).value
+
+  const away =
+    document.getElementById(`away-${matchId}`).value
+
+  const { error } = await sb
+    .from('matcher')
+    .update({
+
+      result_home_score: home,
+      result_away_score: away
+
+    })
+    .eq('id', matchId)
+
+  if (error) {
+    console.error(error)
+    alert(error.message)
+    return
+  }
+
+  alert('Resultat sparat!')
+}
+
+document
+  .getElementById('add-match-btn')
+  .addEventListener('click', async () => {
+
+    const date =
+      document.getElementById('admin-date').value
+
+    const time =
+      document.getElementById('admin-time').value
+
+    const group =
+      document.getElementById('admin-group').value
+
+    const home =
+      document.getElementById('admin-home').value
+
+    const away =
+      document.getElementById('admin-away').value
+
+    const { error } = await sb
+      .from('matcher')
+      .insert({
+
+        date: date,
+        time: time,
+
+        group_name: group,
+
+        home_team: home,
+        away_team: away
+
+      })
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+      return
+    }
+
+    alert('Match tillagd!')
+
+await loadMatches()
+
+await loadAdminMatches()
+
+    await loadAdminMatches()
+  })
+
+window.addEventListener('load', async () => {
+
+  const {
+    data: { session }
+  } = await sb.auth.getSession()
+
+  // Rensa alla sidor först
+  startPage.classList.add('hidden')
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.add('hidden')
+  thankYouPage.classList.add('hidden')
+  tablePage.classList.add('hidden')
+  adminPage.classList.add('hidden')
+
+  // INLOGGAD
+ if (session) {
+
+  // ADMIN
+  if (session.user.email === ADMIN_EMAIL) {
+
+    adminPage.classList.remove('hidden')
+
+    await loadMatches()
+
+    await loadAdminMatches()
+
+    return
+  }
+
+  // VANLIG ANVÄNDARE
+  tablePage.classList.remove('hidden')
+
+  loggedInUser.innerHTML =
+    `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
+
+  await loadMatches()
+  await loadUserTips()
+  await loadLeaderboard()
+  await loadExtraTips()
+
+  if (!leaderboardInterval) {
+
+    leaderboardInterval = setInterval(async () => {
+
+      await loadLeaderboard()
+      await loadExtraTips()
+
+    }, 5000)
+  }
+}
+  // UTLOGGAD
+  else {
+
+    startPage.classList.remove('hidden')
+
+    await loadMatches()
+    await loadLeaderboard()
+
+  }
+
+})
+</script>
 
 </body>
 </html>
+
+  
