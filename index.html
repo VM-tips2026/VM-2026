@@ -1274,16 +1274,41 @@ saveTournamentStatsBtn?.addEventListener(
 
     const { error } = await sb
       .from('tournament_stats')
-      .update({
+const { data: stats } = await sb
+  .from('tournament_stats')
+  .select('*')
+  .limit(1)
+  .single()
 
-        current_top_scorer:
-          adminTopScorer.value,
+if (!stats) {
 
-        current_goals:
-          Number(adminTotalGoals.value)
+  await sb
+    .from('tournament_stats')
+    .insert({
 
-      })
-      .eq('id', 1)
+      current_top_scorer:
+        adminTopScorer.value,
+
+      current_goals:
+        Number(adminTotalGoals.value)
+
+    })
+
+} else {
+
+  await sb
+    .from('tournament_stats')
+    .update({
+
+      current_top_scorer:
+        adminTopScorer.value,
+
+      current_goals:
+        Number(adminTotalGoals.value)
+
+    })
+    .eq('id', stats.id)
+}
 
     if (error) {
 
