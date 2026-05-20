@@ -1158,6 +1158,7 @@ registerForm.addEventListener('submit', async (e) => {
 
   startPage.classList.add('hidden')
   tipsPage.classList.remove('hidden')
+  startCountdown()
 })
 
     // SAVE TIPS -> BETALNING
@@ -1328,7 +1329,7 @@ backToTableBtn.classList.remove('hidden')
   // Visa tipssidan
   tablePage.classList.add('hidden')
   tipsPage.classList.remove('hidden')
-
+startCountdown()
   // Ladda användarens tips
   await loadUserTips()
 
