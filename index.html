@@ -114,9 +114,16 @@
         ⚽ Registrera ditt tips
       </h1>
 
-      <p class="text-zinc-400">
-        Fyll i dina matchtips för VM 2026.
-      </p>
+<p class="text-zinc-400 mb-3">
+  Fyll i dina matchtips för VM 2026.
+</p>
+
+<div
+  id="countdown"
+  class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-2 text-sm font-bold text-yellow-400"
+>
+  ⏳ Låses om: laddar...
+</div>
     </div>
 
     <div class="flex items-center gap-4 flex-wrap">
@@ -517,6 +524,8 @@ const ADMIN_EMAIL = 'pontusharthpil@live.se'
 let matches = []
 let isEditing = false
 let leaderboardInterval = null
+const lockDate =
+  new Date('2026-06-11T20:00:00')
 
 async function loadMatches() {
 
@@ -1364,8 +1373,6 @@ backToTableBtn.addEventListener('click', () => {
   backToTableBtn.classList.add('hidden')
 
 })
-const lockDate =
-  new Date('2026-06-11T20:00:00')
 
 if (new Date() >= lockDate) {
 
@@ -1532,7 +1539,59 @@ await loadAdminMatches()
 
     await loadAdminMatches()
   })
+function startCountdown() {
 
+  const countdown =
+    document.getElementById('countdown')
+
+  if (!countdown) return
+
+  function updateCountdown() {
+
+    const now = new Date()
+
+    const diff =
+      lockDate - now
+
+    if (diff <= 0) {
+
+      countdown.innerHTML =
+        '🔒 Tipsen är låsta'
+
+      return
+    }
+
+    const days =
+      Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    const hours =
+      Math.floor(
+        (diff / (1000 * 60 * 60)) % 24
+      )
+
+    const minutes =
+      Math.floor(
+        (diff / (1000 * 60)) % 60
+      )
+
+    const seconds =
+      Math.floor(
+        (diff / 1000) % 60
+      )
+
+    countdown.innerHTML = `
+      ⏳ Låses om:
+      ${days}d
+      ${hours}h
+      ${minutes}m
+      ${seconds}s
+    `
+  }
+
+  updateCountdown()
+
+  setInterval(updateCountdown, 1000)
+}
 window.addEventListener('load', async () => {
 
   const {
@@ -1590,7 +1649,7 @@ window.addEventListener('load', async () => {
 
     await loadMatches()
     await loadLeaderboard()
-
+startCountdown()
   }
 
 })
