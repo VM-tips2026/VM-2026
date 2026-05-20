@@ -315,12 +315,20 @@
         <th class="px-3 py-2">Match</th>
     <th class="px-3 py-2">Resultat</th>
 
-    <th
-      colspan="2"
-      class="px-3 py-2 text-center bg-zinc-900"
-    >
-      Ditt tips
-    </th>
+<th
+  colspan="2"
+  class="
+    px-3
+    py-2
+    text-center
+    bg-zinc-900
+    border-l-2
+    border-r-2
+    border-zinc-600
+  "
+>
+  Ditt tips
+</th>
 
   </tr>
 
@@ -878,7 +886,21 @@ matchesBody.innerHTML += `
 
           </tr>
         `
+const correctResult =
+  Number(match.resultHomeScore) === match.tipHomeScore &&
+  Number(match.resultAwayScore) === match.tipAwayScore
 
+const real1X2 =
+  Number(match.resultHomeScore) >
+  Number(match.resultAwayScore)
+    ? '1'
+    : Number(match.resultAwayScore) >
+      Number(match.resultHomeScore)
+    ? '2'
+    : 'X'
+
+const correct1X2 =
+  real1X2 === match.tip1X2
         upcomingMatchesBody.innerHTML += `
 <tr class="border-t border-zinc-800">
 
@@ -903,12 +925,33 @@ matchesBody.innerHTML += `
       ${match.resultHomeScore} - ${match.resultAwayScore}
     </td>
 
-    <!-- DITT TIPS -->
-<td class="p-4 font-bold text-green-400">
+    <!-- DITT RESULTATTIPS -->
+<td
+  class="
+    p-4
+    font-bold
+    text-center
+    bg-zinc-900/50
+    border-l-2
+    border-zinc-600
+    ${correctResult ? 'text-green-400' : 'text-yellow-400'}
+  "
+>
   ${match.tipHomeScore} - ${match.tipAwayScore}
 </td>
 
-<td class="p-4 font-bold text-yellow-400">
+<!-- DITT 1X2 -->
+<td
+  class="
+    p-4
+    font-bold
+    text-center
+    bg-zinc-900/50
+    border-r-2
+    border-zinc-600
+    ${correct1X2 ? 'text-green-400' : 'text-yellow-400'}
+  "
+>
   ${match.tip1X2}
 </td>
   </tr>
