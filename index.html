@@ -1038,10 +1038,7 @@ const backToTableBtn = document.getElementById('back-to-table-btn')
 const tableLogoutBtn = document.getElementById('table-logout-btn')
 const editTipsBtn = document.getElementById('edit-tips-btn')
 const rulesBtn = document.getElementById('rules-btn')
-const rulesModal = document.getElementById('rules-modal')
 
-const closeRulesBtn =
-  document.getElementById('close-rules-btn')
 
 const loggedInUser =
   document.getElementById('logged-in-user')
@@ -1621,11 +1618,65 @@ function startCountdown() {
 }
 rulesBtn.addEventListener('click', () => {
 
+  const rulesModal =
+    document.getElementById('rules-modal')
+
   rulesModal.classList.remove('hidden')
 
 })
 
-closeRulesBtn.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
+
+  // STÄNG-KNAPP
+  if (e.target.id === 'close-rules-btn') {
+
+    document
+      .getElementById('rules-modal')
+      .classList.add('hidden')
+  }
+
+  // KLICK UTANFÖR
+  if (e.target.id === 'rules-modal') {
+
+    document
+      .getElementById('rules-modal')
+      .classList.add('hidden')
+  }
+
+})
+
+  rulesModal.classList.remove('hidden')
+
+})
+
+closerulesBtn.addEventListener('click', () => {
+
+  const rulesModal =
+    document.getElementById('rules-modal')
+
+  rulesModal.classList.remove('hidden')
+
+})
+
+document.addEventListener('click', (e) => {
+
+  // STÄNG-KNAPP
+  if (e.target.id === 'close-rules-btn') {
+
+    document
+      .getElementById('rules-modal')
+      .classList.add('hidden')
+  }
+
+  // KLICK UTANFÖR
+  if (e.target.id === 'rules-modal') {
+
+    document
+      .getElementById('rules-modal')
+      .classList.add('hidden')
+  }
+
+})
 
   rulesModal.classList.add('hidden')
 
