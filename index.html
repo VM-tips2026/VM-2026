@@ -148,6 +148,7 @@
   <th class="p-4">Match</th>
   <th class="p-4">Resultat</th>
   <th class="p-4">Ditt tips</th>
+<th class="p-4">1X2</th>
 </tr>
         </thead>
 
@@ -527,6 +528,7 @@ async function loadMatches() {
 
     tipHomeScore: 0,
     tipAwayScore: 0,
+    tip1X2: 'X',
 
     resultHomeScore:
       match.result_home_score ?? '-',
@@ -570,6 +572,7 @@ async function loadUserTips() {
 
     match.tipHomeScore = tip.home_score
     match.tipAwayScore = tip.away_score
+    match.tip1X2 = tip.tip_1x2 || 'X'
   })
 
   renderMatches()
@@ -791,6 +794,11 @@ async function loadExtraTips() {
     const leaderboardBody = document.getElementById('leaderboard-body')
     const extraTipsBody = document.getElementById('extra-tips-body')
 
+function get1X2(home, away) {
+  if (home > away) return '1'
+  if (away > home) return '2'
+  return 'X'
+}
     function getWinner(match) {
   if (match.resultHomeScore > match.resultAwayScore) return match.home
   if (match.resultAwayScore > match.resultHomeScore) return match.away
@@ -849,6 +857,17 @@ matchesBody.innerHTML += `
                 />
               </div>
             </td>
+<td class="p-4">
+  <select
+    onchange="update1X2(${index}, this.value)"
+    class="bg-zinc-800 border border-zinc-700 rounded-xl p-2"
+  >
+    <option value="1" ${match.tip1X2 === '1' ? 'selected' : ''}>1</option>
+    <option value="X" ${match.tip1X2 === 'X' ? 'selected' : ''}>X</option>
+    <option value="2" ${match.tip1X2 === '2' ? 'selected' : ''}>2</option>
+  </select>
+</td>
+
           </tr>
         `
 
@@ -877,14 +896,21 @@ matchesBody.innerHTML += `
     </td>
 
     <!-- DITT TIPS -->
-    <td class="p-4 font-bold text-green-400">
-      ${match.tipHomeScore} - ${match.tipAwayScore}
-    </td>
+<td class="p-4 font-bold text-green-400">
+  ${match.tipHomeScore} - ${match.tipAwayScore}
+</td>
+
+<td class="p-4 font-bold text-yellow-400">
+  ${match.tip1X2}
+</td>
   </tr>
 `
       })
     }
-
+function update1X2(index, value) {
+  matches[index].tip1X2 = value
+  renderMatches()
+}
     function updateScore(index, team, value) {
 
   let score = Number(value)
@@ -1098,8 +1124,9 @@ const { error } = await sb
     home_team: match.home,
     away_team: match.away,
 
-    home_score: match.tipHomeScore,
-    away_score: match.tipAwayScore
+    hhome_score: match.tipHomeScore,
+away_score: match.tipAwayScore,
+tip_1x2: match.tip1X2
 
   }, {
 
