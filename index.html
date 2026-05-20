@@ -1038,6 +1038,10 @@ const backToTableBtn = document.getElementById('back-to-table-btn')
 const tableLogoutBtn = document.getElementById('table-logout-btn')
 const editTipsBtn = document.getElementById('edit-tips-btn')
 const rulesBtn = document.getElementById('rules-btn')
+const rulesModal = document.getElementById('rules-modal')
+
+const closeRulesBtn =
+  document.getElementById('close-rules-btn')
 
 const loggedInUser =
   document.getElementById('logged-in-user')
@@ -1615,38 +1619,27 @@ function startCountdown() {
 
   setInterval(updateCountdown, 1000)
 }
-
 rulesBtn.addEventListener('click', () => {
 
-  alert(`
-🏆 POÄNGSYSTEM
-
-• Exakt resultat:
-+3 poäng
-
-• Rätt 1X2:
-+1 poäng
-
-• Fel resultat:
-0 poäng
-
-
-📖 REGLER
-
-• Tips låses 2026-06-11 kl 20:00
-
-• Efter låsning kan inga ändringar göras
-
-• Extra frågor används som utslagsfrågor
-
-• Vid lika poäng avgör:
-1. Flest exakta resultat
-2. Flest rätt 1X2
-3. Extra frågor
-  `)
+  rulesModal.classList.remove('hidden')
 
 })
 
+closeRulesBtn.addEventListener('click', () => {
+
+  rulesModal.classList.add('hidden')
+
+})
+
+rulesModal.addEventListener('click', (e) => {
+
+  if (e.target === rulesModal) {
+
+    rulesModal.classList.add('hidden')
+
+  }
+
+})
 window.addEventListener('load', async () => {
 
   const {
@@ -1708,6 +1701,136 @@ startCountdown()
   }
 
 })
+
+<!-- RULES MODAL -->
+<div
+  id="rules-modal"
+  class="
+    hidden
+    fixed
+    inset-0
+    bg-black/70
+    z-50
+    flex
+    items-center
+    justify-center
+    p-6
+  "
+>
+
+  <div
+    class="
+      bg-zinc-900
+      border
+      border-zinc-700
+      rounded-3xl
+      w-full
+      max-w-2xl
+      p-10
+      shadow-2xl
+    "
+  >
+
+    <div class="flex items-center justify-between mb-8">
+
+      <h2 class="text-3xl font-bold">
+        📖 Regler & Poängsystem
+      </h2>
+
+      <button
+        id="close-rules-btn"
+        class="
+          bg-zinc-800
+          hover:bg-zinc-700
+          w-12
+          h-12
+          rounded-2xl
+          text-xl
+          font-bold
+        "
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div class="space-y-8 text-lg leading-relaxed">
+
+      <div>
+
+        <h3 class="text-yellow-400 font-bold mb-3">
+          🏆 Poängsystem
+        </h3>
+
+        <div class="space-y-2 text-zinc-300">
+
+          <p>
+            • Exakt resultat:
+            <span class="text-green-400 font-bold">
+              +3 poäng
+            </span>
+          </p>
+
+          <p>
+            • Rätt 1X2:
+            <span class="text-green-400 font-bold">
+              +1 poäng
+            </span>
+          </p>
+
+          <p>
+            • Fel resultat:
+            <span class="text-red-400 font-bold">
+              0 poäng
+            </span>
+          </p>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <h3 class="text-yellow-400 font-bold mb-3">
+          📖 Regler
+        </h3>
+
+        <div class="space-y-2 text-zinc-300">
+
+          <p>
+            • Tips låses 2026-06-11 kl 20:00
+          </p>
+
+          <p>
+            • Efter låsning kan inga ändringar göras
+          </p>
+
+          <p>
+            • Extra frågor används som utslagsfrågor
+          </p>
+
+          <p>
+            • Vid lika poäng avgör:
+          </p>
+
+          <div class="pl-5 space-y-1">
+
+            <p>1. Flest exakta resultat</p>
+            <p>2. Flest rätt 1X2</p>
+            <p>3. Extra frågor</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
 </script>
 
 </body>
