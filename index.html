@@ -934,6 +934,13 @@ const correct1X2 =
   const matchPlayed =
   match.resultHomeScore !== '-' &&
   match.resultAwayScore !== '-'
+  const homeCorrect =
+  Number(match.tipHomeScore) ===
+  Number(match.resultHomeScore)
+
+const awayCorrect =
+  Number(match.tipAwayScore) ===
+  Number(match.resultAwayScore)
         upcomingMatchesBody.innerHTML += `
 <tr class="border-t border-zinc-800">
 
@@ -976,7 +983,27 @@ const correct1X2 =
 }
   "
 >
-  ${match.tipHomeScore} - ${match.tipAwayScore}
+  <span class="${
+  !matchPlayed
+    ? 'text-yellow-400'
+    : homeCorrect
+      ? 'text-green-400'
+      : 'text-red-400'
+}">
+  ${match.tipHomeScore}
+</span>
+
+<span class="text-zinc-500">-</span>
+
+<span class="${
+  !matchPlayed
+    ? 'text-yellow-400'
+    : awayCorrect
+      ? 'text-green-400'
+      : 'text-red-400'
+}">
+  ${match.tipAwayScore}
+</span>
 </td>
 
 <!-- DITT 1X2 -->
