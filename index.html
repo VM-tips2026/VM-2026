@@ -783,10 +783,14 @@ async function loadExtraTips() {
     return
   }
 
-  const currentTopScorer =
-    'Mbappé (6 mål)'
+const currentTopScorer =
+  data.top_scorer || '-'
 
-  const currentGoals = 128
+const currentGoals =
+  data.total_goals || '-'
+
+const currentWinner =
+  data.world_winner || '-'
 
   extraTipsBody.innerHTML = `
 
