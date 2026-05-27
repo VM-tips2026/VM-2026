@@ -686,12 +686,11 @@ const { data, error } = await sb
 // 1p rätt 1X2
 // =====================
 
-const tipped1X2 =
-  tip.home_score > tip.away_score
-    ? '1'
-    : tip.away_score > tip.home_score
-      ? '2'
-      : 'X'
+// =====================
+// NYTT POÄNGSYSTEM
+// =====================
+
+let points = 0
 
 const real1X2 =
   realHome > realAway
@@ -703,23 +702,25 @@ const real1X2 =
 // Rätt hemmamål
 if (tip.home_score === realHome) {
 
-  users[tip.user_id].points += 1
+  points += 1
 
 }
 
 // Rätt bortamål
 if (tip.away_score === realAway) {
 
-  users[tip.user_id].points += 1
+  points += 1
 
 }
 
-// Rätt 1X2
-if (tipped1X2 === real1X2) {
+// Rätt 1X2 från användarens VALDA 1X2
+if (tip.tip_1x2 === real1X2) {
 
-  users[tip.user_id].points += 1
+  points += 1
 
 }
+
+users[tip.user_id].points += points
 })
   const sortedUsers =
     Object.entries(users)
