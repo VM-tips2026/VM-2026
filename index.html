@@ -502,18 +502,25 @@
 
       <div class="text-6xl font-bold text-green-400 mb-8">100 kr</div>
 
-      <div class="bg-white rounded-3xl p-6 inline-block mb-8">
-        <img
-  src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=swish://payment?phone=46702582935&amount=100&message=VMTIPSET"
-  alt="Swish QR"
-  class="w-64 h-64"
-/> alt="QR Kod" class="w-64 h-64" />
-      </div>
+<div class="bg-white rounded-3xl p-6 inline-block mb-8">
+  <img
+    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=swish://payment?phone=46702582935&amount=100&message=VMTIPSET"
+    alt="Swish QR"
+    class="w-64 h-64"
+  />
+</div>
 
-      <div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
-        <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
-        <div class="text-3xl font-bold tracking-widest">0702582935</div>
-      </div>
+<div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
+  <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
+  <div class="text-3xl font-bold tracking-widest">46702582935</div>
+</div>
+
+<a
+  href="swish://payment?phone=46702582935&amount=100&message=VMTIPSET"
+  class="bg-green-500 hover:bg-green-600 text-white font-bold px-8 py-4 rounded-2xl inline-block mb-8 transition-colors"
+>
+  📱 Betala med Swish
+</a>
 
       <button id="payment-done-btn" class="w-full bg-green-500 hover:bg-green-600 transition-colors py-4 rounded-2xl text-xl font-bold">
         ✅ Jag har betalat
