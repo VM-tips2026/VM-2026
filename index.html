@@ -741,15 +741,20 @@ async function loadUserTips() {
 async function loadLeaderboard() {
 async function loadPrizePool() {
 
-  const { count } = await sb
-    .from('tips')
-    .select('*', {
-      count: 'exact',
-      head: true
-    })
+const { data, error } = await sb
+  .from('tips')
+  .select('user_id')
 
-  const uniquePlayers =
-    Math.floor(count / matches.length)
+if (error) {
+  console.error(error)
+  return
+}
+
+const uniqueUsers =
+  [...new Set(data.map(t => t.user_id))]
+
+const uniquePlayers =
+  uniqueUsers.length
 
   const pot =
     uniquePlayers * 100
