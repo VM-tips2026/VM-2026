@@ -135,12 +135,12 @@
     ⬅️ Gå tillbaka
   </button>
 
-  <button
-    id="save-top-btn"
-    class="bg-white text-black px-6 py-3 rounded-2xl font-bold hover:scale-105 transition-transform"
-  >
-    💾 Spara
-  </button>
+<button
+  id="save-top-btn"
+  class="bg-white text-black px-6 py-3 rounded-2xl font-bold hover:scale-105 transition-transform hidden"
+>
+  💾 Spara
+</button>
 
   <button
     id="logout-btn"
@@ -1337,6 +1337,7 @@ if (extraTipsError) {
   alert(extraTipsError.message)
   return
 }
+saveTopBtn.classList.remove('hidden')
 
 alert('Tips sparade!')
 
@@ -1682,7 +1683,21 @@ window.addEventListener('load', async () => {
   const {
     data: { session }
   } = await sb.auth.getSession()
+if (session) {
 
+  const { data: existingTips } = await sb
+    .from('tips')
+    .select('id')
+    .eq('user_id', session.user.id)
+    .limit(1)
+
+  if (existingTips && existingTips.length > 0) {
+
+    saveTopBtn.classList.remove('hidden')
+
+  }
+
+}
   // Rensa alla sidor först
   startPage.classList.add('hidden')
   tipsPage.classList.add('hidden')
