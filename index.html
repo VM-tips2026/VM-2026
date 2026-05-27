@@ -679,40 +679,47 @@ const { data, error } = await sb
       return
     }
 
-    // EXAKT RESULTAT
-    if (
-      tip.home_score === realHome &&
-      tip.away_score === realAway
-    ) {
+// =====================
+// POÄNGSYSTEM
+// 1p rätt hemmamål
+// 1p rätt bortamål
+// 1p rätt 1X2
+// =====================
 
-      users[tip.user_id].points += 3
-      users[tip.user_id].exact += 1
-    }
+const tipped1X2 =
+  tip.home_score > tip.away_score
+    ? '1'
+    : tip.away_score > tip.home_score
+      ? '2'
+      : 'X'
 
-    // RÄTT VINNARE
-    else {
+const real1X2 =
+  realHome > realAway
+    ? '1'
+    : realAway > realHome
+      ? '2'
+      : 'X'
 
-      const tippedWinner =
-        tip.home_score > tip.away_score
-          ? 'home'
-          : tip.away_score > tip.home_score
-          ? 'away'
-          : 'draw'
+// Rätt hemmamål
+if (tip.home_score === realHome) {
 
-      const realWinner =
-        realHome > realAway
-          ? 'home'
-          : realAway > realHome
-          ? 'away'
-          : 'draw'
+  users[tip.user_id].points += 1
 
-      if (tippedWinner === realWinner) {
+}
 
-        users[tip.user_id].points += 1
-        users[tip.user_id].winners += 1
-      }
-    }
-  })
+// Rätt bortamål
+if (tip.away_score === realAway) {
+
+  users[tip.user_id].points += 1
+
+}
+
+// Rätt 1X2
+if (tipped1X2 === real1X2) {
+
+  users[tip.user_id].points += 1
+
+}
 
   const sortedUsers =
     Object.entries(users)
