@@ -931,6 +931,9 @@ const real1X2 =
 
 const correct1X2 =
   real1X2 === match.tip1X2
+  const matchPlayed =
+  match.resultHomeScore !== '-' &&
+  match.resultAwayScore !== '-'
         upcomingMatchesBody.innerHTML += `
 <tr class="border-t border-zinc-800">
 
@@ -964,7 +967,13 @@ const correct1X2 =
     bg-zinc-900/50
     border-l-2
     border-zinc-600
-    ${correctResult ? 'text-green-400' : 'text-yellow-400'}
+    ${
+  !matchPlayed
+    ? 'text-yellow-400'
+    : correctResult
+      ? 'text-green-400'
+      : 'text-red-400'
+}
   "
 >
   ${match.tipHomeScore} - ${match.tipAwayScore}
@@ -979,7 +988,13 @@ const correct1X2 =
     bg-zinc-900/50
     border-r-2
     border-zinc-600
-    ${correct1X2 ? 'text-green-400' : 'text-yellow-400'}
+    ${
+  !matchPlayed
+    ? 'text-yellow-400'
+    : correct1X2
+      ? 'text-green-400'
+      : 'text-red-400'
+}
   "
 >
   ${match.tip1X2}
