@@ -1255,14 +1255,91 @@ registerForm.addEventListener('submit', async (e) => {
   startCountdown()
 })
 
-saveTopBtn.addEventListener('click', async () => {
+async function saveAllTips() {
 
-  saveTipBtn.click()
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  for (const match of matches) {
+
+    const { error } = await sb
+      .from('tips')
+      .upsert({
+
+        user_id: user.id,
+
+        player_name:
+          user.user_metadata.name,
+
+        match_name:
+          `${match.home} - ${match.away}`,
+
+        home_team: match.home,
+        away_team: match.away,
+
+        home_score: match.tipHomeScore,
+        away_score: match.tipAwayScore,
+
+        tip_1x2: match.tip1X2
+
+      }, {
+
+        onConflict:
+          'user_id,home_team,away_team'
+
+      })
+
+    if (error) {
+
+      console.error(error)
+      alert(error.message)
+
+      return
+
+    }
+
+  }
+
+
+  alert('Tips sparade!')
+
+  await loadExtraTips()
+
+  // REDIGERING
+  if (isEditing) {
+
+    isEditing = false
+
+    backToTableBtn.classList.add('hidden')
+
+    tipsPage.classList.add('hidden')
+    tablePage.classList.remove('hidden')
+
+    await loadLeaderboard()
+    await loadExtraTips()
+
+    return
+
+  }
+
+  // NY REGISTRERING
+  tipsPage.classList.add('hidden')
+  paymentPage.classList.remove('hidden')
+
+}
+
+saveTipBtn.addEventListener('click', async () => {
+
+  await saveAllTips()
 
 })
 
-// SAVE TIPS -> BETALNING
-saveTipBtn.addEventListener('click', async () => {
+saveTopBtn.addEventListener('click', async () => {
+
+  await saveAllTips()
+
+})
 
   const {
     data: { user }
