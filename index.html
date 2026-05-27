@@ -1364,11 +1364,26 @@ tipsPage.classList.add('hidden')
 paymentPage.classList.remove('hidden')
 })
 
-    // BETALNING -> TACK
-    paymentDoneBtn.addEventListener('click', () => {
-      paymentPage.classList.add('hidden')
-      thankYouPage.classList.remove('hidden')
+// BETALNING -> TACK
+paymentDoneBtn.addEventListener('click', async () => {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  await sb
+    .from('tips')
+    .update({
+      payment_status: true
     })
+    .eq('user_id', user.id)
+
+  saveTopBtn.classList.remove('hidden')
+
+  paymentPage.classList.add('hidden')
+  thankYouPage.classList.remove('hidden')
+
+})
 
     // TILL STARTSIDAN
     backHomeBtn.addEventListener('click', () => {
@@ -1685,17 +1700,18 @@ window.addEventListener('load', async () => {
   } = await sb.auth.getSession()
 if (session) {
 
-  const { data: existingTips } = await sb
+  const { data: paidTips } = await sb
     .from('tips')
-    .select('id')
+    .select('payment_status')
     .eq('user_id', session.user.id)
-    .limit(1)
+    .maybeSingle()
 
-  if (existingTips && existingTips.length > 0) {
+  if (paidTips?.payment_status === true) {
 
     saveTopBtn.classList.remove('hidden')
 
   }
+
 
 }
   // Rensa alla sidor först
