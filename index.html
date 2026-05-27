@@ -784,9 +784,12 @@ const uniquePlayers =
     `${third.toLocaleString('sv-SE')} kr`
 
 }
-const { data, error } = await sb
-  .from('tips')
-  .select('*')
+
+async function loadLeaderboard() {
+
+  const { data, error } = await sb
+    .from('tips')
+    .select('*')
 
 
 
