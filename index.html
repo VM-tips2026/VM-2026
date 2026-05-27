@@ -738,12 +738,11 @@ async function loadUserTips() {
   renderMatches()
 }
 
-async function loadLeaderboard() {
 async function loadPrizePool() {
 
-const { data, error } = await sb
-  .from('tips')
-  .select('user_id')
+  const { data, error } = await sb
+    .from('tips')
+    .select('user_id')
 
 if (error) {
   console.error(error)
@@ -756,34 +755,36 @@ const uniqueUsers =
 const uniquePlayers =
   uniqueUsers.length
 
-  const pot =
-    uniquePlayers * 100
+const pot =
+  uniquePlayers * 100
 
-  const first =
-    Math.floor(pot * 0.6)
+const first =
+  Math.floor(pot * 0.6)
 
-  const second =
-    Math.floor(pot * 0.3)
+const second =
+  Math.floor(pot * 0.3)
 
-  const third =
-    Math.floor(pot * 0.1)
+const third =
+  Math.floor(pot * 0.1)
 
-  totalPot.textContent =
-    pot.toLocaleString('sv-SE')
+totalPot.textContent =
+  pot.toLocaleString('sv-SE')
 
-  playerCount.textContent =
-    uniquePlayers
+playerCount.textContent =
+  uniquePlayers
 
-  firstPrize.textContent =
-    `${first.toLocaleString('sv-SE')} kr`
+firstPrize.textContent =
+  `${first.toLocaleString('sv-SE')} kr`
 
-  secondPrize.textContent =
-    `${second.toLocaleString('sv-SE')} kr`
+secondPrize.textContent =
+  `${second.toLocaleString('sv-SE')} kr`
 
-  thirdPrize.textContent =
-    `${third.toLocaleString('sv-SE')} kr`
+thirdPrize.textContent =
+  `${third.toLocaleString('sv-SE')} kr`
 
 }
+
+async function loadLeaderboard() {
 const { data, error } = await sb
   .from('tips')
   .select('*')
