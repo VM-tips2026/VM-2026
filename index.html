@@ -270,6 +270,121 @@
 </div>
 </div>
 <!-- TOP SECTION -->
+ <!-- PRISPOTT + POÄNGRÄKNING -->
+<div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 mb-8">
+
+  <div class="grid lg:grid-cols-3 gap-8 items-start">
+
+    <!-- PRISPOTT -->
+    <div>
+
+      <h2 class="text-4xl font-bold mb-4 text-yellow-400">
+        🏆 Prispott & vinster
+      </h2>
+
+      <p class="text-zinc-300 mb-8 text-lg">
+        Prispotten baseras på antal anmälda spelare.
+      </p>
+
+      <div class="text-5xl font-black text-green-400 mb-3">
+        <span id="total-pot">0</span> kr
+      </div>
+
+      <div class="text-zinc-400 text-lg">
+        (<span id="player-count">0</span> anmälda × 100 kr)
+      </div>
+
+    </div>
+
+    <!-- VINSTER -->
+    <div class="border-l border-zinc-700 pl-8 space-y-6">
+
+      <div class="flex items-center justify-between text-2xl">
+
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">🥇</span>
+          <span>1a pris: 60%</span>
+        </div>
+
+        <span id="first-prize"
+              class="font-black text-green-400">
+
+          0 kr
+
+        </span>
+
+      </div>
+
+      <div class="flex items-center justify-between text-2xl">
+
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">🥈</span>
+          <span>2a pris: 30%</span>
+        </div>
+
+        <span id="second-prize"
+              class="font-black text-green-400">
+
+          0 kr
+
+        </span>
+
+      </div>
+
+      <div class="flex items-center justify-between text-2xl">
+
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">🥉</span>
+          <span>3e pris: 10%</span>
+        </div>
+
+        <span id="third-prize"
+              class="font-black text-green-400">
+
+          0 kr
+
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- POÄNGRÄKNING -->
+    <div class="border-l border-zinc-700 pl-8">
+
+      <h2 class="text-4xl font-bold mb-5 text-blue-400">
+        🎯 Poängräkning
+      </h2>
+
+      <div class="space-y-4 text-lg">
+
+        <div class="flex items-center gap-3">
+          <span class="text-green-400 text-2xl">✔</span>
+          <span>Rätt hemmamål = <b>1 poäng</b></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-green-400 text-2xl">✔</span>
+          <span>Rätt bortamål = <b>1 poäng</b></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-green-400 text-2xl">✔</span>
+          <span>Rätt 1X2 = <b>1 poäng</b></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-yellow-400 text-2xl">⭐</span>
+          <span>Max per match = <b>3 poäng</b></span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 <div class="grid lg:grid-cols-2 gap-8 mb-8">
 
   <!-- LEADERBOARD -->
@@ -624,7 +739,46 @@ async function loadUserTips() {
 }
 
 async function loadLeaderboard() {
+async function loadPrizePool() {
 
+  const { count } = await sb
+    .from('tips')
+    .select('*', {
+      count: 'exact',
+      head: true
+    })
+
+  const uniquePlayers =
+    Math.floor(count / matches.length)
+
+  const pot =
+    uniquePlayers * 100
+
+  const first =
+    Math.floor(pot * 0.6)
+
+  const second =
+    Math.floor(pot * 0.3)
+
+  const third =
+    Math.floor(pot * 0.1)
+
+  totalPot.textContent =
+    pot.toLocaleString('sv-SE')
+
+  playerCount.textContent =
+    uniquePlayers
+
+  firstPrize.textContent =
+    `${first.toLocaleString('sv-SE')} kr`
+
+  secondPrize.textContent =
+    `${second.toLocaleString('sv-SE')} kr`
+
+  thirdPrize.textContent =
+    `${third.toLocaleString('sv-SE')} kr`
+
+}
 const { data, error } = await sb
   .from('tips')
   .select('*')
@@ -851,6 +1005,20 @@ const {
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
     const leaderboardBody = document.getElementById('leaderboard-body')
     const extraTipsBody = document.getElementById('extra-tips-body')
+    const totalPot =
+  document.getElementById('total-pot')
+
+const playerCount =
+  document.getElementById('player-count')
+
+const firstPrize =
+  document.getElementById('first-prize')
+
+const secondPrize =
+  document.getElementById('second-prize')
+
+const thirdPrize =
+  document.getElementById('third-prize')
 
 function get1X2(home, away) {
   if (home > away) return '1'
@@ -1188,6 +1356,7 @@ loggedInUser.innerHTML =
 await loadMatches()
 await loadUserTips()
 await loadLeaderboard()
+await loadPrizePool()
 await loadExtraTips()
 
 if (!leaderboardInterval) {
@@ -1195,6 +1364,7 @@ if (!leaderboardInterval) {
   leaderboardInterval = setInterval(async () => {
 
     await loadLeaderboard()
+    await loadPrizePool()
     await loadExtraTips()
 
   }, 5000)
@@ -1338,6 +1508,7 @@ if (isEditing) {
   tablePage.classList.remove('hidden')
 
   await loadLeaderboard()
+  await loadPrizePool()
   await loadExtraTips()
 
   return
@@ -1731,6 +1902,7 @@ const { data: paidTips } = await sb
   await loadMatches()
   await loadUserTips()
   await loadLeaderboard()
+  await loadPrizePool()
   await loadExtraTips()
 
   if (!leaderboardInterval) {
@@ -1738,6 +1910,7 @@ const { data: paidTips } = await sb
     leaderboardInterval = setInterval(async () => {
 
       await loadLeaderboard()
+      await loadPrizePool()
       await loadExtraTips()
 
     }, 5000)
@@ -1750,6 +1923,7 @@ const { data: paidTips } = await sb
 
     await loadMatches()
     await loadLeaderboard()
+    await loadPrizePool()
 startCountdown()
   }
 
