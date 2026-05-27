@@ -398,60 +398,67 @@
 
   </div>
 
-  <!-- LÄGG TILL MATCH -->
-  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+<!-- EXTRA TIPS -->
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
 
-    <h2 class="text-3xl font-bold mb-6">
-      ➕ Lägg till match
-    </h2>
+  <h2 class="text-3xl font-bold mb-8">
+    🏆 Extra tips
+  </h2>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid md:grid-cols-3 gap-6">
 
-      <input
-        id="admin-date"
-        type="date"
-        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
-      />
-
-      <input
-        id="admin-time"
-        type="time"
-        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
-      />
+    <!-- VM-vinnare -->
+    <div>
+      <label class="block text-zinc-400 mb-2 font-bold">
+        VM-vinnare
+      </label>
 
       <input
-        id="admin-group"
+        id="admin-world-winner"
         type="text"
-        placeholder="Grupp"
-        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+        placeholder="T.ex Argentina"
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
       />
-
-      <input
-        id="admin-home"
-        type="text"
-        placeholder="Hemmalag"
-        list="teams-list"
-        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
-      />
-
-      <input
-        id="admin-away"
-        type="text"
-        placeholder="Bortalag"
-        list="teams-list"
-        class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
-      />
-
     </div>
 
-    <button
-      id="add-match-btn"
-      class="mt-6 bg-white text-black px-8 py-4 rounded-2xl font-bold"
-    >
-      ➕ Lägg till match
-    </button>
+    <!-- Skytteligaledare -->
+    <div>
+      <label class="block text-zinc-400 mb-2 font-bold">
+        Skytteligaledare
+      </label>
+
+      <input
+        id="admin-top-scorer"
+        type="text"
+        placeholder="T.ex Mbappé"
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+    </div>
+
+    <!-- Totalt antal mål -->
+    <div>
+      <label class="block text-zinc-400 mb-2 font-bold">
+        Totalt antal mål
+      </label>
+
+      <input
+        id="admin-total-goals"
+        type="number"
+        placeholder="T.ex 145"
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
+      />
+    </div>
 
   </div>
+
+  <button
+    id="save-extra-btn"
+    class="mt-8 bg-green-500 hover:bg-green-600 px-8 py-4 rounded-2xl font-bold text-black"
+  >
+    💾 Spara extra tips
+  </button>
+
+</div>
 
   <!-- MATCHER -->
   <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
@@ -1080,9 +1087,11 @@ const backToTableBtn = document.getElementById('back-to-table-btn')
 const tableLogoutBtn = document.getElementById('table-logout-btn')
 const editTipsBtn = document.getElementById('edit-tips-btn')
 const rulesBtn = document.getElementById('rules-btn')
-
-const loggedInUser =
-  document.getElementById('logged-in-user')
+const adminWorldWinner = document.getElementById('admin-world-winner')
+const adminTopScorer = document.getElementById('admin-top-scorer')
+const adminTotalGoals = document.getElementById('admin-total-goals')
+const saveExtraBtn = document.getElementById('save-extra-btn')
+const loggedInUser = document.getElementById('logged-in-user')
 
     function showLoginTab() {
       loginForm.classList.remove('hidden')
@@ -1556,47 +1565,36 @@ async function saveResult(matchId) {
 
   alert('Resultat sparat!')
 }
+saveExtraBtn.addEventListener('click', async () => {
 
-document
-  .getElementById('add-match-btn')
-  .addEventListener('click', async () => {
+  const { error } = await sb
+    .from('extra_data')
+    .upsert({
 
-    const date =
-      document.getElementById('admin-date').value
+      id: 1,
 
-    const time =
-      document.getElementById('admin-time').value
+      world_winner:
+        adminWorldWinner.value,
 
-    const group =
-      document.getElementById('admin-group').value
+      top_scorer:
+        adminTopScorer.value,
 
-    const home =
-      document.getElementById('admin-home').value
+      total_goals:
+        Number(adminTotalGoals.value)
 
-    const away =
-      document.getElementById('admin-away').value
+    })
 
-    const { error } = await sb
-      .from('matcher')
-      .insert({
+  if (error) {
 
-        date: date,
-        time: time,
+    console.error(error)
+    alert(error.message)
+    return
 
-        group_name: group,
+  }
 
-        home_team: home,
-        away_team: away
+  alert('Extra tips sparade!')
 
-      })
-
-    if (error) {
-      console.error(error)
-      alert(error.message)
-      return
-    }
-
-    alert('Match tillagd!')
+})
 
 await loadMatches()
 
