@@ -502,28 +502,21 @@
 
       <div class="text-6xl font-bold text-green-400 mb-8">100 kr</div>
 
-<div class="bg-white rounded-3xl p-6 inline-block mb-8">
-  <img
-    src="https://quickchart.io/qr?text=swish://payment?phone=46702582935%26amount=100%26message=VMTIPSET&size=250"
-    alt="Swish QR"
-    class="w-64 h-64"
-  />
-</div>
+      <div class="bg-white rounded-3xl p-6 inline-block mb-8">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=VM-TIPSET-100KR" alt="QR Kod" class="w-64 h-64" />
+      </div>
 
-<div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
-  <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
-  <div
-  class="text-3xl font-bold tracking-widest cursor-pointer"
-  onclick="navigator.clipboard.writeText('0702582935')"
->
-    0702582935
+      <div class="bg-zinc-800 border border-zinc-700 rounded-2xl p-4 mb-8">
+        <div class="text-zinc-400 text-sm mb-1">Swishnummer</div>
+        <div class="text-3xl font-bold tracking-widest">123 456 78 90</div>
+      </div>
+
+      <button id="payment-done-btn" class="w-full bg-green-500 hover:bg-green-600 transition-colors py-4 rounded-2xl text-xl font-bold">
+        ✅ Jag har betalat
+      </button>
+
+    </div>
   </div>
-
-  <div class="text-zinc-500 text-sm mt-2">
-    Tryck på numret för att kopiera
-  </div>
-
-</div>
 
   <!-- TACKSIDA -->
   <div id="thank-you-page" class="hidden min-h-screen flex items-center justify-center p-6">
@@ -536,6 +529,7 @@
       <p class="text-2xl text-zinc-300 leading-relaxed mb-10">
         När din anmälan har behandlats kommer du att få access till tabellen.
         <br /><br />
+        Bekräftelse skickas till din e-postadress.
       </p>
 
       <button id="back-home-btn" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-bold hover:scale-105 transition-transform">
