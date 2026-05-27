@@ -1700,13 +1700,14 @@ window.addEventListener('load', async () => {
   } = await sb.auth.getSession()
 if (session) {
 
-  const { data: paidTips } = await sb
-    .from('tips')
-    .select('payment_status')
-    .eq('user_id', session.user.id)
-    .maybeSingle()
+const { data: paidTips } = await sb
+  .from('tips')
+  .select('payment_status')
+  .eq('user_id', session.user.id)
+  .eq('payment_status', true)
+  .limit(1)
 
-  if (paidTips?.payment_status === true) {
+  if (paidTips && paidTips.length > 0) {
 
     saveTopBtn.classList.remove('hidden')
 
