@@ -486,16 +486,44 @@
     border-zinc-600
   "
 >
-  Ditt tips
+
+  <div class="flex items-center justify-center gap-2">
+
+    <span>Ditt tips</span>
+
+    <button
+      id="view-other-tips-btn"
+      class="text-zinc-400 hover:text-white transition-colors"
+      title="Visa andras tips"
+    >
+      👁️
+    </button>
+
+  </div>
+
 </th>
 
   </tr>
 
 </thead>
 
-    <tbody id="upcoming-matches-body"></tbody>
+<tbody id="upcoming-matches-body"></tbody>
 
-  </table>
+</table>
+
+<div
+  id="other-tips-box"
+  class="hidden p-4 border-t border-zinc-800"
+>
+  <select
+    id="other-user-select"
+    class="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2"
+  >
+    <option value="">
+      Mina tips
+    </option>
+  </select>
+</div>
 </div>
 
 
@@ -710,6 +738,8 @@ const ADMIN_EMAIL = 'pontusharthpil@live.se'
 let matches = []
 let isEditing = false
 let leaderboardInterval = null
+let viewingOtherUser = false
+
 const lockDate =
   new Date('2026-06-11T20:00:00')
 
@@ -1425,6 +1455,7 @@ await loadUserTips()
 await loadLeaderboard()
 await loadPrizePool()
 await loadExtraTips()
+await loadParticipants()
 
 if (!leaderboardInterval) {
 
@@ -1630,18 +1661,47 @@ paymentDoneBtn.addEventListener('click', async () => {
 
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
+
 document
   .getElementById('admin-logout-btn')
   .addEventListener('click', logout)
 
-// ======================================
-// REDIGERA TIPS
-// Låses 2026-06-11 20:00
-// ======================================
+document.addEventListener('click', (e) => {
 
+  if (e.target.id === 'view-other-tips-btn') {
+
+    document
+      .getElementById('other-tips-box')
+      .classList.toggle('hidden')
+
+  }
+
+})
+document
+  .getElementById('other-user-select')
+  .addEventListener('change',
+    async function () {
+
+      if (!this.value) {
+
+        viewingOtherUser = false
+
+        await loadUserTips()
+
+        renderMatches()
+
+        return
+      }
+
+      viewingOtherUser = true
+
+      await loadOtherUserTips(
+        this.value
+      )
+
+    })
 // ======================================
 // REDIGERA TIPS
-// Låses 2026-06-11 20:00
 // ======================================
 
 editTipsBtn.addEventListener('click', async () => {
@@ -1738,7 +1798,71 @@ async function togglePaymentStatus(userId, status) {
   }
 
 }
+async function loadOtherUserTips(userId) {
 
+  const { data, error } = await sb
+    .from('tips')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  matches.forEach(match => {
+
+    const tip = data.find(
+      t =>
+        t.home_team === match.home &&
+        t.away_team === match.away
+    )
+
+    if (!tip) return
+
+    match.tipHomeScore = tip.home_score
+    match.tipAwayScore = tip.away_score
+    match.tip1X2 = tip.tip_1x2 || 'X'
+
+  })
+
+  renderMatches()
+
+}
+
+async function loadParticipants() {
+  const { data } = await sb
+    .from('tips')
+    .select('user_id, player_name')
+
+  const users = {}
+
+  data.forEach(row => {
+
+    users[row.user_id] =
+      row.player_name
+
+  })
+
+  const select =
+    document.getElementById(
+      'other-user-select'
+    )
+
+  select.innerHTML =
+    '<option value="">Mina tips</option>'
+
+  Object.entries(users)
+    .forEach(([id, name]) => {
+
+      select.innerHTML += `
+        <option value="${id}">
+          ${name}
+        </option>
+      `
+    })
+
+}
 async function loadAdminUsers() {
 
   const { data, error } = await sb
@@ -2043,11 +2167,12 @@ if (session.user.email === ADMIN_EMAIL) {
   loggedInUser.innerHTML =
     `Inloggad som: <span class="text-white">${session.user.user_metadata.name}</span>`
 
-  await loadMatches()
-  await loadUserTips()
-  await loadLeaderboard()
-  await loadPrizePool()
-  await loadExtraTips()
+await loadMatches()
+await loadUserTips()
+await loadLeaderboard()
+await loadPrizePool()
+await loadExtraTips()
+await loadParticipants()
 
   if (!leaderboardInterval) {
 
