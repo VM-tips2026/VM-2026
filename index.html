@@ -1690,8 +1690,8 @@ document
         renderMatches()
 
         document
-          .getElementById('other-tips-box')
-          .style.display = 'none'
+  .getElementById('other-tips-box')
+  .classList.add('hidden')
 
         return
       }
@@ -1709,8 +1709,8 @@ document
       )
 
       document
-        .getElementById('other-tips-box')
-        .style.display = 'none'
+  .getElementById('other-tips-box')
+  .classList.add('hidden')
 
     })
 // ======================================
@@ -2217,13 +2217,6 @@ if (eyeBtn) {
 
   eyeBtn.addEventListener('click', () => {
 
-    console.log('Öga klickat')
-
-    const box =
-      document.getElementById('other-tips-box')
-
-    console.log(box)
-
     const eyeBtn =
   document.getElementById('view-other-tips-btn')
 
@@ -2234,27 +2227,11 @@ if (eyeBtn) {
     const box =
       document.getElementById('other-tips-box')
 
-    if (
-      box.style.display === 'block'
-    ) {
-
-      box.style.display = 'none'
-
-    } else {
-
-      box.style.display = 'block'
-
-    }
+    box.classList.toggle('hidden')
 
   })
 
 }
-
-  })
-
-}
-
-})
 </script>
 
 </body>
