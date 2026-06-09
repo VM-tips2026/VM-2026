@@ -459,9 +459,11 @@
 
     <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
       <tr>
-        <th class="px-3 py-2">Datum</th>
-        <th class="px-3 py-2">Tid</th>
-        <th class="px-3 py-2">Grupp</th>
+<th class="md:hidden">Info</th>
+
+<th class="hidden md:table-cell">Datum</th>
+<th class="hidden md:table-cell">Tid</th>
+<th class="hidden md:table-cell">Grupp</th>
         <th class="px-3 py-2">Match</th>
     <th class="px-3 py-2">Resultat</th>
 
@@ -1180,17 +1182,25 @@ const awayCorrect =
         upcomingMatchesBody.innerHTML += `
 <tr class="border-t border-zinc-800">
 
-  <td class="p-4">
+<td class="px-2 py-2">
+
+  <div class="md:hidden text-xs space-y-1">
+
+    <div>${match.date.slice(5)}</div>
+
+    <div>${match.time}</div>
+
+    <div class="text-zinc-400">
+      ${match.group}
+    </div>
+
+  </div>
+
+  <div class="hidden md:block">
     ${match.date}
-  </td>
+  </div>
 
-  <td class="p-4">
-    ${match.time}
-  </td>
-
-  <td class="p-4 text-zinc-400 font-bold">
-    ${match.group}
-  </td>
+</td>
 
   <td class="p-4 font-bold">
     ${match.home} - ${match.away}
