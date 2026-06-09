@@ -487,19 +487,35 @@
   "
 >
 
-  <div class="flex items-center justify-center gap-2">
+<div class="flex items-center justify-center gap-2 relative">
 
-    <span>Ditt tips</span>
+  <span>Ditt tips</span>
 
-    <button
-      id="view-other-tips-btn"
-      class="text-zinc-400 hover:text-white transition-colors"
-      title="Visa andras tips"
+  <button
+    id="view-other-tips-btn"
+    class="text-zinc-400 hover:text-white transition-colors"
+    title="Visa andras tips"
+  >
+    👁️
+  </button>
+
+  <div
+    id="other-tips-box"
+    class="hidden absolute top-8 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-xl p-2 shadow-xl"
+  >
+
+    <select
+      id="other-user-select"
+      class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1 text-xs min-w-[180px]"
     >
-      👁️
-    </button>
+      <option value="">
+        Mina tips
+      </option>
+    </select>
 
   </div>
+
+</div>
 
 </th>
 
@@ -512,27 +528,6 @@
 </table>
 
 </div>
-
-<div
-  id="other-tips-box"
-  class="mt-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
->
-
-  <div class="text-sm text-zinc-400 mb-2">
-    Visa deltagares tips
-  </div>
-
-  <select
-    id="other-user-select"
-    class="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 w-full max-w-xs"
-  >
-    <option value="">
-      Mina tips
-    </option>
-  </select>
-
-</div>
-
 
   </div>
 <!-- ADMIN PAGE -->
