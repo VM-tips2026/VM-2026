@@ -911,13 +911,13 @@ users[tip.user_id].points += points
 
 sortedUsers.forEach((user, index) => {
 
-  if (index === 3) {
-    leaderboardBody.innerHTML += `
-      <tr>
-        <td colspan="3" class="border-t-4 border-yellow-500"></td>
-      </tr>
-    `
-  }
+if (index === 3) {
+  leaderboardBody.innerHTML += `
+    <tr>
+      <td colspan="3" class="border-t border-zinc-700"></td>
+    </tr>
+  `
+}
 
   leaderboardBody.innerHTML += `
     <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
