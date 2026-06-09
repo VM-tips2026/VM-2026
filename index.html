@@ -489,7 +489,9 @@
 
 <div class="flex items-center justify-center gap-2 relative">
 
-  <span>Ditt tips</span>
+  <span id="tips-header">
+  Ditt tips
+</span>
 
   <button
     id="view-other-tips-btn"
@@ -1672,6 +1674,45 @@ document
   .getElementById('other-user-select')
   .addEventListener('change',
     async function () {
+
+      const header =
+        document.getElementById('tips-header')
+
+      if (!this.value) {
+
+        viewingOtherUser = false
+
+        header.textContent =
+          'Ditt tips'
+
+        await loadUserTips()
+
+        renderMatches()
+
+        document
+          .getElementById('other-tips-box')
+          .classList.add('hidden')
+
+        return
+      }
+
+      viewingOtherUser = true
+
+      const selectedName =
+        this.options[this.selectedIndex].text
+
+      header.textContent =
+        `${selectedName}s tips`
+
+      await loadOtherUserTips(
+        this.value
+      )
+
+      document
+        .getElementById('other-tips-box')
+        .classList.add('hidden')
+
+    })
 
       if (!this.value) {
 
