@@ -1691,7 +1691,7 @@ document
 
         document
           .getElementById('other-tips-box')
-          .classList.add('hidden')
+          .style.display = 'none'
 
         return
       }
@@ -1710,26 +1710,7 @@ document
 
       document
         .getElementById('other-tips-box')
-        .classList.add('hidden')
-
-    })
-
-      if (!this.value) {
-
-        viewingOtherUser = false
-
-        await loadUserTips()
-
-        renderMatches()
-
-        return
-      }
-
-      viewingOtherUser = true
-
-      await loadOtherUserTips(
-        this.value
-      )
+        .style.display = 'none'
 
     })
 // ======================================
@@ -2243,7 +2224,31 @@ if (eyeBtn) {
 
     console.log(box)
 
-    box.style.display = 'block'
+    const eyeBtn =
+  document.getElementById('view-other-tips-btn')
+
+if (eyeBtn) {
+
+  eyeBtn.addEventListener('click', () => {
+
+    const box =
+      document.getElementById('other-tips-box')
+
+    if (
+      box.style.display === 'block'
+    ) {
+
+      box.style.display = 'none'
+
+    } else {
+
+      box.style.display = 'block'
+
+    }
+
+  })
+
+}
 
   })
 
