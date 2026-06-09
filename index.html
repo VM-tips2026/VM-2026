@@ -1666,17 +1666,6 @@ document
   .getElementById('admin-logout-btn')
   .addEventListener('click', logout)
 
-document.addEventListener('click', (e) => {
-
-  if (e.target.id === 'view-other-tips-btn') {
-
-    document
-      .getElementById('other-tips-box')
-      .classList.toggle('hidden')
-
-  }
-
-})
 document
   .getElementById('other-user-select')
   .addEventListener('change',
@@ -2188,13 +2177,31 @@ await loadParticipants()
   // UTLOGGAD
   else {
 
-    startPage.classList.remove('hidden')
+startPage.classList.remove('hidden')
 
-    await loadMatches()
-    await loadLeaderboard()
-    await loadPrizePool()
-startCountdown()
-  }
+  await loadMatches()
+  await loadLeaderboard()
+  await loadPrizePool()
+  startCountdown()
+
+}
+
+const eyeBtn =
+  document.getElementById('view-other-tips-btn')
+
+if (eyeBtn) {
+
+  eyeBtn.addEventListener('click', () => {
+
+    console.log('Öga klickat')
+
+    document
+      .getElementById('other-tips-box')
+      .classList.toggle('hidden')
+
+  })
+
+}
 
 })
 </script>
