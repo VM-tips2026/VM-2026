@@ -2202,9 +2202,12 @@ if (eyeBtn) {
 
     console.log('Öga klickat')
 
-    document
-      .getElementById('other-tips-box')
-      .classList.toggle('hidden')
+    const box =
+      document.getElementById('other-tips-box')
+
+    console.log(box)
+
+    box.style.display = 'block'
 
   })
 
