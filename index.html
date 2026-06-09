@@ -566,7 +566,25 @@
   </button>
 
 </div>
+<div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
 
+  <h2 class="text-3xl font-bold mb-6">
+    👥 Registrerade användare
+  </h2>
+
+  <table class="w-full">
+
+    <thead>
+      <tr class="border-b border-zinc-700 text-zinc-400">
+        <th class="text-left py-3">Namn</th>
+      </tr>
+    </thead>
+
+    <tbody id="admin-users-body"></tbody>
+
+  </table>
+
+</div>
   <!-- MATCHER -->
   <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden overflow-x-auto">
 
@@ -1355,9 +1373,11 @@ if (data.user.email === ADMIN_EMAIL) {
 
   adminPage.classList.remove('hidden')
 
-  await loadMatches()
+await loadMatches()
 
-  await loadAdminMatches()
+await loadAdminUsers()
+
+await loadAdminMatches()
 
   return
 }
@@ -1669,6 +1689,46 @@ if (new Date() >= lockDate) {
 // ======================================
 // STARTA APPEN
 // ======================================
+async function loadAdminUsers() {
+
+  const { data, error } = await sb
+    .from('tips')
+    .select('user_id, player_name')
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const users = {}
+
+  data.forEach(user => {
+
+    if (!users[user.user_id]) {
+
+      users[user.user_id] =
+        user.player_name
+
+    }
+
+  })
+
+  const body =
+    document.getElementById('admin-users-body')
+
+  body.innerHTML = ''
+
+  Object.values(users).forEach(name => {
+
+    body.innerHTML += `
+      <tr class="border-t border-zinc-800">
+        <td class="py-3">${name}</td>
+      </tr>
+    `
+
+  })
+
+}
 async function loadAdminMatches() {
 
   const { data, error } = await sb
