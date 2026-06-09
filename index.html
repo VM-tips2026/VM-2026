@@ -1844,18 +1844,26 @@ async function loadOtherUserTips(userId) {
 }
 
 async function loadParticipants() {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
   const { data } = await sb
     .from('tips')
     .select('user_id, player_name')
 
   const users = {}
 
-  data.forEach(row => {
+data.forEach(row => {
 
-    users[row.user_id] =
-      row.player_name
+  if (row.user_id === user.id)
+    return
 
-  })
+  users[row.user_id] =
+    row.player_name
+
+})
 
   const select =
     document.getElementById(
