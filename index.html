@@ -911,6 +911,14 @@ users[tip.user_id].points += points
 
 sortedUsers.forEach((user, index) => {
 
+  if (index === 3) {
+    leaderboardBody.innerHTML += `
+      <tr>
+        <td colspan="3" class="border-t-4 border-yellow-500"></td>
+      </tr>
+    `
+  }
+
   leaderboardBody.innerHTML += `
     <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
 
@@ -923,8 +931,8 @@ sortedUsers.forEach((user, index) => {
       </td>
 
       <td class="px-3 py-2 text-white font-bold">
-  ${user[1].points}
-</td>
+        ${user[1].points}
+      </td>
 
     </tr>
   `
