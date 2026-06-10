@@ -1002,8 +1002,15 @@ async function loadExtraTips() {
     data: { user }
   } = await sb.auth.getUser()
 
-  if (!user) return
+  console.log('User i loadExtraTips:', user)
 
+  if (!user) {
+    console.log('Ingen användare inloggad')
+    return
+  }
+
+  // resten av koden...
+}
 const {
   data: userTips,
   error
