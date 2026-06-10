@@ -873,6 +873,7 @@ async function loadLeaderboard() {
 const { data, error } = await sb
   .from('tips')
   .select('*')
+  .range(0, 5000)
 
 console.log('Antal rader:', data.length)
 
