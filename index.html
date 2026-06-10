@@ -1002,10 +1002,8 @@ async function loadExtraTips() {
     data: { user }
   } = await sb.auth.getUser()
 
-  console.log('User i loadExtraTips:', user)
-
   if (!user) {
-    console.log('Ingen användare inloggad')
+
     return
   }
 
