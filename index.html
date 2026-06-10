@@ -874,7 +874,12 @@ const { data, error } = await sb
   .from('tips')
   .select('*')
 
+console.log('Antal rader:', data.length)
 
+console.log(
+  'Unika user_id direkt från databasen:',
+  [...new Set(data.map(t => t.user_id))].length
+)
 
   if (error) {
     console.error(error)
