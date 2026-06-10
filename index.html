@@ -886,7 +886,10 @@ const { data, error } = await sb
 
 
   data.forEach(tip => {
-
+console.log(
+  tip.user_id,
+  tip.player_name
+)
    
 
     // Skapa användare
@@ -969,6 +972,10 @@ console.log(
 )
 
 console.log(users)
+console.log(
+  'User IDs i users:',
+  Object.keys(users)
+)
   const sortedUsers =
     Object.entries(users)
       .sort((a, b) =>
