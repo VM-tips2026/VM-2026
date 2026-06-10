@@ -828,11 +828,12 @@ async function loadPrizePool() {
   const { data, error } = await sb
     .from('tips')
     .select('user_id')
+    .range(0, 5000)
 
-if (error) {
-  console.error(error)
-  return
-}
+  if (error) {
+    console.error(error)
+    return
+  }
 
 const uniqueUsers =
   [...new Set(data.map(t => t.user_id))]
