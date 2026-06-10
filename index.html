@@ -959,6 +959,10 @@ if (tip.tip_1x2 === real1X2) {
 
 users[tip.user_id].points += points
 })
+console.log(
+  'Unika användare i leaderboard:',
+  Object.keys(users).length
+)
   const sortedUsers =
     Object.entries(users)
       .sort((a, b) =>
