@@ -1857,7 +1857,7 @@ async function loadParticipants() {
 
 data.forEach(row => {
 
-  if (row.user_id === user.id)
+  if (user && row.user_id === user.id)
     return
 
   users[row.user_id] =
