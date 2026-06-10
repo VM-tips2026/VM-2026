@@ -828,12 +828,11 @@ async function loadPrizePool() {
   const { data, error } = await sb
     .from('tips')
     .select('user_id')
-    .range(0, 5000)
 
-  if (error) {
-    console.error(error)
-    return
-  }
+if (error) {
+  console.error(error)
+  return
+}
 
 const uniqueUsers =
   [...new Set(data.map(t => t.user_id))]
@@ -874,14 +873,8 @@ async function loadLeaderboard() {
 const { data, error } = await sb
   .from('tips')
   .select('*')
-  .range(0, 5000)
 
-console.log('Antal rader:', data.length)
 
-console.log(
-  'Unika user_id direkt från databasen:',
-  [...new Set(data.map(t => t.user_id))].length
-)
 
   if (error) {
     console.error(error)
@@ -893,10 +886,7 @@ console.log(
 
 
   data.forEach(tip => {
-console.log(
-  tip.user_id,
-  tip.player_name
-)
+
    
 
     // Skapa användare
@@ -969,20 +959,6 @@ if (tip.tip_1x2 === real1X2) {
 
 users[tip.user_id].points += points
 })
-console.log(
-  'Unika användare i leaderboard:',
-  Object.keys(users).length
-)
-console.log(
-  'Antal användare i users:',
-  Object.keys(users).length
-)
-
-console.log(users)
-console.log(
-  'User IDs i users:',
-  Object.keys(users)
-)
   const sortedUsers =
     Object.entries(users)
       .sort((a, b) =>
