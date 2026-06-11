@@ -25,9 +25,9 @@
           Logga in
         </button>
 
-        <button id="register-tab" class="flex-1 bg-zinc-800 text-white py-3 rounded-2xl font-bold transition-colors">
-          Skapa konto
-        </button>
+<button id="register-tab" class="hidden">
+  Skapa konto
+</button>
       </div>
 
       <!-- LOGIN -->
@@ -1477,13 +1477,6 @@ if (!leaderboardInterval) {
 })
 registerForm.addEventListener('submit', async (e) => {
 
-  e.preventDefault()
-
-  alert('Registreringen är stängd.')
-
-  return
-
-})
   e.preventDefault()
 
   const name =
