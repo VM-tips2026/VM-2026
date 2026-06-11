@@ -1476,6 +1476,14 @@ if (!leaderboardInterval) {
 }
 })
 registerForm.addEventListener('submit', async (e) => {
+
+  e.preventDefault()
+
+  alert('Registreringen är stängd.')
+
+  return
+
+})
   e.preventDefault()
 
   const name =
