@@ -749,10 +749,11 @@ const lockDate =
 
 async function loadMatches() {
 
-  const { data, error } = await sb
-    .from('matcher')
-    .select('*')
-    .order('date', { ascending: true })
+const { data, error } = await sb
+  .from('matcher')
+  .select('*')
+  .order('date', { ascending: true })
+  .order('time', { ascending: true })
 
   if (error) {
     console.error(error)
@@ -1948,10 +1949,11 @@ Object.values(users).forEach(user => {
 }
 async function loadAdminMatches() {
 
-  const { data, error } = await sb
-    .from('matcher')
-    .select('*')
-    .order('date', { ascending: true })
+const { data, error } = await sb
+  .from('matcher')
+  .select('*')
+  .order('date', { ascending: true })
+  .order('time', { ascending: true })
 
   if (error) {
     console.error(error)
