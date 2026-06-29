@@ -862,7 +862,7 @@ async function loadUserTips() {
   renderMatches()
 }
 
-async function loadPrizePool() 
+async function loadPrizePool() {
 
 const { data, error } = await sb
   .from('tips')
@@ -882,6 +882,7 @@ const {
 
 if (playoffError) {
   console.error(playoffError)
+}
 }
 
 async function loadLeaderboard() {
