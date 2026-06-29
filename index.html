@@ -255,14 +255,21 @@
 
   <div class="flex items-center gap-4 flex-wrap justify-end"></div>
 
-    <div class="flex items-center gap-3 flex-wrap">
+  <div class="flex items-center gap-3 flex-wrap">
 
-    <button
-      id="edit-tips-btn"
-      class="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-2xl font-bold transition-colors text-black"
-    >
-      ✏️ Redigera tips
-    </button>
+  <button
+    id="playoff-btn"
+    class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-2xl font-bold"
+  >
+    🏆 Slutspel
+  </button>
+
+  <button
+    id="edit-tips-btn"
+    class="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-2xl font-bold transition-colors text-black"
+  >
+    ✏️ Redigera tips
+  </button>
 
     <button
       id="table-logout-btn"
@@ -532,6 +539,28 @@
 </div>
 
   </div>
+  <!-- SLUTSPEL -->
+<div id="playoff-page" class="hidden min-h-screen p-6 max-w-7xl mx-auto">
+
+  <div class="flex items-center justify-between mb-8">
+
+    <h1 class="text-5xl font-bold">
+      🏆 Slutspel
+    </h1>
+
+    <button
+      id="back-from-playoff-btn"
+      class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-2xl font-bold"
+    >
+      ⬅️ Tillbaka
+    </button>
+
+  </div>
+
+  <div id="playoff-body"></div>
+
+</div>
+
 <!-- ADMIN PAGE -->
 <div
   id="admin-page"
@@ -1108,6 +1137,15 @@ const {
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
     const leaderboardBody = document.getElementById('leaderboard-body')
     const extraTipsBody = document.getElementById('extra-tips-body')
+    const playoffPage =
+  document.getElementById(
+    'playoff-page'
+  )
+
+const playoffBody =
+  document.getElementById(
+    'playoff-body'
+  )
     const totalPot =
   document.getElementById('total-pot')
 
@@ -1134,7 +1172,40 @@ function get1X2(home, away) {
   return 'Oavgjort'
 }
     
+async function loadPlayoff() {
 
+  const { data, error } = await sb
+    .from('slutspel_matcher')
+    .select('*')
+    .order('match_order')
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  playoffBody.innerHTML = ''
+
+  data.forEach(match => {
+
+    playoffBody.innerHTML += `
+
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
+
+        <div class="text-zinc-500 text-sm">
+          ${match.round}
+        </div>
+
+        <div class="font-bold text-lg mb-3">
+          ${match.home_team} - ${match.away_team}
+        </div>
+
+      </div>
+
+    `
+  })
+
+}
     function renderMatches() {
       matchesBody.innerHTML = ''
       upcomingMatchesBody.innerHTML = ''
@@ -1670,7 +1741,27 @@ paymentDoneBtn.addEventListener('click', async () => {
 
 logoutBtn.addEventListener('click', logout)
 tableLogoutBtn.addEventListener('click', logout)
+document
+  .getElementById('playoff-btn')
+  .addEventListener('click', async () => {
 
+    tablePage.classList.add('hidden')
+
+    playoffPage.classList.remove('hidden')
+
+    await loadPlayoff()
+
+})
+
+document
+  .getElementById('back-from-playoff-btn')
+  .addEventListener('click', () => {
+
+    playoffPage.classList.add('hidden')
+
+    tablePage.classList.remove('hidden')
+
+})
 document
   .getElementById('admin-logout-btn')
   .addEventListener('click', logout)
