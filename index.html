@@ -795,6 +795,20 @@ grid-template-columns:
 
     </table>
 
+   </div>
+
+  <!-- SLUTSPEL -->
+  <div class="mt-10">
+
+    <h2 class="text-2xl font-bold mb-4">
+      🏆 Slutspelsresultat
+    </h2>
+
+    <div
+      id="admin-playoff-matches"
+      class="space-y-3"
+    ></div>
+
   </div>
 
 </div>
@@ -1304,6 +1318,7 @@ const {
     const matchesBody = document.getElementById('matches-body')
     const upcomingMatchesBody = document.getElementById('upcoming-matches-body')
     const leaderboardBody = document.getElementById('leaderboard-body')
+    const adminPlayoffMatches = document.getElementById('admin-playoff-matches')
     const extraTipsBody = document.getElementById('extra-tips-body')
     const playoffPage =
   document.getElementById(
@@ -2500,6 +2515,8 @@ Object.values(users).forEach(user => {
 
 }
 async function loadAdminMatches() {
+}
+async function loadAdminPlayoffMatches() {
 
 const { data, error } = await sb
   .from('matcher')
@@ -2736,6 +2753,8 @@ if (session.user.email === ADMIN_EMAIL) {
   await loadAdminUsers()
 
   await loadAdminMatches()
+
+  await loadAdminPlayoffMatches()
 
   return
 }
