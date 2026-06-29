@@ -1440,32 +1440,35 @@ const card = `
 
 </div>
 `
-if (match.match_order <= 8)
+if (match.id >= 1 && match.id <= 8)
   round16Left.innerHTML += card
 
-else if (match.match_order <= 12)
+else if (match.id >= 9 && match.id <= 16)
+  round16Right.innerHTML += card
+
+else if ([17,18].includes(match.id))
   round8Left.innerHTML += card
 
-else if (match.match_order <= 14)
+else if ([19,20].includes(match.id))
   quarterLeft.innerHTML += card
 
-else if (match.match_order === 15)
+else if (match.id === 25)
   semiLeft.innerHTML += card
 
-else if (match.match_order === 16)
-  finalColumn.innerHTML += card
-
-else if (match.match_order === 17)
-  semiRight.innerHTML += card
-
-else if (match.match_order <= 19)
-  quarterRight.innerHTML += card
-
-else if (match.match_order <= 23)
+else if ([21,22].includes(match.id))
   round8Right.innerHTML += card
 
-else
-  round16Right.innerHTML += card
+else if ([23,24].includes(match.id))
+  quarterRight.innerHTML += card
+
+else if (match.id === 28)
+  semiRight.innerHTML += card
+
+else if (match.id === 30)
+  finalColumn.innerHTML += card
+
+else if (match.id === 29)
+  finalColumn.innerHTML += card
   })
 
 }
