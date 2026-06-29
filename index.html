@@ -1297,15 +1297,17 @@ async function savePlayoffTips() {
     .from('slutspel_tips')
     .upsert(tips)
 
-  if (error) {
+if (error) {
 
-    console.error(error)
+  console.error('SLUTSPEL FEL:', error)
 
-    alert('Fel vid sparning')
+  alert(
+    JSON.stringify(error)
+  )
 
-    return
+  return
 
-  }
+}
 
   alert('Slutspelstips sparade!')
 
