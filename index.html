@@ -1077,7 +1077,41 @@ if (tip.tip_1x2 === real1X2) {
 
 users[tip.user_id].points += points
 })
-  const sortedUsers =
+
+playoffTips.forEach(tip => {
+
+  const result =
+    playoffResults.find(
+      r => r.match_id === tip.match_id
+    )
+
+  if (!result) return
+
+  let points = 0
+
+  const real1X2 =
+    result.home_score > result.away_score
+      ? '1'
+      : result.away_score > result.home_score
+      ? '2'
+      : 'X'
+
+  if (tip.home_score === result.home_score)
+    points += 1
+
+  if (tip.away_score === result.away_score)
+    points += 1
+
+  if (tip.tip_1x2 === real1X2)
+    points += 1
+
+  if (users[tip.user_id]) {
+    users[tip.user_id].points += points
+  }
+
+})
+
+const sortedUsers =
     Object.entries(users)
       .sort((a, b) =>
         b[1].points - a[1].points
