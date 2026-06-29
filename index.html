@@ -1467,33 +1467,51 @@ const card = `
   </div>
 
   <div class="font-bold mb-3">
-<div class="space-y-2">
+<div class="space-y-2 mb-3">
 
-<div class="flex items-center gap-2">
+  <div class="flex items-center justify-between">
 
-  <img
-    src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
-    class="w-5 h-4 rounded-sm"
-  >
+    <div class="flex items-center gap-2">
 
-  <span class="font-bold">
-    ${match.home_team}
-  </span>
+      <img
+        src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
+        class="w-5 h-4 rounded-sm"
+      >
 
-</div>
+      <span class="font-bold">
+        ${match.home_team}
+      </span>
 
-<div class="flex items-center gap-2 mt-1">
+    </div>
 
-  <img
-    src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
-    class="w-5 h-4 rounded-sm"
-  >
+    <span class="text-zinc-300 font-bold">
+      ${savedTip?.home_score ?? 0}
+    </span>
 
-  <span class="font-bold">
-    ${match.away_team}
-  </span>
+  </div>
 
-</div>
+  <div class="border-t border-zinc-700"></div>
+
+  <div class="flex items-center justify-between">
+
+    <div class="flex items-center gap-2">
+
+      <img
+        src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
+        class="w-5 h-4 rounded-sm"
+      >
+
+      <span class="font-bold">
+        ${match.away_team}
+      </span>
+
+    </div>
+
+    <span class="text-zinc-300 font-bold">
+      ${savedTip?.away_score ?? 0}
+    </span>
+
+  </div>
 
 </div>
   </div>
