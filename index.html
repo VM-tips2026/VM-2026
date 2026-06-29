@@ -558,7 +558,16 @@
   </div>
 
   <div id="playoff-body"></div>
+<div class="mt-8">
 
+  <button
+    id="save-playoff-btn"
+    class="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-2xl font-bold"
+  >
+    💾 Spara slutspelstips
+  </button>
+
+</div>
 </div>
 
 <!-- ADMIN PAGE -->
@@ -1192,21 +1201,45 @@ async function loadPlayoff() {
 
   data.forEach(match => {
 
-    playoffBody.innerHTML += `
+playoffBody.innerHTML += `
 
-      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
 
-        <div class="text-zinc-500 text-sm">
-          ${match.round}
-        </div>
+    <div class="text-zinc-500 text-sm mb-2">
+      ${match.round}
+    </div>
 
-        <div class="font-bold text-lg mb-3">
-          ${match.home_team} - ${match.away_team}
-        </div>
+    <div class="font-bold mb-3">
+      ${match.home_team}
+      -
+      ${match.away_team}
+    </div>
 
-      </div>
+    <div class="flex items-center gap-3">
 
-    `
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        data-type="home"
+        class="playoff-home w-16 bg-zinc-800 rounded-xl p-2 text-center"
+      >
+
+      <span>-</span>
+
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        data-type="away"
+        class="playoff-away w-16 bg-zinc-800 rounded-xl p-2 text-center"
+      >
+
+    </div>
+
+  </div>
+
+`
   })
 
 }
