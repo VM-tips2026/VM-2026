@@ -30,32 +30,44 @@
 }
 
 .playoff-column {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 18px;
+  position: relative;
+  display:flex;
+  flex-direction:column;
 }
 
 .playoff-card {
 
   background: #18181b;
-
   border: 1px solid #27272a;
-
   border-radius: 16px;
-
   padding: 12px;
 }
 
-.playoff-round {
+#round16-left,
+#round16-right {
+  gap: 12px;
+}
 
-  color: #71717a;
+#round8-left,
+#round8-right {
+  padding-top: 70px;
+  gap: 120px;
+}
 
-  font-size: 12px;
+#quarter-left,
+#quarter-right {
+  padding-top: 170px;
+  gap: 260px;
+}
 
-  margin-bottom: 8px;
+#semi-left,
+#semi-right {
+  padding-top: 350px;
+  gap: 0;
+}
+
+#final-column {
+  padding-top: 420px;
 }
 
 </style>
