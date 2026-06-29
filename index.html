@@ -894,6 +894,22 @@ const {
 if (playoffResultsError) {
   console.error(playoffResultsError)
 }
+
+if (error) {
+  console.error(error)
+  return
+}
+
+const {
+  data: playoffResults,
+  error: playoffResultsError
+} = await sb
+  .from('slutspel_resultat')
+  .select('*')
+
+if (playoffResultsError) {
+  console.error(playoffResultsError)
+}
 const {
   data: { user }
 } = await sb.auth.getUser()
@@ -960,6 +976,22 @@ const {
 
 if (playoffError) {
   console.error(playoffError)
+}
+
+const {
+  data: playoffResults,
+  error: playoffResultsError
+} = await sb
+  .from('slutspel_resultat')
+  .select('*')
+
+if (playoffResultsError) {
+  console.error(playoffResultsError)
+}
+
+if (error) {
+  console.error(error)
+  return
 }
 
   if (error) {
