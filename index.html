@@ -5,6 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VM-Tipset 2026</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+
+.playoff-bracket {
+
+  display: grid;
+
+  grid-template-columns:
+    260px
+    180px
+    180px
+    180px
+    220px
+    180px
+    180px
+    180px
+    260px;
+
+  gap: 20px;
+
+  overflow-x: auto;
+
+  padding-bottom: 30px;
+}
+
+.playoff-column {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.playoff-card {
+
+  background: #18181b;
+
+  border: 1px solid #27272a;
+
+  border-radius: 16px;
+
+  padding: 12px;
+}
+
+.playoff-round {
+
+  color: #71717a;
+
+  font-size: 12px;
+
+  margin-bottom: 8px;
+}
+
+</style>
 </head>
 <body class="bg-zinc-950 text-white min-h-screen">
 
@@ -557,7 +611,24 @@
 
   </div>
 
-  <div id="playoff-body"></div>
+<div
+  id="playoff-body"
+  class="playoff-bracket"
+>
+
+  <div id="round16-left" class="playoff-column"></div>
+  <div id="round8-left" class="playoff-column"></div>
+  <div id="quarter-left" class="playoff-column"></div>
+  <div id="semi-left" class="playoff-column"></div>
+
+  <div id="final-column" class="playoff-column"></div>
+
+  <div id="semi-right" class="playoff-column"></div>
+  <div id="quarter-right" class="playoff-column"></div>
+  <div id="round8-right" class="playoff-column"></div>
+  <div id="round16-right" class="playoff-column"></div>
+
+</div>
 <div class="mt-8">
 
   <button
@@ -1280,54 +1351,110 @@ async function loadPlayoff() {
   }
 
   playoffBody.innerHTML = ''
+const round16Left =
+  document.getElementById('round16-left')
 
+const round8Left =
+  document.getElementById('round8-left')
+
+const quarterLeft =
+  document.getElementById('quarter-left')
+
+const semiLeft =
+  document.getElementById('semi-left')
+
+const finalColumn =
+  document.getElementById('final-column')
+
+const semiRight =
+  document.getElementById('semi-right')
+
+const quarterRight =
+  document.getElementById('quarter-right')
+
+const round8Right =
+  document.getElementById('round8-right')
+
+const round16Right =
+  document.getElementById('round16-right')
+
+round16Left.innerHTML = ''
+round8Left.innerHTML = ''
+quarterLeft.innerHTML = ''
+semiLeft.innerHTML = ''
+finalColumn.innerHTML = ''
+semiRight.innerHTML = ''
+quarterRight.innerHTML = ''
+round8Right.innerHTML = ''
+round16Right.innerHTML = ''
   data.forEach(match => {
 
     const savedTip =
       savedTips.find(
         t => t.match_id === match.id
       )
-playoffBody.innerHTML += `
+const card = `
 
-  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
+<div class="playoff-card">
 
-    <div class="text-zinc-500 text-sm mb-2">
-      ${match.round}
-    </div>
+  <div class="playoff-round">
+    ${match.round}
+  </div>
 
-    <div class="font-bold mb-3">
-      ${match.home_team}
-      -
-      ${match.away_team}
-    </div>
+  <div class="font-bold mb-3">
+    ${match.home_team}
+    -
+    ${match.away_team}
+  </div>
 
-    <div class="flex items-center gap-3">
+  <div class="flex gap-2">
 
     <input
-  type="number"
-  min="0"
-  value="${savedTip?.home_score ?? ''}"
-  data-id="${match.id}"
-  data-type="home"
-  class="playoff-home w-16 bg-zinc-800 rounded-xl p-2 text-center"
->
+      type="number"
+      min="0"
+      data-id="${match.id}"
+      class="playoff-home w-14 bg-zinc-800 rounded-lg p-2 text-center"
+      value="${savedTip?.home_score ?? ''}"
+    >
 
-      <span>-</span>
-
-<input
-  type="number"
-  min="0"
-  value="${savedTip?.away_score ?? ''}"
-  data-id="${match.id}"
-  data-type="away"
-  class="playoff-away w-16 bg-zinc-800 rounded-xl p-2 text-center"
->
-
-    </div>
+    <input
+      type="number"
+      min="0"
+      data-id="${match.id}"
+      class="playoff-away w-14 bg-zinc-800 rounded-lg p-2 text-center"
+      value="${savedTip?.away_score ?? ''}"
+    >
 
   </div>
 
+</div>
 `
+if (match.match_order <= 8)
+  round16Left.innerHTML += card
+
+else if (match.match_order <= 12)
+  round8Left.innerHTML += card
+
+else if (match.match_order <= 14)
+  quarterLeft.innerHTML += card
+
+else if (match.match_order === 15)
+  semiLeft.innerHTML += card
+
+else if (match.match_order === 16)
+  finalColumn.innerHTML += card
+
+else if (match.match_order === 17)
+  semiRight.innerHTML += card
+
+else if (match.match_order <= 19)
+  quarterRight.innerHTML += card
+
+else if (match.match_order <= 23)
+  round8Right.innerHTML += card
+
+else
+  round16Right.innerHTML += card
   })
 
 }
