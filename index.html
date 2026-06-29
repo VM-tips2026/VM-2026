@@ -1244,7 +1244,74 @@ playoffBody.innerHTML += `
 
 }
 
-    function renderMatches() {
+async function savePlayoffTips() {
+
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const homeInputs =
+    document.querySelectorAll('.playoff-home')
+
+  const tips = []
+
+  homeInputs.forEach(homeInput => {
+
+    const matchId =
+      homeInput.dataset.id
+
+    const awayInput =
+      document.querySelector(
+        `.playoff-away[data-id="${matchId}"]`
+      )
+
+    const homeScore =
+      Number(homeInput.value || 0)
+
+    const awayScore =
+      Number(awayInput.value || 0)
+
+    let tip1X2 = 'X'
+
+    if (homeScore > awayScore)
+      tip1X2 = '1'
+
+    if (awayScore > homeScore)
+      tip1X2 = '2'
+
+    tips.push({
+
+      user_id: user.id,
+      match_id: Number(matchId),
+      home_score: homeScore,
+      away_score: awayScore,
+      tip_1x2: tip1X2
+
+    })
+
+  })
+
+  const { error } = await sb
+    .from('slutspel_tips')
+    .upsert(tips)
+
+  if (error) {
+
+    console.error(error)
+
+    alert('Fel vid sparning')
+
+    return
+
+  }
+
+  alert('Slutspelstips sparade!')
+
+}
+
+function renderMatches() {
       matchesBody.innerHTML = ''
       upcomingMatchesBody.innerHTML = ''
 
