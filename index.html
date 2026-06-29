@@ -1343,44 +1343,45 @@ function getFlag(team) {
 
   const flags = {
 
-    GER: '🇩🇪',
-    PAR: '🇵🇾',
-    FRA: '🇫🇷',
-    SWE: '🇸🇪',
-    RSA: '🇿🇦',
-    CAN: '🇨🇦',
-    NED: '🇳🇱',
-    MAR: '🇲🇦',
-    POR: '🇵🇹',
-    CRO: '🇭🇷',
-    ESP: '🇪🇸',
-    AUT: '🇦🇹',
-    USA: '🇺🇸',
-    BIH: '🇧🇦',
-    BEL: '🇧🇪',
-    SEN: '🇸🇳',
+    GER:'de',
+    PAR:'py',
+    FRA:'fr',
+    SWE:'se',
+    RSA:'za',
+    CAN:'ca',
+    NED:'nl',
+    MAR:'ma',
+    POR:'pt',
+    CRO:'hr',
+    ESP:'es',
+    AUT:'at',
+    USA:'us',
+    BIH:'ba',
+    BEL:'be',
+    SEN:'sn',
 
-    BRA: '🇧🇷',
-    JPN: '🇯🇵',
-    CIV: '🇨🇮',
-    NOR: '🇳🇴',
-    MEX: '🇲🇽',
-    ECU: '🇪🇨',
-    ENG: '🏴',
-    COD: '🇨🇩',
-    ARG: '🇦🇷',
-    CPV: '🇨🇻',
-    AUS: '🇦🇺',
-    EGY: '🇪🇬',
-    SUI: '🇨🇭',
-    ALG: '🇩🇿',
-    COL: '🇨🇴',
-    GHA: '🇬🇭'
+    BRA:'br',
+    JPN:'jp',
+    CIV:'ci',
+    NOR:'no',
+    MEX:'mx',
+    ECU:'ec',
+    ENG:'gb',
+    COD:'cd',
+    ARG:'ar',
+    CPV:'cv',
+    AUS:'au',
+    EGY:'eg',
+    SUI:'ch',
+    ALG:'dz',
+    COL:'co',
+    GHA:'gh'
 
   }
 
-  return flags[team] || ''
-}    
+  return flags[team] || null
+
+}  
 async function loadPlayoff() {
 
   console.log('loadPlayoff körs')
@@ -1468,31 +1469,31 @@ const card = `
   <div class="font-bold mb-3">
 <div class="space-y-2">
 
-  <div class="flex items-center gap-2">
+<div class="flex items-center gap-2">
 
-    <img
-  src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
-  class="w-5 h-4 rounded-sm"
-/>
+  <img
+    src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
+    class="w-5 h-4 rounded-sm"
+  >
 
-    <span class="font-bold">
-      ${match.home_team}
-    </span>
+  <span class="font-bold">
+    ${match.home_team}
+  </span>
 
-  </div>
+</div>
 
-  <div class="flex items-center gap-2">
+<div class="flex items-center gap-2 mt-1">
 
-    <img
-  src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
-  class="w-5 h-4 rounded-sm"
-/>
+  <img
+    src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
+    class="w-5 h-4 rounded-sm"
+  >
 
-    <span class="font-bold">
-      ${match.away_team}
-    </span>
+  <span class="font-bold">
+    ${match.away_team}
+  </span>
 
-  </div>
+</div>
 
 </div>
   </div>
