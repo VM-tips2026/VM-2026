@@ -1457,9 +1457,6 @@ const card = `
 if (match.id >= 1 && match.id <= 8)
   round16Left.innerHTML += card
 
-else if (match.id >= 9 && match.id <= 16)
-  round16Right.innerHTML += card
-
 else if ([17,18].includes(match.id))
   round8Left.innerHTML += card
 
@@ -1469,17 +1466,20 @@ else if ([19,20].includes(match.id))
 else if ([25,26].includes(match.id))
   semiLeft.innerHTML += card
 
-else if ([21,22].includes(match.id))
-  round8Right.innerHTML += card
-
-else if ([23,24].includes(match.id))
-  quarterRight.innerHTML += card
+else if (match.id === 30)
+  finalColumn.innerHTML += card
 
 else if ([27,28].includes(match.id))
   semiRight.innerHTML += card
 
-else if (match.id === 30)
-  finalColumn.innerHTML += card
+else if ([23,24].includes(match.id))
+  quarterRight.innerHTML += card
+
+else if ([21,22].includes(match.id))
+  round8Right.innerHTML += card
+
+else if (match.id >= 9 && match.id <= 16)
+  round16Right.innerHTML += card
 
 else if (match.id === 29)
   bronzeColumn.innerHTML += card
