@@ -872,7 +872,23 @@ if (error) {
   console.error(error)
   return
 }
+const {
+  data: { user }
+} = await sb.auth.getUser()
 
+let savedTips = []
+
+if (user) {
+
+  const { data: existingTips } =
+    await sb
+      .from('slutspel_tips')
+      .select('*')
+      .eq('user_id', user.id)
+
+  savedTips = existingTips || []
+
+}
 const uniqueUsers =
   [...new Set(data.map(t => t.user_id))]
 
@@ -1200,7 +1216,10 @@ async function loadPlayoff() {
   playoffBody.innerHTML = ''
 
   data.forEach(match => {
-
+const savedTip =
+  savedTips.find(
+    t => t.match_id === match.id
+  )
 playoffBody.innerHTML += `
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
@@ -1217,23 +1236,25 @@ playoffBody.innerHTML += `
 
     <div class="flex items-center gap-3">
 
-      <input
-        type="number"
-        min="0"
-        data-id="${match.id}"
-        data-type="home"
-        class="playoff-home w-16 bg-zinc-800 rounded-xl p-2 text-center"
-      >
+    <input
+  type="number"
+  min="0"
+  value="${savedTip?.home_score ?? ''}"
+  data-id="${match.id}"
+  data-type="home"
+  class="playoff-home w-16 bg-zinc-800 rounded-xl p-2 text-center"
+>
 
       <span>-</span>
 
-      <input
-        type="number"
-        min="0"
-        data-id="${match.id}"
-        data-type="away"
-        class="playoff-away w-16 bg-zinc-800 rounded-xl p-2 text-center"
-      >
+<input
+  type="number"
+  min="0"
+  value="${savedTip?.away_score ?? ''}"
+  data-id="${match.id}"
+  data-type="away"
+  class="playoff-away w-16 bg-zinc-800 rounded-xl p-2 text-center"
+>
 
     </div>
 
