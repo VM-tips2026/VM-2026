@@ -1216,10 +1216,11 @@ async function loadPlayoff() {
   playoffBody.innerHTML = ''
 
   data.forEach(match => {
-const savedTip =
-  savedTips.find(
-    t => t.match_id === match.id
-  )
+
+    const savedTip =
+      savedTips.find(
+        t => t.match_id === match.id
+      )
 playoffBody.innerHTML += `
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
