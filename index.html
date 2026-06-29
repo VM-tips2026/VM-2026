@@ -883,6 +883,39 @@ const {
 if (playoffError) {
   console.error(playoffError)
 }
+const uniqueUsers =
+  [...new Set(data.map(t => t.user_id))]
+
+const uniquePlayers =
+  uniqueUsers.length
+
+const pot =
+  uniquePlayers * 100
+
+const first =
+  Math.floor(pot * 0.6)
+
+const second =
+  Math.floor(pot * 0.3)
+
+const third =
+  Math.floor(pot * 0.1)
+
+totalPot.textContent =
+  pot.toLocaleString('sv-SE')
+
+playerCount.textContent =
+  uniquePlayers
+
+firstPrize.textContent =
+  `${first.toLocaleString('sv-SE')} kr`
+
+secondPrize.textContent =
+  `${second.toLocaleString('sv-SE')} kr`
+
+thirdPrize.textContent =
+  `${third.toLocaleString('sv-SE')} kr`
+
 }
 
 async function loadLeaderboard() {
