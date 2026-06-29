@@ -11,16 +11,17 @@
 
   display: grid;
 
-  grid-template-columns:
-    260px
-    180px
-    180px
-    180px
-    220px
-    180px
-    180px
-    180px
-    260px;
+grid-template-columns:
+  260px
+  180px
+  180px
+  180px
+  220px
+  220px
+  180px
+  180px
+  180px
+  260px;
 
   gap: 20px;
 
@@ -45,29 +46,41 @@
 
 #round16-left,
 #round16-right {
-  gap: 12px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 
 #round8-left,
 #round8-right {
-  padding-top: 70px;
-  gap: 120px;
+  display:flex;
+  flex-direction:column;
+  gap:120px;
+  padding-top:80px;
 }
 
 #quarter-left,
 #quarter-right {
-  padding-top: 170px;
-  gap: 260px;
+  display:flex;
+  flex-direction:column;
+  gap:280px;
+  padding-top:180px;
 }
 
 #semi-left,
 #semi-right {
-  padding-top: 350px;
-  gap: 0;
+  display:flex;
+  flex-direction:column;
+  gap:340px;
+  padding-top:360px;
 }
 
 #final-column {
-  padding-top: 420px;
+  padding-top:470px;
+}
+
+#bronze-column {
+  padding-top:680px;
 }
 
 </style>
@@ -628,17 +641,18 @@
   class="playoff-bracket"
 >
 
-  <div id="round16-left" class="playoff-column"></div>
-  <div id="round8-left" class="playoff-column"></div>
-  <div id="quarter-left" class="playoff-column"></div>
-  <div id="semi-left" class="playoff-column"></div>
+<div id="round16-left" class="playoff-column"></div>
+<div id="round8-left" class="playoff-column"></div>
+<div id="quarter-left" class="playoff-column"></div>
+<div id="semi-left" class="playoff-column"></div>
 
-  <div id="final-column" class="playoff-column"></div>
+<div id="final-column" class="playoff-column"></div>
+<div id="bronze-column" class="playoff-column"></div>
 
-  <div id="semi-right" class="playoff-column"></div>
-  <div id="quarter-right" class="playoff-column"></div>
-  <div id="round8-right" class="playoff-column"></div>
-  <div id="round16-right" class="playoff-column"></div>
+<div id="semi-right" class="playoff-column"></div>
+<div id="quarter-right" class="playoff-column"></div>
+<div id="round8-right" class="playoff-column"></div>
+<div id="round16-right" class="playoff-column"></div>
 
 </div>
 <div class="mt-8">
@@ -1452,7 +1466,7 @@ else if ([17,18].includes(match.id))
 else if ([19,20].includes(match.id))
   quarterLeft.innerHTML += card
 
-else if (match.id === 25)
+else if ([25,26].includes(match.id))
   semiLeft.innerHTML += card
 
 else if ([21,22].includes(match.id))
@@ -1461,14 +1475,14 @@ else if ([21,22].includes(match.id))
 else if ([23,24].includes(match.id))
   quarterRight.innerHTML += card
 
-else if (match.id === 28)
+else if ([27,28].includes(match.id))
   semiRight.innerHTML += card
 
 else if (match.id === 30)
   finalColumn.innerHTML += card
 
 else if (match.id === 29)
-  finalColumn.innerHTML += card
+  bronzeColumn.innerHTML += card
   })
 
 }
