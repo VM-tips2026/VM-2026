@@ -1339,7 +1339,48 @@ function get1X2(home, away) {
   if (match.resultAwayScore > match.resultHomeScore) return match.away
   return 'Oavgjort'
 }
-    
+function getFlag(team) {
+
+  const flags = {
+
+    GER: '🇩🇪',
+    PAR: '🇵🇾',
+    FRA: '🇫🇷',
+    SWE: '🇸🇪',
+    RSA: '🇿🇦',
+    CAN: '🇨🇦',
+    NED: '🇳🇱',
+    MAR: '🇲🇦',
+    POR: '🇵🇹',
+    CRO: '🇭🇷',
+    ESP: '🇪🇸',
+    AUT: '🇦🇹',
+    USA: '🇺🇸',
+    BIH: '🇧🇦',
+    BEL: '🇧🇪',
+    SEN: '🇸🇳',
+
+    BRA: '🇧🇷',
+    JPN: '🇯🇵',
+    CIV: '🇨🇮',
+    NOR: '🇳🇴',
+    MEX: '🇲🇽',
+    ECU: '🇪🇨',
+    ENG: '🏴',
+    COD: '🇨🇩',
+    ARG: '🇦🇷',
+    CPV: '🇨🇻',
+    AUS: '🇦🇺',
+    EGY: '🇪🇬',
+    SUI: '🇨🇭',
+    ALG: '🇩🇿',
+    COL: '🇨🇴',
+    GHA: '🇬🇭'
+
+  }
+
+  return flags[team] || ''
+}    
 async function loadPlayoff() {
 
   console.log('loadPlayoff körs')
@@ -1425,9 +1466,29 @@ const card = `
   </div>
 
   <div class="font-bold mb-3">
-    ${match.home_team}
-    -
-    ${match.away_team}
+<div class="space-y-2">
+
+  <div class="flex items-center gap-2">
+
+    <span>${getFlag(match.home_team)}</span>
+
+    <span class="font-bold">
+      ${match.home_team}
+    </span>
+
+  </div>
+
+  <div class="flex items-center gap-2">
+
+    <span>${getFlag(match.away_team)}</span>
+
+    <span class="font-bold">
+      ${match.away_team}
+    </span>
+
+  </div>
+
+</div>
   </div>
 
   <div class="flex gap-2">
