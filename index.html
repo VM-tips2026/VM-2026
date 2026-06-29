@@ -1467,7 +1467,7 @@ const card = `
   </div>
 
   <div class="font-bold mb-3">
-<div class="space-y-2 mb-3">
+<div class="space-y-2">
 
   <div class="flex items-center justify-between">
 
@@ -1484,9 +1484,21 @@ const card = `
 
     </div>
 
-    <span class="text-zinc-300 font-bold">
-      ${savedTip?.home_score ?? 0}
-    </span>
+    <div class="flex items-center gap-2">
+
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
+        value="${savedTip?.home_score ?? ''}"
+      >
+
+      <span class="text-zinc-400">
+        ${match.resultHomeScore ?? 0}
+      </span>
+
+    </div>
 
   </div>
 
@@ -1507,32 +1519,21 @@ const card = `
 
     </div>
 
-    <span class="text-zinc-300 font-bold">
-      ${savedTip?.away_score ?? 0}
-    </span>
+    <div class="flex items-center gap-2">
 
-  </div>
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
+        value="${savedTip?.away_score ?? ''}"
+      >
 
-</div>
-  </div>
+      <span class="text-zinc-400">
+        ${match.resultAwayScore ?? 0}
+      </span>
 
-  <div class="flex gap-2">
-
-    <input
-      type="number"
-      min="0"
-      data-id="${match.id}"
-      class="playoff-home w-14 bg-zinc-800 rounded-lg p-2 text-center"
-      value="${savedTip?.home_score ?? ''}"
-    >
-
-    <input
-      type="number"
-      min="0"
-      data-id="${match.id}"
-      class="playoff-away w-14 bg-zinc-800 rounded-lg p-2 text-center"
-      value="${savedTip?.away_score ?? ''}"
-    >
+    </div>
 
   </div>
 
