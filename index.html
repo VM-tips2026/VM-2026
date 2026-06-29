@@ -1243,6 +1243,7 @@ playoffBody.innerHTML += `
   })
 
 }
+
     function renderMatches() {
       matchesBody.innerHTML = ''
       upcomingMatchesBody.innerHTML = ''
@@ -1801,6 +1802,14 @@ document
     tablePage.classList.remove('hidden')
 
 })
+
+document
+  .getElementById('save-playoff-btn')
+  .addEventListener(
+    'click',
+    savePlayoffTips
+
+)
 document
   .getElementById('admin-logout-btn')
   .addEventListener('click', logout)
