@@ -864,13 +864,35 @@ async function loadUserTips() {
 
 async function loadPrizePool() {
 
-  const { data, error } = await sb
-    .from('tips')
-    .select('user_id')
+const { data, error } = await sb
+  .from('tips')
+  .select('*')
 
 if (error) {
   console.error(error)
   return
+}
+
+const {
+  data: playoffTips,
+  error: playoffError
+} = await sb
+  .from('slutspel_tips')
+  .select('*')
+
+if (playoffError) {
+  console.error(playoffError)
+}
+
+const {
+  data: playoffResults,
+  error: playoffResultsError
+} = await sb
+  .from('slutspel_resultat')
+  .select('*')
+
+if (playoffResultsError) {
+  console.error(playoffResultsError)
 }
 const {
   data: { user }
@@ -929,7 +951,16 @@ const { data, error } = await sb
   .from('tips')
   .select('*')
 
+const {
+  data: playoffTips,
+  error: playoffError
+} = await sb
+  .from('slutspel_tips')
+  .select('*')
 
+if (playoffError) {
+  console.error(playoffError)
+}
 
   if (error) {
     console.error(error)
