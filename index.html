@@ -1470,7 +1470,10 @@ const card = `
 
   <div class="flex items-center gap-2">
 
-    <span>${getFlag(match.home_team)}</span>
+    <img
+  src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
+  class="w-5 h-4 rounded-sm"
+/>
 
     <span class="font-bold">
       ${match.home_team}
@@ -1480,7 +1483,10 @@ const card = `
 
   <div class="flex items-center gap-2">
 
-    <span>${getFlag(match.away_team)}</span>
+    <img
+  src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
+  class="w-5 h-4 rounded-sm"
+/>
 
     <span class="font-bold">
       ${match.away_team}
