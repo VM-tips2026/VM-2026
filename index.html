@@ -1174,10 +1174,14 @@ function get1X2(home, away) {
     
 async function loadPlayoff() {
 
+  console.log('loadPlayoff körs')
+
   const { data, error } = await sb
     .from('slutspel_matcher')
     .select('*')
     .order('match_order')
+
+  console.log(data)
 
   if (error) {
     console.error(error)
@@ -1744,6 +1748,8 @@ tableLogoutBtn.addEventListener('click', logout)
 document
   .getElementById('playoff-btn')
   .addEventListener('click', async () => {
+
+    console.log('SLUTSPEL KNAPP KLICKAD')
 
     tablePage.classList.add('hidden')
 
