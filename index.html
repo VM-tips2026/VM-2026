@@ -2515,14 +2515,12 @@ Object.values(users).forEach(user => {
 
 }
 async function loadAdminMatches() {
-}
-async function loadAdminPlayoffMatches() {
 
-const { data, error } = await sb
-  .from('matcher')
-  .select('*')
-  .order('date', { ascending: true })
-  .order('time', { ascending: true })
+  const { data, error } = await sb
+    .from('matcher')
+    .select('*')
+    .order('date', { ascending: true })
+    .order('time', { ascending: true })
 
   if (error) {
     console.error(error)
@@ -2599,6 +2597,67 @@ const { data, error } = await sb
   })
 }
 
+async function loadAdminPlayoffMatches() {
+
+  console.log('ADMIN PLAYOFF KÖR')
+
+  const { data, error } = await sb
+    .from('slutspel_matcher')
+    .select('*')
+    .order('match_order')
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  adminPlayoffMatches.innerHTML = ''
+
+  data.forEach(match => {
+
+    adminPlayoffMatches.innerHTML += `
+
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
+
+        <div class="font-bold mb-3">
+          ${match.round}:
+          ${match.home_team} - ${match.away_team}
+        </div>
+
+        <div class="flex items-center gap-2">
+
+          <input
+            id="playoff-home-${match.id}"
+            type="number"
+            min="0"
+            value="${match.home_score ?? ''}"
+            class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+          >
+
+          <span>-</span>
+
+          <input
+            id="playoff-away-${match.id}"
+            type="number"
+            min="0"
+            value="${match.away_score ?? ''}"
+            class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
+          >
+
+          <button
+            onclick="savePlayoffResult(${match.id})"
+            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl font-bold"
+          >
+            💾
+          </button>
+
+        </div>
+
+      </div>
+
+    `
+  })
+}
 async function saveResult(matchId) {
 
   const home =
@@ -2624,6 +2683,38 @@ async function saveResult(matchId) {
   }
 
   alert('Resultat sparat!')
+}
+async function savePlayoffResult(matchId) {
+
+  const home =
+    document.getElementById(
+      `playoff-home-${matchId}`
+    ).value
+
+  const away =
+    document.getElementById(
+      `playoff-away-${matchId}`
+    ).value
+
+  const { error } = await sb
+    .from('slutspel_matcher')
+    .update({
+
+      home_score: home,
+      away_score: away
+
+    })
+    .eq('id', matchId)
+
+  if (error) {
+
+    console.error(error)
+    alert(error.message)
+
+    return
+  }
+
+  alert('Slutspelsresultat sparat!')
 }
 saveExtraBtn.addEventListener('click', async () => {
 
@@ -2655,7 +2746,38 @@ saveExtraBtn.addEventListener('click', async () => {
   alert('Extra tips sparade!')
 
 })
+async function savePlayoffResult(matchId) {
 
+  const home =
+    document.getElementById(
+      `playoff-home-${matchId}`
+    ).value
+
+  const away =
+    document.getElementById(
+      `playoff-away-${matchId}`
+    ).value
+
+  const { error } = await sb
+    .from('slutspel_matcher')
+    .update({
+
+      home_score: home,
+      away_score: away
+
+    })
+    .eq('id', matchId)
+
+  if (error) {
+
+    console.error(error)
+    alert(error.message)
+
+    return
+  }
+
+  alert('Slutspelsresultat sparat!')
+}
 function startCountdown() {
 
   const countdown =
