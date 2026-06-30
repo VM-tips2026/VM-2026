@@ -889,6 +889,7 @@ const ADMIN_EMAIL = 'pontusharthpil@live.se'
 let matches = []
 let isEditing = false
 let leaderboardInterval = null
+let playoffSaveTimer = null
 let viewingOtherUser = false
 
 const lockDate =
@@ -1407,6 +1408,16 @@ function getWinner(home, away, homeScore, awayScore) {
 
   return null
 }
+function autoSavePlayoffTips() {
+
+  clearTimeout(playoffSaveTimer)
+
+  playoffSaveTimer = setTimeout(async () => {
+
+    await savePlayoffTips(false)
+
+  }, 500)
+}
 async function loadPlayoff() {
 
   const { data, error } = await sb
@@ -1575,12 +1586,13 @@ async function loadPlayoff() {
 
             <div class="flex items-center gap-2">
               <input
-                type="number"
-                min="0"
-                data-id="${match.id}"
-                class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
-                value="${savedTip?.home_score ?? ''}"
-              >
+  type="number"
+  min="0"
+  data-id="${match.id}"
+  oninput="autoSavePlayoffTips()"
+  class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
+  value="${savedTip?.home_score ?? ''}"
+>
 
               <span class="text-zinc-400">
                 ${match.home_score ?? 0}
@@ -1606,12 +1618,13 @@ async function loadPlayoff() {
 
             <div class="flex items-center gap-2">
               <input
-                type="number"
-                min="0"
-                data-id="${match.id}"
-                class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
-                value="${savedTip?.away_score ?? ''}"
-              >
+  type="number"
+  min="0"
+  data-id="${match.id}"
+  oninput="autoSavePlayoffTips()"
+  class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
+  value="${savedTip?.away_score ?? ''}"
+>
 
               <span class="text-zinc-400">
                 ${match.away_score ?? 0}
@@ -1656,7 +1669,7 @@ async function loadPlayoff() {
 }
 
 
-async function savePlayoffTips() {
+async function savePlayoffTips(showAlert = true) {
 
   const {
     data: { user }
@@ -1732,7 +1745,9 @@ if (error) {
 
 }
 
+  if (showAlert) {
   alert('Slutspelstips sparade!')
+}
 
 await loadPlayoff()
 }
