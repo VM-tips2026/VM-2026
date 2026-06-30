@@ -1509,9 +1509,9 @@ const card = `
         value="${savedTip?.home_score ?? ''}"
       >
 
-      <span class="text-zinc-400">
-        ${match.resultHomeScore ?? 0}
-      </span>
+<span class="text-zinc-400 font-bold">
+  ${match.home_score ?? '-'}
+</span>
 
     </div>
 
@@ -1544,9 +1544,9 @@ const card = `
         value="${savedTip?.away_score ?? ''}"
       >
 
-      <span class="text-zinc-400">
-        ${match.resultAwayScore ?? 0}
-      </span>
+      <span class="text-zinc-400 font-bold">
+  ${match.away_score ?? '-'}
+</span>
 
     </div>
 
