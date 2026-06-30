@@ -924,10 +924,10 @@ const { data, error } = await sb
     tip1X2: 'X',
 
     resultHomeScore:
-      match.home_score ?? '-',
+      match.result_home_score ?? '-',
 
     resultAwayScore:
-      match.away_score ?? '-'
+      match.result_away_score ?? '-'
   }))
 
   renderMatches()
@@ -1509,9 +1509,9 @@ const card = `
         value="${savedTip?.home_score ?? ''}"
       >
 
-<span class="text-zinc-400 font-bold">
-  ${match.home_score ?? '-'}
-</span>
+      <span class="text-zinc-400">
+        ${match.resultHomeScore ?? 0}
+      </span>
 
     </div>
 
@@ -1544,9 +1544,9 @@ const card = `
         value="${savedTip?.away_score ?? ''}"
       >
 
-      <span class="text-zinc-400 font-bold">
-  ${match.away_score ?? '-'}
-</span>
+      <span class="text-zinc-400">
+        ${match.resultAwayScore ?? 0}
+      </span>
 
     </div>
 
@@ -2562,7 +2562,7 @@ async function loadAdminMatches() {
               id="home-${match.id}"
               type="number"
               min="0"
-              value="${match.home_score ?? ''}"
+              value="${match.result_home_score ?? ''}"
               class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
             />
 
@@ -2572,7 +2572,7 @@ async function loadAdminMatches() {
               id="away-${match.id}"
               type="number"
               min="0"
-              value="${match.away_score ?? ''}"
+              value="${match.result_away_score ?? ''}"
               class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
             />
 
@@ -2670,8 +2670,8 @@ async function saveResult(matchId) {
     .from('matcher')
     .update({
 
-      home_score: home,
-      away_score: away
+      result_home_score: home,
+      result_away_score: away
 
     })
     .eq('id', matchId)
