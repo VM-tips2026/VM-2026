@@ -1349,6 +1349,11 @@ function get1X2(home, away) {
   if (away > home) return '2'
   return 'X'
 }
+    function getWinner(match) {
+  if (match.resultHomeScore > match.resultAwayScore) return match.home
+  if (match.resultAwayScore > match.resultHomeScore) return match.away
+  return 'Oavgjort'
+}
 function getFlag(team) {
 
   const flags = {
@@ -1392,26 +1397,16 @@ function getFlag(team) {
   return flags[team] || null
 
 }  
-function getWinner(home, away, homeScore, awayScore) {
-
-  if (
-    homeScore === undefined ||
-    awayScore === undefined ||
-    homeScore === '' ||
-    awayScore === ''
-  ) return null
-
-  if (Number(homeScore) > Number(awayScore)) return home
-  if (Number(awayScore) > Number(homeScore)) return away
-
-  return null
-}
 async function loadPlayoff() {
+
+  console.log('loadPlayoff körs')
 
   const { data, error } = await sb
     .from('slutspel_matcher')
     .select('*')
     .order('match_order')
+
+  console.log(data)
 
   if (error) {
     console.error(error)
@@ -1425,235 +1420,188 @@ async function loadPlayoff() {
   let savedTips = []
 
   if (user) {
-    const { data: existingTips } = await sb
-      .from('slutspel_tips')
-      .select('*')
-      .eq('user_id', user.id)
+
+    const { data: existingTips } =
+      await sb
+        .from('slutspel_tips')
+        .select('*')
+        .eq('user_id', user.id)
 
     savedTips = existingTips || []
+
   }
 
-  const winners = {}
+const round16Left =
+  document.getElementById('round16-left')
 
-  const round16Left = document.getElementById('round16-left')
-  const round8Left = document.getElementById('round8-left')
-  const quarterLeft = document.getElementById('quarter-left')
-  const semiLeft = document.getElementById('semi-left')
-  const finalColumn = document.getElementById('final-column')
-  const semiRight = document.getElementById('semi-right')
-  const quarterRight = document.getElementById('quarter-right')
-  const round8Right = document.getElementById('round8-right')
-  const round16Right = document.getElementById('round16-right')
+const round8Left =
+  document.getElementById('round8-left')
 
-  round16Left.innerHTML = ''
-  round8Left.innerHTML = ''
-  quarterLeft.innerHTML = ''
-  semiLeft.innerHTML = ''
-  finalColumn.innerHTML = ''
-  semiRight.innerHTML = ''
-  quarterRight.innerHTML = ''
-  round8Right.innerHTML = ''
-  round16Right.innerHTML = ''
+const quarterLeft =
+  document.getElementById('quarter-left')
 
+const semiLeft =
+  document.getElementById('semi-left')
+
+const finalColumn =
+  document.getElementById('final-column')
+
+const semiRight =
+  document.getElementById('semi-right')
+
+const quarterRight =
+  document.getElementById('quarter-right')
+
+const round8Right =
+  document.getElementById('round8-right')
+
+const round16Right =
+  document.getElementById('round16-right')
+
+round16Left.innerHTML = ''
+round8Left.innerHTML = ''
+quarterLeft.innerHTML = ''
+semiLeft.innerHTML = ''
+finalColumn.innerHTML = ''
+semiRight.innerHTML = ''
+quarterRight.innerHTML = ''
+round8Right.innerHTML = ''
+round16Right.innerHTML = ''
   data.forEach(match => {
 
-    const savedTip = savedTips.find(
-      t => t.match_id === match.id
-    )
+    const savedTip =
+      savedTips.find(
+        t => t.match_id === match.id
+      )
+const card = `
 
-    let homeTeam = match.home_team
-    let awayTeam = match.away_team
+<div class="playoff-card">
 
-    if (match.id === 17) {
-      homeTeam = winners[1] || 'V74'
-      awayTeam = winners[2] || 'V77'
-    }
+  <div class="playoff-round">
+    ${match.round}
+  </div>
 
-    if (match.id === 18) {
-      homeTeam = winners[3] || 'V73'
-      awayTeam = winners[4] || 'V75'
-    }
+  <div class="font-bold mb-3">
+<div class="space-y-2">
 
-    if (match.id === 19) {
-      homeTeam = winners[5] || 'V83'
-      awayTeam = winners[6] || 'V84'
-    }
+  <div class="flex items-center justify-between">
 
-    if (match.id === 20) {
-      homeTeam = winners[7] || 'V81'
-      awayTeam = winners[8] || 'V82'
-    }
+    <div class="flex items-center gap-2">
 
-    if (match.id === 21) {
-      homeTeam = winners[9] || 'V76'
-      awayTeam = winners[10] || 'V78'
-    }
+      <img
+        src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
+        class="w-5 h-4 rounded-sm"
+      >
 
-    if (match.id === 22) {
-      homeTeam = winners[11] || 'V79'
-      awayTeam = winners[12] || 'V80'
-    }
+      <span class="font-bold">
+        ${match.home_team}
+      </span>
 
-    if (match.id === 23) {
-      homeTeam = winners[13] || 'V86'
-      awayTeam = winners[14] || 'V88'
-    }
+    </div>
 
-    if (match.id === 24) {
-      homeTeam = winners[15] || 'V85'
-      awayTeam = winners[16] || 'V87'
-    }
+    <div class="flex items-center gap-2">
 
-    if (match.id === 25) {
-      homeTeam = winners[17] || 'V89'
-      awayTeam = winners[18] || 'V90'
-    }
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
+        value="${savedTip?.home_score ?? ''}"
+      >
 
-    if (match.id === 26) {
-      homeTeam = winners[19] || 'V93'
-      awayTeam = winners[20] || 'V94'
-    }
+      <span class="text-zinc-400">
+        ${match.resultHomeScore ?? 0}
+      </span>
 
-    if (match.id === 27) {
-      homeTeam = winners[21] || 'V91'
-      awayTeam = winners[22] || 'V92'
-    }
+    </div>
 
-    if (match.id === 28) {
-      homeTeam = winners[23] || 'V95'
-      awayTeam = winners[24] || 'V96'
-    }
+  </div>
 
-    if (match.id === 30) {
-      homeTeam = winners[25] || 'V97'
-      awayTeam = winners[26] || 'V98'
-    }
+  <div class="border-t border-zinc-700"></div>
 
-    if (match.id === 31) {
-      homeTeam = winners[27] || 'V99'
-      awayTeam = winners[28] || 'V100'
-    }
+  <div class="flex items-center justify-between">
 
-    if (match.id === 32) {
-      homeTeam = winners[30] || 'V101'
-      awayTeam = winners[31] || 'V102'
-    }
+    <div class="flex items-center gap-2">
 
-    const winner = getWinner(
-      homeTeam,
-      awayTeam,
-      savedTip?.home_score,
-      savedTip?.away_score
-    )
+      <img
+        src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
+        class="w-5 h-4 rounded-sm"
+      >
 
-    if (winner) {
-      winners[match.id] = winner
-    }
+      <span class="font-bold">
+        ${match.away_team}
+      </span>
 
-    const card = `
-      <div class="playoff-card">
+    </div>
 
-        <div class="playoff-round">
-          ${match.round}
-        </div>
+    <div class="flex items-center gap-2">
 
-        <div class="space-y-2">
+      <input
+        type="number"
+        min="0"
+        data-id="${match.id}"
+        class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
+        value="${savedTip?.away_score ?? ''}"
+      >
 
-          <div class="flex items-center justify-between">
+      <span class="text-zinc-400">
+        ${match.resultAwayScore ?? 0}
+      </span>
 
-            <div class="flex items-center gap-2">
-              <img
-                src="https://flagcdn.com/24x18/${getFlag(homeTeam)}.png"
-                class="w-5 h-4 rounded-sm"
-              >
+    </div>
 
-              <span class="font-bold">
-                ${homeTeam}
-              </span>
-            </div>
+  </div>
 
-            <div class="flex items-center gap-2">
-              <input
-                type="number"
-                min="0"
-                data-id="${match.id}"
-                class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
-                value="${savedTip?.home_score ?? ''}"
-              >
+</div>
+`
+if (match.id >= 1 && match.id <= 8)
+  round16Left.innerHTML += card
 
-              <span class="text-zinc-400">
-                ${match.home_score ?? 0}
-              </span>
-            </div>
+else if (match.id >= 9 && match.id <= 16)
+  round16Right.innerHTML += card
 
-          </div>
+// 8-del vänster
+else if ([17,18].includes(match.id))
+  round8Left.innerHTML += card
 
-          <div class="border-t border-zinc-700"></div>
+// Kvart vänster
+else if ([25,26].includes(match.id))
+  quarterLeft.innerHTML += card
 
-          <div class="flex items-center justify-between">
+// Semi vänster
+else if (match.id === 30)
+  semiLeft.innerHTML += card
 
-            <div class="flex items-center gap-2">
-              <img
-                src="https://flagcdn.com/24x18/${getFlag(awayTeam)}.png"
-                class="w-5 h-4 rounded-sm"
-              >
+// FINAL
+else if (match.id === 32)
+  finalColumn.innerHTML += card
 
-              <span class="font-bold">
-                ${awayTeam}
-              </span>
-            </div>
+// Semi höger
+else if (match.id === 31)
+  semiRight.innerHTML += card
 
-            <div class="flex items-center gap-2">
-              <input
-                type="number"
-                min="0"
-                data-id="${match.id}"
-                class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
-                value="${savedTip?.away_score ?? ''}"
-              >
+// Kvart höger
+else if ([27,28].includes(match.id))
+  quarterRight.innerHTML += card
 
-              <span class="text-zinc-400">
-                ${match.away_score ?? 0}
-              </span>
-            </div>
+// 8-del höger
+else if ([21,22].includes(match.id))
+  round8Right.innerHTML += card
 
-          </div>
+// Nedersta 8-del vänster
+else if ([19,20].includes(match.id))
+  round8Left.innerHTML += card
 
-        </div>
+// Nedersta 8-del höger
+else if ([23,24].includes(match.id))
+  round8Right.innerHTML += card
 
-      </div>
-    `
-
-    if (match.id >= 1 && match.id <= 8)
-      round16Left.innerHTML += card
-
-    else if (match.id >= 9 && match.id <= 16)
-      round16Right.innerHTML += card
-
-    else if ([17,18,19,20].includes(match.id))
-      round8Left.innerHTML += card
-
-    else if ([21,22,23,24].includes(match.id))
-      round8Right.innerHTML += card
-
-    else if ([25,26].includes(match.id))
-      quarterLeft.innerHTML += card
-
-    else if ([27,28].includes(match.id))
-      quarterRight.innerHTML += card
-
-    else if (match.id === 30)
-      semiLeft.innerHTML += card
-
-    else if (match.id === 31)
-      semiRight.innerHTML += card
-
-    else if ([29,32].includes(match.id))
-      finalColumn.innerHTML += card
-
+// Brons
+else if (match.id === 29)
+  finalColumn.innerHTML += card
   })
-}
 
+}
 
 async function savePlayoffTips() {
 
@@ -1691,13 +1639,7 @@ async function savePlayoffTips() {
 
     if (awayScore > homeScore)
       tip1X2 = '2'
-const winnerSelect =
-  document.querySelector(
-    `.playoff-winner[data-id="${matchId}"]`
-  )
 
-const playoffWinner =
-  winnerSelect?.value || null
     tips.push({
 
       user_id: user.id,
@@ -1711,13 +1653,8 @@ const playoffWinner =
   })
 
   const { error } = await sb
-  .from('slutspel_tips')
-  .upsert(
-    tips,
-    {
-      onConflict: 'user_id,match_id'
-    }
-  )
+    .from('slutspel_tips')
+    .upsert(tips)
 
 if (error) {
 
@@ -1733,7 +1670,6 @@ if (error) {
 
   alert('Slutspelstips sparade!')
 
-await loadPlayoff()
 }
 
 function renderMatches() {
