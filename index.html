@@ -1446,6 +1446,7 @@ async function loadPlayoff() {
   }
 
   const winners = {}
+const losers = {} = {}
 
   const round16Left = document.getElementById('round16-left')
   const round8Left = document.getElementById('round8-left')
@@ -1550,7 +1551,10 @@ async function loadPlayoff() {
       homeTeam = winners[30] || 'V101'
       awayTeam = winners[31] || 'V102'
     }
-
+if (match.id === 29) {
+  homeTeam = losers[30] || 'F101'
+  awayTeam = losers[31] || 'F102'
+}
     const winner = getWinner(
   homeTeam,
   awayTeam,
@@ -1559,9 +1563,14 @@ async function loadPlayoff() {
   savedTip?.winner
 )
 
-    if (winner) {
-      winners[match.id] = winner
-    }
+if (winner) {
+  winners[match.id] = winner
+
+  losers[match.id] =
+    winner === homeTeam
+      ? awayTeam
+      : homeTeam
+}
 
     const card = `
       <div class="playoff-card">
@@ -1759,7 +1768,8 @@ async function savePlayoffTips(showAlert = true) {
 
     if (awayScore > homeScore)
       tip1X2 = '2'
-const winnerSelect =
+const winners = {}
+const losers = {}elect =
   document.querySelector(
     `.playoff-winner[data-id="${matchId}"]`
   )
