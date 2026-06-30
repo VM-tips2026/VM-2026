@@ -924,10 +924,10 @@ const { data, error } = await sb
     tip1X2: 'X',
 
     resultHomeScore:
-      match.result_home_score ?? '-',
+      match.home_score ?? '-',
 
     resultAwayScore:
-      match.result_away_score ?? '-'
+      match.away_score ?? '-'
   }))
 
   renderMatches()
@@ -2562,7 +2562,7 @@ async function loadAdminMatches() {
               id="home-${match.id}"
               type="number"
               min="0"
-              value="${match.result_home_score ?? ''}"
+              value="${match.home_score ?? ''}"
               class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
             />
 
@@ -2572,7 +2572,7 @@ async function loadAdminMatches() {
               id="away-${match.id}"
               type="number"
               min="0"
-              value="${match.result_away_score ?? ''}"
+              value="${match.away_score ?? ''}"
               class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
             />
 
@@ -2670,8 +2670,8 @@ async function saveResult(matchId) {
     .from('matcher')
     .update({
 
-      result_home_score: home,
-      result_away_score: away
+      home_score: home,
+      away_score: away
 
     })
     .eq('id', matchId)
