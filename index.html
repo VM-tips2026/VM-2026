@@ -1400,39 +1400,24 @@ function getFlag(team) {
 function getWinner(home, away, homeScore, awayScore) {
 
   if (
+    homeScore === undefined ||
+    awayScore === undefined ||
     homeScore === '' ||
     awayScore === ''
   ) return null
 
-  if (
-    Number(homeScore) >
-    Number(awayScore)
-  ) return home
-
-  if (
-    Number(awayScore) >
-    Number(homeScore)
-  ) return away
+  if (Number(homeScore) > Number(awayScore)) return home
+  if (Number(awayScore) > Number(homeScore)) return away
 
   return null
 }
 async function loadPlayoff() {
-
-  console.log('loadPlayoff körs')
 
   const { data, error } = await sb
     .from('slutspel_matcher')
     .select('*')
     .order('match_order')
 
-  console.log(data)
-console.log(
-  data.map(m => ({
-    id: m.id,
-    home_score: m.home_score,
-    away_score: m.away_score
-  }))
-)
   if (error) {
     console.error(error)
     return
@@ -1445,142 +1430,233 @@ console.log(
   let savedTips = []
 
   if (user) {
-
-    const { data: existingTips } =
-      await sb
-        .from('slutspel_tips')
-        .select('*')
-        .eq('user_id', user.id)
+    const { data: existingTips } = await sb
+      .from('slutspel_tips')
+      .select('*')
+      .eq('user_id', user.id)
 
     savedTips = existingTips || []
-console.log('SAVED TIPS', savedTips)
   }
-const winners = {}
-const round16Left =
-  document.getElementById('round16-left')
 
-const round8Left =
-  document.getElementById('round8-left')
+  const winners = {}
 
-const quarterLeft =
-  document.getElementById('quarter-left')
+  const round16Left = document.getElementById('round16-left')
+  const round8Left = document.getElementById('round8-left')
+  const quarterLeft = document.getElementById('quarter-left')
+  const semiLeft = document.getElementById('semi-left')
+  const finalColumn = document.getElementById('final-column')
+  const semiRight = document.getElementById('semi-right')
+  const quarterRight = document.getElementById('quarter-right')
+  const round8Right = document.getElementById('round8-right')
+  const round16Right = document.getElementById('round16-right')
 
-const semiLeft =
-  document.getElementById('semi-left')
+  round16Left.innerHTML = ''
+  round8Left.innerHTML = ''
+  quarterLeft.innerHTML = ''
+  semiLeft.innerHTML = ''
+  finalColumn.innerHTML = ''
+  semiRight.innerHTML = ''
+  quarterRight.innerHTML = ''
+  round8Right.innerHTML = ''
+  round16Right.innerHTML = ''
 
-const finalColumn =
-  document.getElementById('final-column')
+  data.forEach(match => {
 
-const semiRight =
-  document.getElementById('semi-right')
-
-const quarterRight =
-  document.getElementById('quarter-right')
-
-const round8Right =
-  document.getElementById('round8-right')
-
-const round16Right =
-  document.getElementById('round16-right')
-
-round16Left.innerHTML = ''
-round8Left.innerHTML = ''
-quarterLeft.innerHTML = ''
-semiLeft.innerHTML = ''
-finalColumn.innerHTML = ''
-semiRight.innerHTML = ''
-quarterRight.innerHTML = ''
-round8Right.innerHTML = ''
-round16Right.innerHTML = ''
-
-data.forEach(match => {
-
-  const savedTip =
-    savedTips.find(
+    const savedTip = savedTips.find(
       t => t.match_id === match.id
     )
 
-  let homeTeam = match.home_team
-  let awayTeam = match.away_team
+    let homeTeam = match.home_team
+    let awayTeam = match.away_team
 
-  // Match 17 = vinnare match 1 + 2
-  if (match.id === 17) {
-    homeTeam = winners[1] || 'GER/PAR'
-    awayTeam = winners[2] || 'FRA/SWE'
-  }
+    if (match.id === 17) {
+      homeTeam = winners[1] || 'V74'
+      awayTeam = winners[2] || 'V77'
+    }
 
-  // Match 18 = vinnare match 3 + 4
-  if (match.id === 18) {
-    homeTeam = winners[3] || 'RSA/CAN'
-    awayTeam = winners[4] || 'NED/MAR'
-  }
-// 8-del
-if (match.id === 19) {
-  homeTeam = winners[5] || 'POR/CRO'
-  awayTeam = winners[6] || 'ESP/AUT'
-}
+    if (match.id === 18) {
+      homeTeam = winners[3] || 'V73'
+      awayTeam = winners[4] || 'V75'
+    }
 
-if (match.id === 20) {
-  homeTeam = winners[7] || 'USA/BIH'
-  awayTeam = winners[8] || 'BEL/SEN'
-}
+    if (match.id === 19) {
+      homeTeam = winners[5] || 'V83'
+      awayTeam = winners[6] || 'V84'
+    }
 
-if (match.id === 21) {
-  homeTeam = winners[9] || 'BRA/JPN'
-  awayTeam = winners[10] || 'CIV/NOR'
-}
+    if (match.id === 20) {
+      homeTeam = winners[7] || 'V81'
+      awayTeam = winners[8] || 'V82'
+    }
 
-if (match.id === 22) {
-  homeTeam = winners[11] || 'MEX/ECU'
-  awayTeam = winners[12] || 'ENG/COD'
-}
+    if (match.id === 21) {
+      homeTeam = winners[9] || 'V76'
+      awayTeam = winners[10] || 'V78'
+    }
 
-if (match.id === 23) {
-  homeTeam = winners[13] || 'ARG/CPV'
-  awayTeam = winners[14] || 'AUS/EGY'
-}
+    if (match.id === 22) {
+      homeTeam = winners[11] || 'V79'
+      awayTeam = winners[12] || 'V80'
+    }
 
-if (match.id === 24) {
-  homeTeam = winners[15] || 'SUI/ALG'
-  awayTeam = winners[16] || 'COL/GHA'
-}
+    if (match.id === 23) {
+      homeTeam = winners[13] || 'V86'
+      awayTeam = winners[14] || 'V88'
+    }
 
-// Kvart
-if (match.id === 25) {
-  homeTeam = winners[17] || 'V89'
-  awayTeam = winners[18] || 'V90'
-}
+    if (match.id === 24) {
+      homeTeam = winners[15] || 'V85'
+      awayTeam = winners[16] || 'V87'
+    }
 
-if (match.id === 26) {
-  homeTeam = winners[19] || 'V93'
-  awayTeam = winners[20] || 'V94'
-}
+    if (match.id === 25) {
+      homeTeam = winners[17] || 'V89'
+      awayTeam = winners[18] || 'V90'
+    }
 
-if (match.id === 27) {
-  homeTeam = winners[21] || 'V91'
-  awayTeam = winners[22] || 'V92'
-}
+    if (match.id === 26) {
+      homeTeam = winners[19] || 'V93'
+      awayTeam = winners[20] || 'V94'
+    }
 
-if (match.id === 28) {
-  homeTeam = winners[23] || 'V95'
-  awayTeam = winners[24] || 'V96'
-}
+    if (match.id === 27) {
+      homeTeam = winners[21] || 'V91'
+      awayTeam = winners[22] || 'V92'
+    }
 
-// Semi
-if (match.id === 30) {
-  homeTeam = winners[25] || 'V97'
-  awayTeam = winners[26] || 'V98'
-}
+    if (match.id === 28) {
+      homeTeam = winners[23] || 'V95'
+      awayTeam = winners[24] || 'V96'
+    }
 
-if (match.id === 31) {
-  homeTeam = winners[27] || 'V99'
-  awayTeam = winners[28] || 'V100'
-}
+    if (match.id === 30) {
+      homeTeam = winners[25] || 'V97'
+      awayTeam = winners[26] || 'V98'
+    }
 
-// Final
-if (match.id === 32) {
-  homeTeam = winners[30] || 'V101'
-  awayTeam = winners[31] || 'V102'
+    if (match.id === 31) {
+      homeTeam = winners[27] || 'V99'
+      awayTeam = winners[28] || 'V100'
+    }
+
+    if (match.id === 32) {
+      homeTeam = winners[30] || 'V101'
+      awayTeam = winners[31] || 'V102'
+    }
+
+    const winner = getWinner(
+      homeTeam,
+      awayTeam,
+      savedTip?.home_score,
+      savedTip?.away_score
+    )
+
+    if (winner) {
+      winners[match.id] = winner
+    }
+
+    const card = `
+      <div class="playoff-card">
+
+        <div class="playoff-round">
+          ${match.round}
+        </div>
+
+        <div class="space-y-2">
+
+          <div class="flex items-center justify-between">
+
+            <div class="flex items-center gap-2">
+              <img
+                src="https://flagcdn.com/24x18/${getFlag(homeTeam)}.png"
+                class="w-5 h-4 rounded-sm"
+              >
+
+              <span class="font-bold">
+                ${homeTeam}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                data-id="${match.id}"
+                class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
+                value="${savedTip?.home_score ?? ''}"
+              >
+
+              <span class="text-zinc-400">
+                ${match.home_score ?? 0}
+              </span>
+            </div>
+
+          </div>
+
+          <div class="border-t border-zinc-700"></div>
+
+          <div class="flex items-center justify-between">
+
+            <div class="flex items-center gap-2">
+              <img
+                src="https://flagcdn.com/24x18/${getFlag(awayTeam)}.png"
+                class="w-5 h-4 rounded-sm"
+              >
+
+              <span class="font-bold">
+                ${awayTeam}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                data-id="${match.id}"
+                class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
+                value="${savedTip?.away_score ?? ''}"
+              >
+
+              <span class="text-zinc-400">
+                ${match.away_score ?? 0}
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    `
+
+    if (match.id >= 1 && match.id <= 8)
+      round16Left.innerHTML += card
+
+    else if (match.id >= 9 && match.id <= 16)
+      round16Right.innerHTML += card
+
+    else if ([17,18,19,20].includes(match.id))
+      round8Left.innerHTML += card
+
+    else if ([21,22,23,24].includes(match.id))
+      round8Right.innerHTML += card
+
+    else if ([25,26].includes(match.id))
+      quarterLeft.innerHTML += card
+
+    else if ([27,28].includes(match.id))
+      quarterRight.innerHTML += card
+
+    else if (match.id === 30)
+      semiLeft.innerHTML += card
+
+    else if (match.id === 31)
+      semiRight.innerHTML += card
+
+    else if ([29,32].includes(match.id))
+      finalColumn.innerHTML += card
+
+  })
 }
 
 const winner =
