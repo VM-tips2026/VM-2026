@@ -1394,7 +1394,8 @@ function getFlag(team) {
   return flags[team] || null
 
 }  
-function getWinner(home, away, homeScore, awayScore, selectedWinner) {
+function getWinner(home, away, homeScore, awayScore) {
+
   if (
     homeScore === undefined ||
     awayScore === undefined ||
@@ -1405,7 +1406,7 @@ function getWinner(home, away, homeScore, awayScore, selectedWinner) {
   if (Number(homeScore) > Number(awayScore)) return home
   if (Number(awayScore) > Number(homeScore)) return away
 
-  return selectedWinner || null
+  return null
 }
 function autoSavePlayoffTips() {
 
@@ -1551,12 +1552,11 @@ async function loadPlayoff() {
     }
 
     const winner = getWinner(
-  homeTeam,
-  awayTeam,
-  savedTip?.home_score,
-  savedTip?.away_score,
-  savedTip?.winner
-)
+      homeTeam,
+      awayTeam,
+      savedTip?.home_score,
+      savedTip?.away_score
+    )
 
     if (winner) {
       winners[match.id] = winner
@@ -1625,35 +1625,6 @@ async function loadPlayoff() {
   class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
   value="${savedTip?.away_score ?? ''}"
 >
-${
-  savedTip?.home_score === savedTip?.away_score &&
-  savedTip?.home_score !== undefined &&
-  savedTip?.home_score !== ''
-    ? `
-      <select
-        class="playoff-winner w-8 h-8 bg-zinc-800 rounded text-[10px]"
-        data-id="${match.id}"
-        onchange="autoSavePlayoffTips()"
-      >
-        <option value="">🏆</option>
-
-        <option
-          value="${homeTeam}"
-          ${savedTip?.winner === homeTeam ? 'selected' : ''}
-        >
-          H
-        </option>
-
-        <option
-          value="${awayTeam}"
-          ${savedTip?.winner === awayTeam ? 'selected' : ''}
-        >
-          B
-        </option>
-      </select>
-    `
-    : ''
-}
 
               <span class="text-zinc-400">
                 ${match.away_score ?? 0}
@@ -1741,15 +1712,15 @@ const winnerSelect =
 
 const playoffWinner =
   winnerSelect?.value || null
-  
     tips.push({
-  user_id: user.id,
-  match_id: Number(matchId),
-  home_score: homeScore,
-  away_score: awayScore,
-  tip_1x2: tip1X2,
-  winner: playoffWinner
-})
+
+      user_id: user.id,
+      match_id: Number(matchId),
+      home_score: homeScore,
+      away_score: awayScore,
+      tip_1x2: tip1X2
+
+    })
 
   })
 
