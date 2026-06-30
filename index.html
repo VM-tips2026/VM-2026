@@ -1397,6 +1397,25 @@ function getFlag(team) {
   return flags[team] || null
 
 }  
+function getWinner(home, away, homeScore, awayScore) {
+
+  if (
+    homeScore === '' ||
+    awayScore === ''
+  ) return null
+
+  if (
+    Number(homeScore) >
+    Number(awayScore)
+  ) return home
+
+  if (
+    Number(awayScore) >
+    Number(homeScore)
+  ) return away
+
+  return null
+}
 async function loadPlayoff() {
 
   console.log('loadPlayoff körs')
@@ -1436,7 +1455,7 @@ console.log(
     savedTips = existingTips || []
 console.log('SAVED TIPS', savedTips)
   }
-
+const winners = {}
 const round16Left =
   document.getElementById('round16-left')
 
@@ -1473,18 +1492,41 @@ semiRight.innerHTML = ''
 quarterRight.innerHTML = ''
 round8Right.innerHTML = ''
 round16Right.innerHTML = ''
-  data.forEach(match => {
 
-    const savedTip =
-      savedTips.find(
-        t => t.match_id === match.id
-      )
-      console.log(
-  'MATCH',
-  match.id,
-  savedTip
-)
-const card = `
+data.forEach(match => {
+
+  const savedTip =
+    savedTips.find(
+      t => t.match_id === match.id
+    )
+
+  const winner =
+    getWinner(
+      match.home_team,
+      match.away_team,
+      savedTip?.home_score,
+      savedTip?.away_score
+    )
+
+  if (winner)
+    winners[match.id] = winner
+
+  let homeTeam = match.home_team
+  let awayTeam = match.away_team
+
+  // Match 17 = vinnare match 1 + 2
+  if (match.id === 17) {
+    homeTeam = winners[1] || 'GER/PAR'
+    awayTeam = winners[2] || 'FRA/SWE'
+  }
+
+  // Match 18 = vinnare match 3 + 4
+  if (match.id === 18) {
+    homeTeam = winners[3] || 'RSA/CAN'
+    awayTeam = winners[4] || 'NED/MAR'
+  }
+
+  const card = `
 
 <div class="playoff-card">
 
@@ -1500,12 +1542,12 @@ const card = `
     <div class="flex items-center gap-2">
 
       <img
-        src="https://flagcdn.com/24x18/${getFlag(match.home_team)}.png"
+        src="https://flagcdn.com/24x18/${getFlag(homeTeam)}.png"
         class="w-5 h-4 rounded-sm"
       >
 
       <span class="font-bold">
-        ${match.home_team}
+        ${homeTeam}
       </span>
 
     </div>
@@ -1535,12 +1577,12 @@ const card = `
     <div class="flex items-center gap-2">
 
       <img
-        src="https://flagcdn.com/24x18/${getFlag(match.away_team)}.png"
+        src="https://flagcdn.com/24x18/${getFlag(awayTeam)}.png"
         class="w-5 h-4 rounded-sm"
       >
 
       <span class="font-bold">
-        ${match.away_team}
+        ${awayTeam}
       </span>
 
     </div>
@@ -2562,7 +2604,7 @@ async function loadAdminMatches() {
 </td>
 
 <td class="p-4 font-bold">
-  ${match.home_team} - ${match.away_team}
+  ${homeTeam} - ${awayTeam}
 </td>
 
         <td class="p-4">
@@ -2632,7 +2674,7 @@ async function loadAdminPlayoffMatches() {
 
         <div class="font-bold mb-3">
           ${match.round}:
-          ${match.home_team} - ${match.away_team}
+          ${homeTeam} - ${awayTeam}
         </div>
 
         <div class="flex items-center gap-2">
