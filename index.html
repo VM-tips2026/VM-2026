@@ -1349,11 +1349,6 @@ function get1X2(home, away) {
   if (away > home) return '2'
   return 'X'
 }
-    function getWinner(match) {
-  if (match.resultHomeScore > match.resultAwayScore) return match.home
-  if (match.resultAwayScore > match.resultHomeScore) return match.away
-  return 'Oavgjort'
-}
 function getFlag(team) {
 
   const flags = {
@@ -1659,144 +1654,6 @@ async function loadPlayoff() {
   })
 }
 
-const winner =
-  getWinner(
-    homeTeam,
-    awayTeam,
-    savedTip?.home_score,
-    savedTip?.away_score
-  )
-
-if (winner)
-  winners[match.id] = winner
-
-const card = `
-
-<div class="playoff-card">
-
-  <div class="playoff-round">
-    ${match.round}
-  </div>
-
-  <div class="font-bold mb-3">
-<div class="space-y-2">
-
-  <div class="flex items-center justify-between">
-
-    <div class="flex items-center gap-2">
-
-      <img
-        src="https://flagcdn.com/24x18/${getFlag(awayTeam)}.png"
-        class="w-5 h-4 rounded-sm"
-      >
-
-      <span class="font-bold">
-        ${awayTeam}
-      </span>
-
-    </div>
-
-    <div class="flex items-center gap-2">
-
-      <input
-        type="number"
-        min="0"
-        data-id="${match.id}"
-        class="playoff-away w-10 h-8 bg-zinc-800 rounded text-center"
-        value="${savedTip?.away_score ?? ''}"
-      >
-
-      <span class="text-zinc-400">
-        ${match.away_score ?? 0}
-      </span>
-
-    </div>
-
-  </div>
-
-${
-  savedTip?.home_score === savedTip?.away_score &&
-  savedTip?.home_score !== undefined
-    ? `
-      ${
-  savedTip?.home_score === savedTip?.away_score
-    ? `
-      <select
-        class="playoff-winner w-8 h-8 bg-zinc-800 rounded text-[10px]"
-        data-id="${match.id}"
-      >
-
-        <option value="">🏆</option>
-
-        <option
-          value="${homeTeam}"
-          ${savedTip?.winner === homeTeam ? 'selected' : ''}
-        >
-          H
-        </option>
-
-        <option
-          value="${awayTeam}"
-          ${savedTip?.winner === awayTeam ? 'selected' : ''}
-        >
-          B
-        </option>
-
-      </select>
-    `
-    : ''
-}
-
-</div>
-`
-if (match.id >= 1 && match.id <= 8)
-  round16Left.innerHTML += card
-
-else if (match.id >= 9 && match.id <= 16)
-  round16Right.innerHTML += card
-
-// 8-del vänster
-else if ([17,18].includes(match.id))
-  round8Left.innerHTML += card
-
-// Kvart vänster
-else if ([25,26].includes(match.id))
-  quarterLeft.innerHTML += card
-
-// Semi vänster
-else if (match.id === 30)
-  semiLeft.innerHTML += card
-
-// FINAL
-else if (match.id === 32)
-  finalColumn.innerHTML += card
-
-// Semi höger
-else if (match.id === 31)
-  semiRight.innerHTML += card
-
-// Kvart höger
-else if ([27,28].includes(match.id))
-  quarterRight.innerHTML += card
-
-// 8-del höger
-else if ([21,22].includes(match.id))
-  round8Right.innerHTML += card
-
-// Nedersta 8-del vänster
-else if ([19,20].includes(match.id))
-  round8Left.innerHTML += card
-
-// Nedersta 8-del höger
-else if ([23,24].includes(match.id))
-  round8Right.innerHTML += card
-
-// Brons
-else if (match.id === 29)
-  finalColumn.innerHTML += card
-  })
-
-}
 
 async function savePlayoffTips() {
 
@@ -2758,7 +2615,7 @@ async function loadAdminMatches() {
 </td>
 
 <td class="p-4 font-bold">
-  ${homeTeam} - ${awayTeam}
+  ${match.home_team} - ${match.away_team}
 </td>
 
         <td class="p-4">
@@ -2828,7 +2685,7 @@ async function loadAdminPlayoffMatches() {
 
         <div class="font-bold mb-3">
           ${match.round}:
-          ${homeTeam} - ${awayTeam}
+          ${match.home_team} - ${match.away_team}
         </div>
 
         <div class="flex items-center gap-2">
