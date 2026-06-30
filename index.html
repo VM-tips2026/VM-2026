@@ -1706,8 +1706,13 @@ async function savePlayoffTips() {
   })
 
   const { error } = await sb
-    .from('slutspel_tips')
-    .upsert(tips)
+  .from('slutspel_tips')
+  .upsert(
+    tips,
+    {
+      onConflict: 'user_id,match_id'
+    }
+  )
 
 if (error) {
 
@@ -1723,6 +1728,7 @@ if (error) {
 
   alert('Slutspelstips sparade!')
 
+await loadPlayoff()
 }
 
 function renderMatches() {
