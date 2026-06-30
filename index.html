@@ -1500,17 +1500,6 @@ data.forEach(match => {
       t => t.match_id === match.id
     )
 
-  const winner =
-    getWinner(
-      match.home_team,
-      match.away_team,
-      savedTip?.home_score,
-      savedTip?.away_score
-    )
-
-  if (winner)
-    winners[match.id] = winner
-
   let homeTeam = match.home_team
   let awayTeam = match.away_team
 
@@ -1593,7 +1582,19 @@ if (match.id === 32) {
   homeTeam = winners[30] || 'V101'
   awayTeam = winners[31] || 'V102'
 }
-  const card = `
+
+const winner =
+  getWinner(
+    homeTeam,
+    awayTeam,
+    savedTip?.home_score,
+    savedTip?.away_score
+  )
+
+if (winner)
+  winners[match.id] = winner
+
+const card = `
 
 <div class="playoff-card">
 
