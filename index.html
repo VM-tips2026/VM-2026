@@ -1394,7 +1394,7 @@ function getFlag(team) {
   return flags[team] || null
 
 }  
-function getWinner(home, away, homeScore, awayScore) {
+function getWinner(home, away, homeScore, awayScore, selectedWinner) {
 
   if (
     homeScore === undefined ||
@@ -1406,7 +1406,7 @@ function getWinner(home, away, homeScore, awayScore) {
   if (Number(homeScore) > Number(awayScore)) return home
   if (Number(awayScore) > Number(homeScore)) return away
 
-  return null
+  return selectedWinner || null
 }
 function autoSavePlayoffTips() {
 
@@ -1552,11 +1552,12 @@ async function loadPlayoff() {
     }
 
     const winner = getWinner(
-      homeTeam,
-      awayTeam,
-      savedTip?.home_score,
-      savedTip?.away_score
-    )
+  homeTeam,
+  awayTeam,
+  savedTip?.home_score,
+  savedTip?.away_score,
+  savedTip?.winner
+)
 
     if (winner) {
       winners[match.id] = winner
@@ -1579,9 +1580,24 @@ async function loadPlayoff() {
                 class="w-5 h-4 rounded-sm"
               >
 
-              <span class="font-bold">
-                ${homeTeam}
-              </span>
+             <span
+  onclick="${
+    savedTip?.home_score === savedTip?.away_score
+      ? `selectPlayoffWinner(${match.id}, '${homeTeam}')`
+      : ''
+  }"
+  class="font-bold ${
+    savedTip?.home_score === savedTip?.away_score
+      ? 'cursor-pointer hover:text-green-400'
+      : ''
+  } ${
+    savedTip?.winner === homeTeam
+      ? 'text-green-400'
+      : ''
+  }"
+>
+  ${homeTeam}
+</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -1611,9 +1627,24 @@ async function loadPlayoff() {
                 class="w-5 h-4 rounded-sm"
               >
 
-              <span class="font-bold">
-                ${awayTeam}
-              </span>
+              <span
+  onclick="${
+    savedTip?.home_score === savedTip?.away_score
+      ? `selectPlayoffWinner(${match.id}, '${awayTeam}')`
+      : ''
+  }"
+  class="font-bold ${
+    savedTip?.home_score === savedTip?.away_score
+      ? 'cursor-pointer hover:text-green-400'
+      : ''
+  } ${
+    savedTip?.winner === awayTeam
+      ? 'text-green-400'
+      : ''
+  }"
+>
+  ${awayTeam}
+</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -1668,7 +1699,30 @@ async function loadPlayoff() {
   })
 }
 
+async function selectPlayoffWinner(matchId, winner) {
 
+  const {
+    data: { user }
+  } = await sb.auth.getUser()
+
+  if (!user) return
+
+  const { error } = await sb
+    .from('slutspel_tips')
+    .update({
+      winner: winner
+    })
+    .eq('user_id', user.id)
+    .eq('match_id', matchId)
+
+  if (error) {
+    console.error(error)
+    alert(error.message)
+    return
+  }
+
+  await loadPlayoff()
+}
 async function savePlayoffTips(showAlert = true) {
 
   const {
