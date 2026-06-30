@@ -1610,41 +1610,6 @@ const card = `
     <div class="flex items-center gap-2">
 
       <img
-        src="https://flagcdn.com/24x18/${getFlag(homeTeam)}.png"
-        class="w-5 h-4 rounded-sm"
-      >
-
-      <span class="font-bold">
-        ${homeTeam}
-      </span>
-
-    </div>
-
-    <div class="flex items-center gap-2">
-
-      <input
-        type="number"
-        min="0"
-        data-id="${match.id}"
-        class="playoff-home w-10 h-8 bg-zinc-800 rounded text-center"
-        value="${savedTip?.home_score ?? ''}"
-      >
-
-      <span class="text-zinc-400">
-  ${match.home_score ?? 0}
-</span>
-
-    </div>
-
-  </div>
-
-  <div class="border-t border-zinc-700"></div>
-
-  <div class="flex items-center justify-between">
-
-    <div class="flex items-center gap-2">
-
-      <img
         src="https://flagcdn.com/24x18/${getFlag(awayTeam)}.png"
         class="w-5 h-4 rounded-sm"
       >
@@ -1666,10 +1631,33 @@ const card = `
       >
 
       <span class="text-zinc-400">
-  ${match.away_score ?? 0}
-</span>
+        ${match.away_score ?? 0}
+      </span>
 
     </div>
+
+  </div>
+
+  <div class="mt-2">
+
+    <select
+      class="playoff-winner w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2"
+      data-id="${match.id}"
+    >
+
+      <option value="">
+        Välj vinnare vid lika
+      </option>
+
+      <option value="${homeTeam}">
+        ${homeTeam}
+      </option>
+
+      <option value="${awayTeam}">
+        ${awayTeam}
+      </option>
+
+    </select>
 
   </div>
 
@@ -1760,7 +1748,13 @@ async function savePlayoffTips() {
 
     if (awayScore > homeScore)
       tip1X2 = '2'
+const winnerSelect =
+  document.querySelector(
+    `.playoff-winner[data-id="${matchId}"]`
+  )
 
+const playoffWinner =
+  winnerSelect?.value || null
     tips.push({
 
       user_id: user.id,
