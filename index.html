@@ -1571,7 +1571,8 @@ if (match.id === 29) {
       ? awayTeam
       : homeTeam
 }
-
+const homeIsWinner = winner === homeTeam
+const awayIsWinner = winner === awayTeam
     const card = `
       <div class="playoff-card">
 
@@ -1600,9 +1601,9 @@ if (match.id === 29) {
       ? 'cursor-pointer hover:text-green-400'
       : ''
   } ${
-    savedTip?.winner === homeTeam
-      ? 'text-green-400'
-      : ''
+    homeIsWinner
+  ? 'text-green-400'
+  : ''
   }"
 >
   ${homeTeam}
@@ -1647,9 +1648,9 @@ if (match.id === 29) {
       ? 'cursor-pointer hover:text-green-400'
       : ''
   } ${
-    savedTip?.winner === awayTeam
-      ? 'text-green-400'
-      : ''
+    awayIsWinner
+  ? 'text-green-400'
+  : ''
   }"
 >
   ${awayTeam}
