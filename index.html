@@ -1055,6 +1055,41 @@ if (playoffResultsError) {
   console.error(playoffResultsError)
 }
 
+// Hämta allas extratips
+const {
+  data: allExtraTips,
+  error: allExtraTipsError
+} = await sb
+  .from('extra_tips')
+  .select(`
+    user_id,
+    world_winner,
+    top_scorer,
+    total_goals
+  `)
+
+if (allExtraTipsError) {
+  console.error(allExtraTipsError)
+}
+
+// Hämta rätt svar
+const {
+  data: extraResult,
+  error: extraResultError
+} = await sb
+  .from('extra_data')
+  .select(`
+    world_winner,
+    top_scorer,
+    total_goals
+  `)
+  .eq('id', 1)
+  .single()
+
+if (extraResultError) {
+  console.error(extraResultError)
+}
+
 if (error) {
   console.error(error)
   return
@@ -1171,6 +1206,106 @@ playoffTips.forEach(tip => {
   }
 
 })
+
+// ======================================
+// AUTOMATISKA EXTRAPOÄNG
+// ======================================
+
+if (extraResult && allExtraTips) {
+
+  const correctWorldWinner =
+    normalizeAnswer(
+      extraResult.world_winner
+    )
+
+  const correctTopScorer =
+    normalizeAnswer(
+      extraResult.top_scorer
+    )
+
+  const realTotalGoals =
+    Number(extraResult.total_goals)
+
+  // 5 poäng för rätt VM-vinnare
+  // 5 poäng för rätt skyttekung
+  allExtraTips.forEach(tip => {
+
+    if (!users[tip.user_id]) return
+
+    const userWorldWinner =
+      normalizeAnswer(
+        tip.world_winner
+      )
+
+    const userTopScorer =
+      normalizeAnswer(
+        tip.top_scorer
+      )
+
+    if (
+      correctWorldWinner &&
+      userWorldWinner === correctWorldWinner
+    ) {
+      users[tip.user_id].points += 5
+    }
+
+    if (
+      correctTopScorer &&
+      userTopScorer === correctTopScorer
+    ) {
+      users[tip.user_id].points += 5
+    }
+  })
+
+  // 5 poäng till den eller de som är närmast antal mål
+  if (
+    extraResult.total_goals !== null &&
+    extraResult.total_goals !== '' &&
+    Number.isFinite(realTotalGoals)
+  ) {
+
+    const validGoalTips =
+      allExtraTips.filter(tip => {
+
+        return (
+          users[tip.user_id] &&
+          tip.total_goals !== null &&
+          tip.total_goals !== '' &&
+          Number.isFinite(
+            Number(tip.total_goals)
+          )
+        )
+      })
+
+    if (validGoalTips.length > 0) {
+
+      const smallestDifference =
+        Math.min(
+          ...validGoalTips.map(tip =>
+            Math.abs(
+              Number(tip.total_goals) -
+              realTotalGoals
+            )
+          )
+        )
+
+      validGoalTips.forEach(tip => {
+
+        const difference =
+          Math.abs(
+            Number(tip.total_goals) -
+            realTotalGoals
+          )
+
+        if (
+          difference === smallestDifference
+        ) {
+          users[tip.user_id].points += 5
+        }
+      })
+    }
+  }
+}
 
 const sortedUsers =
     Object.entries(users)
@@ -1344,6 +1479,14 @@ const secondPrize =
 
 const thirdPrize =
   document.getElementById('third-prize')
+
+function normalizeAnswer(value) {
+
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+
+}
 
 function get1X2(home, away) {
   if (home > away) return '1'
