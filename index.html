@@ -505,13 +505,16 @@ grid-template-columns:
 
     <table class="w-full text-left text-sm">
 
-      <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
-        <tr>
-          <th class="px-3 py-2 w-16">#</th>
-          <th class="px-3 py-2">Namn</th>
-          <th class="px-0 py-2 w-20">Poäng</th>
-        </tr>
-      </thead>
+     <thead class="bg-zinc-800 text-zinc-300 uppercase text-xs tracking-wide">
+  <tr>
+    <th class="px-3 py-2 w-14">#</th>
+    <th class="px-3 py-2">Namn</th>
+    <th class="px-3 py-2 text-center">Grupp</th>
+    <th class="px-3 py-2 text-center">Bonus</th>
+    <th class="px-3 py-2 text-center">Slutspel</th>
+    <th class="px-3 py-2 text-center">Totalt</th>
+  </tr>
+</thead>
 
       <tbody id="leaderboard-body"></tbody>
 
@@ -767,6 +770,10 @@ grid-template-columns:
   <tr class="border-b border-zinc-700 text-zinc-400">
     <th class="text-left py-3">Namn</th>
     <th class="text-left py-3">Betald</th>
+    <th class="text-center py-3">Grupp ±</th>
+    <th class="text-center py-3">Bonus ±</th>
+    <th class="text-center py-3">Slutspel ±</th>
+    <th class="text-center py-3">Spara</th>
   </tr>
 </thead>
 
@@ -1094,7 +1101,24 @@ if (error) {
   console.error(error)
   return
 }
+const {
+  data: manualPoints,
+  error: manualPointsError
+} = await sb
+  .from('manual_points')
+  .select(`
+    user_id,
+    group_adjustment,
+    bonus_adjustment,
+    playoff_adjustment
+  `)
 
+if (manualPointsError) {
+  console.error(
+    'Kunde inte läsa manuella poäng:',
+    manualPointsError
+  )
+}
   const users = {}
 
 
@@ -1107,11 +1131,18 @@ if (error) {
     if (!users[tip.user_id]) {
 
       users[tip.user_id] = {
-        name: tip.player_name,
-        points: 0,
-        exact: 0,
-        winners: 0
-      }
+  name: tip.player_name,
+
+  groupPoints: 0,
+  bonusPoints: 0,
+  playoffPoints: 0,
+
+  groupAdjustment: 0,
+  bonusAdjustment: 0,
+  playoffAdjustment: 0,
+
+  totalPoints: 0
+}
     }
 
     const realMatch = matches.find(
@@ -1171,7 +1202,7 @@ if (tip.tip_1x2 === real1X2) {
 
 }
 
-users[tip.user_id].points += points
+users[tip.user_id].groupPoints += points
 })
 
 playoffTips.forEach(tip => {
@@ -1202,8 +1233,8 @@ playoffTips.forEach(tip => {
     points += 1
 
   if (users[tip.user_id]) {
-    users[tip.user_id].points += points
-  }
+  users[tip.user_id].playoffPoints += points
+}
 
 })
 
@@ -1246,14 +1277,14 @@ if (extraResult && allExtraTips) {
       correctWorldWinner &&
       userWorldWinner === correctWorldWinner
     ) {
-      users[tip.user_id].points += 5
+      users[tip.user_id].bonusPoints += 5
     }
 
     if (
       correctTopScorer &&
       userTopScorer === correctTopScorer
     ) {
-      users[tip.user_id].points += 5
+      users[tip.user_id].bonusPoints += 5
     }
   })
 
@@ -1300,18 +1331,56 @@ if (extraResult && allExtraTips) {
         if (
           difference === smallestDifference
         ) {
-          users[tip.user_id].points += 5
+          users[tip.user_id].bonusPoints += 5
         }
       })
     }
   }
 }
+// ======================================
+// MANUELLA ADMINJUSTERINGAR
+// ======================================
 
+;(manualPoints || []).forEach(row => {
+
+  if (!users[row.user_id]) return
+
+  users[row.user_id].groupAdjustment =
+    Number(row.group_adjustment) || 0
+
+  users[row.user_id].bonusAdjustment =
+    Number(row.bonus_adjustment) || 0
+
+  users[row.user_id].playoffAdjustment =
+    Number(row.playoff_adjustment) || 0
+})
+
+// ======================================
+// RÄKNA TOTALPOÄNG
+// ======================================
+
+Object.values(users).forEach(user => {
+
+  user.groupPoints +=
+    user.groupAdjustment
+
+  user.bonusPoints +=
+    user.bonusAdjustment
+
+  user.playoffPoints +=
+    user.playoffAdjustment
+
+  user.totalPoints =
+    user.groupPoints +
+    user.bonusPoints +
+    user.playoffPoints
+})
 const sortedUsers =
-    Object.entries(users)
-      .sort((a, b) =>
-        b[1].points - a[1].points
-      )
+  Object.entries(users)
+    .sort((a, b) =>
+      b[1].totalPoints -
+      a[1].totalPoints
+    )
 
   leaderboardBody.innerHTML = ''
 
@@ -1326,22 +1395,34 @@ if (index === 3) {
 }
 
   leaderboardBody.innerHTML += `
-    <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
+  <tr class="border-t border-zinc-800 hover:bg-zinc-900/60">
 
-      <td class="px-3 py-2 font-bold">
-        ${index + 1}
-      </td>
+    <td class="px-3 py-3 font-bold">
+      ${index + 1}
+    </td>
 
-      <td class="px-3 py-2">
-        ${user[1].name}
-      </td>
+    <td class="px-3 py-3">
+      ${user[1].name}
+    </td>
 
-      <td class="px-3 py-2 text-white font-bold">
-        ${user[1].points}
-      </td>
+    <td class="px-3 py-3 text-center font-bold text-zinc-200">
+      ${user[1].groupPoints}
+    </td>
 
-    </tr>
-  `
+    <td class="px-3 py-3 text-center font-bold text-yellow-400">
+      ${user[1].bonusPoints}
+    </td>
+
+    <td class="px-3 py-3 text-center font-bold text-blue-400">
+      ${user[1].playoffPoints}
+    </td>
+
+    <td class="px-3 py-3 text-center font-black text-green-400">
+      ${user[1].totalPoints}
+    </td>
+
+  </tr>
+`
 })
 }
 async function loadExtraTips() {
@@ -2744,134 +2825,252 @@ data.forEach(row => {
 
 }
 async function loadAdminUsers() {
+async function saveManualPoints(userId) {
 
-  const { data, error } = await sb
-.from('tips')
-.select('user_id, player_name, payment_status')
+  const groupInput =
+    document.getElementById(
+      `admin-group-${userId}`
+    )
+
+  const bonusInput =
+    document.getElementById(
+      `admin-bonus-${userId}`
+    )
+
+  const playoffInput =
+    document.getElementById(
+      `admin-playoff-${userId}`
+    )
+
+  if (
+    !groupInput ||
+    !bonusInput ||
+    !playoffInput
+  ) {
+    alert('Kunde inte hitta poängfälten.')
+    return
+  }
+
+  const groupAdjustment =
+    Number(groupInput.value) || 0
+
+  const bonusAdjustment =
+    Number(bonusInput.value) || 0
+
+  const playoffAdjustment =
+    Number(playoffInput.value) || 0
+
+  const { error } = await sb
+    .from('manual_points')
+    .upsert(
+      {
+        user_id: userId,
+
+        group_adjustment:
+          groupAdjustment,
+
+        bonus_adjustment:
+          bonusAdjustment,
+
+        playoff_adjustment:
+          playoffAdjustment,
+
+        updated_at:
+          new Date().toISOString()
+      },
+      {
+        onConflict: 'user_id'
+      }
+    )
 
   if (error) {
     console.error(error)
+    alert(error.message)
+    return
+  }
+
+  alert('Poängjusteringen är sparad!')
+
+  await loadAdminUsers()
+}
+  const {
+    data: tipsData,
+    error: tipsError
+  } = await sb
+    .from('tips')
+    .select(`
+      user_id,
+      player_name,
+      payment_status
+    `)
+
+  if (tipsError) {
+    console.error(tipsError)
+    return
+  }
+
+  const {
+    data: manualData,
+    error: manualError
+  } = await sb
+    .from('manual_points')
+    .select(`
+      user_id,
+      group_adjustment,
+      bonus_adjustment,
+      playoff_adjustment
+    `)
+
+  if (manualError) {
+    console.error(manualError)
     return
   }
 
   const users = {}
 
-  data.forEach(user => {
+  tipsData.forEach(row => {
 
-    if (!users[user.user_id]) {
+    if (!users[row.user_id]) {
 
-users[user.user_id] = {
-  user_id: user.user_id,
-  name: user.player_name,
-  payment_status: user.payment_status || false
-}
+      users[row.user_id] = {
+        user_id: row.user_id,
+        name: row.player_name,
+        payment_status:
+          row.payment_status || false,
 
+        group_adjustment: 0,
+        bonus_adjustment: 0,
+        playoff_adjustment: 0
+      }
     }
 
+    if (row.payment_status) {
+      users[row.user_id].payment_status = true
+    }
+  })
+
+  ;(manualData || []).forEach(row => {
+
+    if (!users[row.user_id]) return
+
+    users[row.user_id].group_adjustment =
+      Number(row.group_adjustment) || 0
+
+    users[row.user_id].bonus_adjustment =
+      Number(row.bonus_adjustment) || 0
+
+    users[row.user_id].playoff_adjustment =
+      Number(row.playoff_adjustment) || 0
   })
 
   const body =
-    document.getElementById('admin-users-body')
+    document.getElementById(
+      'admin-users-body'
+    )
 
   body.innerHTML = ''
 
-Object.values(users).forEach(user => {
-
-  body.innerHTML += `
-    <tr class="border-t border-zinc-800">
-
-      <td class="py-3">
-        ${user.name}
-      </td>
-
-      <td class="py-3">
-
-        <input
-          type="checkbox"
-          ${user.payment_status ? 'checked' : ''}
-          onchange="togglePaymentStatus('${user.user_id}', this.checked)"
-          class="w-5 h-5 accent-green-500"
-        />
-
-      </td>
-
-    </tr>
-  `
-
-})
-
-}
-async function loadAdminMatches() {
-
-  const { data, error } = await sb
-    .from('matcher')
-    .select('*')
-    .order('date', { ascending: true })
-    .order('time', { ascending: true })
-
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  const body =
-    document.getElementById('admin-matches-body')
-
-  body.innerHTML = ''
-
-  data.forEach(match => {
+  Object.values(users).forEach(user => {
 
     body.innerHTML += `
-
       <tr class="border-t border-zinc-800">
 
-        <td class="p-4">
-          ${match.date}
+        <td class="py-3 pr-4 font-bold">
+          ${user.name}
         </td>
 
-        <td class="p-4">
-          ${match.time}
-        </td>
+        <td class="py-3 pr-4">
 
-        <td class="p-4 text-zinc-400 font-bold">
-  ${match.group_name}
-</td>
-
-<td class="p-4 font-bold">
-  ${match.home_team} - ${match.away_team}
-</td>
-
-        <td class="p-4">
-
-          <div class="flex items-center gap-2">
-
-            <input
-              id="home-${match.id}"
-              type="number"
-              min="0"
-              value="${match.result_home_score ?? ''}"
-              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-            />
-
-            <span>-</span>
-
-            <input
-              id="away-${match.id}"
-              type="number"
-              min="0"
-              value="${match.result_away_score ?? ''}"
-              class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-            />
-
-          </div>
+          <input
+            type="checkbox"
+            ${user.payment_status
+              ? 'checked'
+              : ''}
+            onchange="
+              togglePaymentStatus(
+                '${user.user_id}',
+                this.checked
+              )
+            "
+            class="w-5 h-5 accent-green-500"
+          />
 
         </td>
 
-        <td class="p-4">
+        <td class="py-3 px-2">
+
+          <input
+            id="admin-group-${user.user_id}"
+            type="number"
+            value="${user.group_adjustment}"
+            class="
+              w-20
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+        </td>
+
+        <td class="py-3 px-2">
+
+          <input
+            id="admin-bonus-${user.user_id}"
+            type="number"
+            value="${user.bonus_adjustment}"
+            class="
+              w-20
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+        </td>
+
+        <td class="py-3 px-2">
+
+          <input
+            id="admin-playoff-${user.user_id}"
+            type="number"
+            value="${user.playoff_adjustment}"
+            class="
+              w-20
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+        </td>
+
+        <td class="py-3 pl-2">
 
           <button
-            onclick="saveResult(${match.id})"
-            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl font-bold"
+            onclick="
+              saveManualPoints(
+                '${user.user_id}'
+              )
+            "
+            class="
+              bg-green-500
+              hover:bg-green-600
+              text-black
+              px-4
+              py-2
+              rounded-xl
+              font-bold
+            "
           >
             💾
           </button>
@@ -2879,69 +3078,6 @@ async function loadAdminMatches() {
         </td>
 
       </tr>
-
-    `
-  })
-}
-
-async function loadAdminPlayoffMatches() {
-
-  console.log('ADMIN PLAYOFF KÖR')
-
-  const { data, error } = await sb
-    .from('slutspel_matcher')
-    .select('*')
-    .order('match_order')
-
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  adminPlayoffMatches.innerHTML = ''
-
-  data.forEach(match => {
-
-    adminPlayoffMatches.innerHTML += `
-
-      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3">
-
-        <div class="font-bold mb-3">
-          ${match.round}:
-          ${match.home_team} - ${match.away_team}
-        </div>
-
-        <div class="flex items-center gap-2">
-
-          <input
-            id="playoff-home-${match.id}"
-            type="number"
-            min="0"
-            value="${match.home_score ?? ''}"
-            class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-          >
-
-          <span>-</span>
-
-          <input
-            id="playoff-away-${match.id}"
-            type="number"
-            min="0"
-            value="${match.away_score ?? ''}"
-            class="w-16 bg-zinc-800 border border-zinc-700 rounded-xl p-2 text-center"
-          >
-
-          <button
-            onclick="savePlayoffResult(${match.id})"
-            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl font-bold"
-          >
-            💾
-          </button>
-
-        </div>
-
-      </div>
-
     `
   })
 }
