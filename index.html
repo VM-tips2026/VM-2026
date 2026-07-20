@@ -2824,7 +2824,6 @@ data.forEach(row => {
     })
 
 }
-async function loadAdminUsers() {
 async function saveManualPoints(userId) {
 
   const groupInput =
@@ -2865,18 +2864,10 @@ async function saveManualPoints(userId) {
     .upsert(
       {
         user_id: userId,
-
-        group_adjustment:
-          groupAdjustment,
-
-        bonus_adjustment:
-          bonusAdjustment,
-
-        playoff_adjustment:
-          playoffAdjustment,
-
-        updated_at:
-          new Date().toISOString()
+        group_adjustment: groupAdjustment,
+        bonus_adjustment: bonusAdjustment,
+        playoff_adjustment: playoffAdjustment,
+        updated_at: new Date().toISOString()
       },
       {
         onConflict: 'user_id'
@@ -2893,6 +2884,10 @@ async function saveManualPoints(userId) {
 
   await loadAdminUsers()
 }
+
+
+async function loadAdminUsers() {
+
   const {
     data: tipsData,
     error: tipsError
@@ -3066,6 +3061,119 @@ async function saveManualPoints(userId) {
               bg-green-500
               hover:bg-green-600
               text-black
+              px-4
+              py-2
+              rounded-xl
+              font-bold
+            "
+          >
+            💾
+          </button>
+
+        </td>
+
+      </tr>
+    `
+  })
+}
+async function loadAdminMatches() {
+
+  const { data, error } = await sb
+    .from('matcher')
+    .select('*')
+    .order('date', { ascending: true })
+    .order('time', { ascending: true })
+
+  if (error) {
+    console.error('Kunde inte läsa matcher:', error)
+    return
+  }
+
+  const body =
+    document.getElementById(
+      'admin-matches-body'
+    )
+
+  if (!body) {
+    console.error(
+      'admin-matches-body hittades inte'
+    )
+    return
+  }
+
+  body.innerHTML = ''
+
+  data.forEach(match => {
+
+    body.innerHTML += `
+      <tr class="border-t border-zinc-800">
+
+        <td class="p-4">
+          ${match.date}
+        </td>
+
+        <td class="p-4">
+          ${match.time}
+        </td>
+
+        <td class="p-4 text-zinc-400 font-bold">
+          ${match.group_name}
+        </td>
+
+        <td class="p-4 font-bold">
+          ${match.home_team} -
+          ${match.away_team}
+        </td>
+
+        <td class="p-4">
+
+          <div class="flex items-center gap-2">
+
+            <input
+              id="home-${match.id}"
+              type="number"
+              min="0"
+              value="${match.result_home_score ?? ''}"
+              class="
+                w-16
+                bg-zinc-800
+                border
+                border-zinc-700
+                rounded-xl
+                p-2
+                text-center
+              "
+            />
+
+            <span>-</span>
+
+            <input
+              id="away-${match.id}"
+              type="number"
+              min="0"
+              value="${match.result_away_score ?? ''}"
+              class="
+                w-16
+                bg-zinc-800
+                border
+                border-zinc-700
+                rounded-xl
+                p-2
+                text-center
+              "
+            />
+
+          </div>
+
+        </td>
+
+        <td class="p-4">
+
+          <button
+            onclick="saveResult(${match.id})"
+            class="
+              bg-green-500
+              hover:bg-green-600
               px-4
               py-2
               rounded-xl
