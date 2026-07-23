@@ -1838,14 +1838,105 @@ if (match.id === 29) {
       ? awayTeam
       : homeTeam
 }
-const homeIsWinner = winner === homeTeam
-const awayIsWinner = winner === awayTeam
-    const card = `
+const homeIsWinner =
+  winner === homeTeam
+
+const awayIsWinner =
+  winner === awayTeam
+
+// ======================================
+// POÄNG FÖR DEN HÄR SLUTSPELSMATCHEN
+// ======================================
+
+const playoffResultIsSet =
+  match.home_score !== null &&
+  match.home_score !== undefined &&
+  match.away_score !== null &&
+  match.away_score !== undefined
+
+let matchPoints = 0
+
+if (playoffResultIsSet && savedTip) {
+
+  const realHome =
+    Number(match.home_score)
+
+  const realAway =
+    Number(match.away_score)
+
+  const tippedHome =
+    Number(savedTip.home_score)
+
+  const tippedAway =
+    Number(savedTip.away_score)
+
+  // 1 poäng för rätt hemmamål
+  if (tippedHome === realHome) {
+    matchPoints += 1
+  }
+
+  // 1 poäng för rätt bortamål
+  if (tippedAway === realAway) {
+    matchPoints += 1
+  }
+
+  const real1X2 =
+    realHome > realAway
+      ? '1'
+      : realAway > realHome
+        ? '2'
+        : 'X'
+
+  // 1 poäng för rätt 1X2
+  if (savedTip.tip_1x2 === real1X2) {
+    matchPoints += 1
+  }
+
+  // 1 poäng för rätt lag vidare
+  if (
+    match.winner_team &&
+    savedTip.winner &&
+    normalizeAnswer(savedTip.winner) ===
+      normalizeAnswer(match.winner_team)
+  ) {
+    matchPoints += 1
+  }
+}
+
+const matchPointsClass =
+  !playoffResultIsSet
+    ? 'text-zinc-500'
+    : matchPoints >= 3
+      ? 'text-green-400'
+      : matchPoints > 0
+        ? 'text-yellow-400'
+        : 'text-red-400'
+
+const card = `
       <div class="playoff-card">
 
-        <div class="playoff-round">
-          ${match.round}
-        </div>
+  <div class="flex items-center justify-between mb-1">
+
+    <div class="playoff-round">
+      ${match.round}
+    </div>
+
+    <div
+      class="
+        text-xs
+        font-black
+        ${matchPointsClass}
+      "
+      title="Poäng i matchen"
+    >
+      ${
+        playoffResultIsSet
+          ? `${matchPoints} p`
+          : '– p'
+      }
+    </div>
+
+  </div>
 
         <div class="space-y-2">
 
