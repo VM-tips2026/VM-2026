@@ -3600,38 +3600,7 @@ saveExtraBtn.addEventListener('click', async () => {
   alert('Extra tips sparade!')
 
 })
-async function savePlayoffResult(matchId) {
 
-  const home =
-    document.getElementById(
-      `playoff-home-${matchId}`
-    ).value
-
-  const away =
-    document.getElementById(
-      `playoff-away-${matchId}`
-    ).value
-
-  const { error } = await sb
-    .from('slutspel_matcher')
-    .update({
-
-      home_score: home,
-      away_score: away
-
-    })
-    .eq('id', matchId)
-
-  if (error) {
-
-    console.error(error)
-    alert(error.message)
-
-    return
-  }
-
-  alert('Slutspelsresultat sparat!')
-}
 function startCountdown() {
 
   const countdown =
