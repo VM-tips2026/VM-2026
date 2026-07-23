@@ -3430,6 +3430,145 @@ async function loadAdminPlayoffMatches() {
               border
               border-zinc-700
               rounded-xl
+              px-3
+              py-2
+            "
+          >
+            <option value="">
+              Välj lag som gick vidare
+            </option>
+
+            <option
+              value="${match.home_team}"
+              ${
+                match.winner_team === match.home_team
+                  ? 'selected'
+                  : ''
+              }
+            >
+              ${match.home_team}
+            </option>
+
+            <option
+              value="${match.away_team}"
+              ${
+                match.winner_team === match.away_team
+                  ? 'selected'
+                  : ''
+              }
+            >
+              ${match.away_team}
+            </option>
+          </select>
+
+          <button
+            onclick="savePlayoffResult(${match.id})"
+            class="
+              bg-green-500
+              hover:bg-green-600
+              text-black
+              px-4
+              py-2
+              rounded-xl
+              font-bold
+            "
+          >
+            💾
+          </button>
+
+        </div>
+
+      </div>
+    `
+  })
+}
+async function loadAdminPlayoffMatches() {
+
+  const { data, error } = await sb
+    .from('slutspel_matcher')
+    .select('*')
+    .order('match_order')
+
+  if (error) {
+    console.error(
+      'Kunde inte läsa slutspelsmatcher:',
+      error
+    )
+    return
+  }
+
+  const body =
+    document.getElementById(
+      'admin-playoff-matches'
+    )
+
+  if (!body) return
+
+  body.innerHTML = ''
+
+  data.forEach(match => {
+
+    body.innerHTML += `
+      <div
+        class="
+          bg-zinc-900
+          border
+          border-zinc-800
+          rounded-2xl
+          p-4
+          mb-3
+        "
+      >
+
+        <div class="font-bold mb-3">
+          ${match.round}:
+          ${match.home_team} -
+          ${match.away_team}
+        </div>
+
+        <div class="flex items-center gap-3 flex-wrap">
+
+          <input
+            id="playoff-home-${match.id}"
+            type="number"
+            min="0"
+            value="${match.home_score ?? ''}"
+            class="
+              w-16
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+          <span>-</span>
+
+          <input
+            id="playoff-away-${match.id}"
+            type="number"
+            min="0"
+            value="${match.away_score ?? ''}"
+            class="
+              w-16
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+          <select
+            id="playoff-result-winner-${match.id}"
+            class="
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
               p-2
             "
           >
@@ -3520,12 +3659,12 @@ async function savePlayoffResult(matchId) {
   let winnerTeam =
     winnerInput.value || null
 
-  // Vinnaren väljs automatiskt när resultatet inte är lika
   if (
     homeScore !== null &&
     awayScore !== null
   ) {
 
+    // Automatisk vinnare när resultatet inte är lika
     if (homeScore > awayScore) {
       winnerTeam =
         winnerInput.options[1].value
@@ -3536,13 +3675,13 @@ async function savePlayoffResult(matchId) {
         winnerInput.options[2].value
     }
 
-    // Vid lika måste admin välja laget manuellt
+    // Vid lika måste admin välja vinnare
     if (
       homeScore === awayScore &&
       !winnerTeam
     ) {
       alert(
-        'Resultatet är lika. Välj vilket lag som gick vidare.'
+        'Resultatet är lika. Välj vilket lag som gick vidare efter förlängning eller straffar.'
       )
       return
     }
@@ -3563,7 +3702,9 @@ async function savePlayoffResult(matchId) {
     return
   }
 
-  alert('Slutspelsresultatet är sparat och rättat!')
+  alert(
+    'Resultat och lag som gick vidare är sparat!'
+  )
 
   await loadAdminPlayoffMatches()
 }
