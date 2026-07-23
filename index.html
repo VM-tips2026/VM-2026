@@ -1055,8 +1055,13 @@ const {
   data: playoffResults,
   error: playoffResultsError
 } = await sb
-  .from('slutspel_resultat')
-  .select('*')
+  .from('slutspel_matcher')
+  .select(`
+    id,
+    home_score,
+    away_score,
+    winner_team
+  `)
 
 if (playoffResultsError) {
   console.error(playoffResultsError)
@@ -1209,35 +1214,73 @@ playoffTips.forEach(tip => {
 
   const result =
     playoffResults.find(
-      r => r.match_id === tip.match_id
+      match =>
+        Number(match.id) ===
+        Number(tip.match_id)
     )
 
   if (!result) return
 
+  // Matchen är ännu inte rättad
+  if (
+    result.home_score === null ||
+    result.home_score === undefined ||
+    result.away_score === null ||
+    result.away_score === undefined
+  ) {
+    return
+  }
+
+  if (!users[tip.user_id]) return
+
+  const realHome =
+    Number(result.home_score)
+
+  const realAway =
+    Number(result.away_score)
+
+  const tippedHome =
+    Number(tip.home_score)
+
+  const tippedAway =
+    Number(tip.away_score)
+
   let points = 0
 
+  // 1 poäng för rätt hemmamål
+  if (tippedHome === realHome) {
+    points += 1
+  }
+
+  // 1 poäng för rätt bortamål
+  if (tippedAway === realAway) {
+    points += 1
+  }
+
   const real1X2 =
-    result.home_score > result.away_score
+    realHome > realAway
       ? '1'
-      : result.away_score > result.home_score
-      ? '2'
-      : 'X'
+      : realAway > realHome
+        ? '2'
+        : 'X'
 
-  if (tip.home_score === result.home_score)
+  // 1 poäng för rätt matchresultat: 1, X eller 2
+  if (tip.tip_1x2 === real1X2) {
     points += 1
+  }
 
-  if (tip.away_score === result.away_score)
+  // 1 extra poäng för rätt lag vidare
+  if (
+    result.winner_team &&
+    tip.winner &&
+    normalizeAnswer(tip.winner) ===
+      normalizeAnswer(result.winner_team)
+  ) {
     points += 1
+  }
 
-  if (tip.tip_1x2 === real1X2)
-    points += 1
-
-  if (users[tip.user_id]) {
   users[tip.user_id].playoffPoints += points
-}
-
 })
-
 // ======================================
 // AUTOMATISKA EXTRAPOÄNG
 // ======================================
@@ -1993,22 +2036,15 @@ async function savePlayoffTips(showAlert = true) {
 
     if (awayScore > homeScore)
       tip1X2 = '2'
-const winnerSelect =
-  document.querySelector(
-    `.playoff-winner[data-id="${matchId}"]`
-  )
 
-const playoffWinner =
-  winnerSelect?.value || null
-    tips.push({
-
-      user_id: user.id,
-      match_id: Number(matchId),
-      home_score: homeScore,
-      away_score: awayScore,
-      tip_1x2: tip1X2
-
-    })
+tips.push({
+  user_id: user.id,
+  match_id: Number(matchId),
+  home_score: homeScore,
+  away_score: awayScore,
+  tip_1x2: tip1X2,
+  winner: playoffWinner
+})
 
   })
 
@@ -3216,7 +3252,230 @@ async function saveResult(matchId) {
   alert('Resultat sparat!')
 }
 async function savePlayoffResult(matchId) {
+async function loadAdminPlayoffMatches() {
 
+  const { data, error } = await sb
+    .from('slutspel_matcher')
+    .select('*')
+    .order('match_order')
+
+  if (error) {
+    console.error(
+      'Kunde inte läsa slutspelsmatcher:',
+      error
+    )
+    return
+  }
+
+  const body =
+    document.getElementById(
+      'admin-playoff-matches'
+    )
+
+  if (!body) return
+
+  body.innerHTML = ''
+
+  data.forEach(match => {
+
+    body.innerHTML += `
+      <div
+        class="
+          bg-zinc-900
+          border
+          border-zinc-800
+          rounded-2xl
+          p-4
+          mb-3
+        "
+      >
+
+        <div class="font-bold mb-3">
+          ${match.round}:
+          ${match.home_team} -
+          ${match.away_team}
+        </div>
+
+        <div class="flex items-center gap-3 flex-wrap">
+
+          <input
+            id="playoff-home-${match.id}"
+            type="number"
+            min="0"
+            value="${match.home_score ?? ''}"
+            class="
+              w-16
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+          <span>-</span>
+
+          <input
+            id="playoff-away-${match.id}"
+            type="number"
+            min="0"
+            value="${match.away_score ?? ''}"
+            class="
+              w-16
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+              text-center
+            "
+          />
+
+          <select
+            id="playoff-result-winner-${match.id}"
+            class="
+              bg-zinc-800
+              border
+              border-zinc-700
+              rounded-xl
+              p-2
+            "
+          >
+            <option value="">
+              Vinnare
+            </option>
+
+            <option
+              value="${match.home_team}"
+              ${
+                match.winner_team === match.home_team
+                  ? 'selected'
+                  : ''
+              }
+            >
+              ${match.home_team}
+            </option>
+
+            <option
+              value="${match.away_team}"
+              ${
+                match.winner_team === match.away_team
+                  ? 'selected'
+                  : ''
+              }
+            >
+              ${match.away_team}
+            </option>
+          </select>
+
+          <button
+            onclick="savePlayoffResult(${match.id})"
+            class="
+              bg-green-500
+              hover:bg-green-600
+              text-black
+              px-4
+              py-2
+              rounded-xl
+              font-bold
+            "
+          >
+            💾
+          </button>
+
+        </div>
+
+      </div>
+    `
+  })
+}
+async function savePlayoffResult(matchId) {
+
+  const homeInput =
+    document.getElementById(
+      `playoff-home-${matchId}`
+    )
+
+  const awayInput =
+    document.getElementById(
+      `playoff-away-${matchId}`
+    )
+
+  const winnerInput =
+    document.getElementById(
+      `playoff-result-winner-${matchId}`
+    )
+
+  if (
+    !homeInput ||
+    !awayInput ||
+    !winnerInput
+  ) {
+    alert('Kunde inte hitta resultatfälten.')
+    return
+  }
+
+  const homeScore =
+    homeInput.value === ''
+      ? null
+      : Number(homeInput.value)
+
+  const awayScore =
+    awayInput.value === ''
+      ? null
+      : Number(awayInput.value)
+
+  let winnerTeam =
+    winnerInput.value || null
+
+  // Vinnaren väljs automatiskt när resultatet inte är lika
+  if (
+    homeScore !== null &&
+    awayScore !== null
+  ) {
+
+    if (homeScore > awayScore) {
+      winnerTeam =
+        winnerInput.options[1].value
+    }
+
+    if (awayScore > homeScore) {
+      winnerTeam =
+        winnerInput.options[2].value
+    }
+
+    // Vid lika måste admin välja laget manuellt
+    if (
+      homeScore === awayScore &&
+      !winnerTeam
+    ) {
+      alert(
+        'Resultatet är lika. Välj vilket lag som gick vidare.'
+      )
+      return
+    }
+  }
+
+  const { error } = await sb
+    .from('slutspel_matcher')
+    .update({
+      home_score: homeScore,
+      away_score: awayScore,
+      winner_team: winnerTeam
+    })
+    .eq('id', matchId)
+
+  if (error) {
+    console.error(error)
+    alert(error.message)
+    return
+  }
+
+  alert('Slutspelsresultatet är sparat och rättat!')
+
+  await loadAdminPlayoffMatches()
+}
   const home =
     document.getElementById(
       `playoff-home-${matchId}`
