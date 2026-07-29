@@ -1271,12 +1271,19 @@ playoffTips.forEach(tip => {
 
 // 1 poäng för rätt lag vidare
 // Gäller när användaren har tippat lika
-if (
-  tippedHome === tippedAway &&
-  result.winner_team &&
-  tip.winner &&
+const userTippedDraw =
+  Number(tip.home_score) ===
+  Number(tip.away_score)
+
+const correctAdvancingTeam =
   normalizeAnswer(tip.winner) ===
-    normalizeAnswer(result.winner_team)
+  normalizeAnswer(result.winner_team)
+
+if (
+  userTippedDraw &&
+  tip.winner &&
+  result.winner_team &&
+  correctAdvancingTeam
 ) {
   points += 1
 }
@@ -1896,12 +1903,19 @@ if (playoffResultIsSet && savedTip) {
 
 // 1 poäng för rätt lag vidare
 // Gäller när användaren har tippat lika
-if (
-  tippedHome === tippedAway &&
-  match.winner_team &&
-  savedTip.winner &&
+const userTippedDraw =
+  Number(savedTip.home_score) ===
+  Number(savedTip.away_score)
+
+const correctAdvancingTeam =
   normalizeAnswer(savedTip.winner) ===
-    normalizeAnswer(match.winner_team)
+  normalizeAnswer(match.winner_team)
+
+if (
+  userTippedDraw &&
+  savedTip.winner &&
+  match.winner_team &&
+  correctAdvancingTeam
 ) {
   matchPoints += 1
 }
