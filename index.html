@@ -3549,26 +3549,57 @@ async function savePlayoffResult(matchId) {
     }
   }
 
-  const { error } = await sb
-    .from('slutspel_matcher')
-    .update({
-      home_score: homeScore,
-      away_score: awayScore,
-      winner_team: winnerTeam
-    })
-    .eq('id', matchId)
+ const {
+  data: updatedMatch,
+  error
+} = await sb
+  .from('slutspel_matcher')
+  .update({
+    home_score: homeScore,
+    away_score: awayScore,
+    winner_team: winnerTeam
+  })
+  .eq('id', matchId)
+  .select(`
+    id,
+    home_score,
+    away_score,
+    winner_team
+  `)
+  .maybeSingle()
 
-  if (error) {
-    console.error(error)
-    alert(error.message)
-    return
-  }
-
-  alert(
-    'Resultat och vinnare sparade!'
+if (error) {
+  console.error(
+    'Fel när slutspelsresultatet sparades:',
+    error
   )
 
-  await loadAdminPlayoffMatches()
+  alert(error.message)
+  return
+}
+
+if (!updatedMatch) {
+  console.error(
+    'Ingen rad uppdaterades. Kontrollera RLS-policy för slutspel_matcher.'
+  )
+
+  alert(
+    'Ingen rad uppdaterades. Supabase blockerar sannolikt ändringen via RLS.'
+  )
+
+  return
+}
+
+console.log(
+  'Sparad slutspelsmatch:',
+  updatedMatch
+)
+
+alert(
+  `Sparat: ${updatedMatch.home_score}-${updatedMatch.away_score}, vinnare: ${updatedMatch.winner_team}`
+)
+
+await loadAdminPlayoffMatches()
 }
 saveExtraBtn.addEventListener('click', async () => {
 
